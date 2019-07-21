@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "614322300792",
+    "firebase_url": "https://deliveryapp-d820b.firebaseio.com",
+    "project_id": "deliveryapp-d820b",
+    "storage_bucket": "deliveryapp-d820b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614322300792:android:016204775c98a26b",
+        "android_client_info": {
+          "package_name": "com.scientekk.deliveryapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "614322300792-aeo28rvgkpihj1g2ltr1ta56lgsl3deh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE97etO-kWDRyDvJyW6h5-KDZZtU7jT8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "614322300792-aeo28rvgkpihj1g2ltr1ta56lgsl3deh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

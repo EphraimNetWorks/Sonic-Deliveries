@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:shimmer="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="viewModel" type="com.example.deliveryapp.ui.main.MainViewModel"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/myToolbarButtonStyle" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+            <LinearLayout
+                android:id="@+id/profile_details_layout"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/profile_pic"
+                        android:layout_width="@dimen/profile_pic_size"
+                        android:layout_height="@dimen/profile_pic_size"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@{viewModel.currentUser.profilePicUrl}"
+                        android:tint="@color/white"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/margin_large"/>
+
+
+                    <TextView
+                        android:id="@+id/profile_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/textsize_large"
+                        android:text="@{viewModel.currentUser.name}"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
+                        android:layout_below="@id/profile_pic"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/margin_normal"/>
+
+                    <TextView
+                        android:id="@+id/profile_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/textsize_normal"
+                        android:text="@{viewModel.currentUser.email}"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
+                        android:layout_below="@id/profile_name"
+                        android:layout_centerHorizontal="true"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/profile_email"
+                        android:layout_marginTop="@dimen/margin_large"
+                        app:cardElevation="@dimen/card_elevation"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="@dimen/margin_large"
+                        app:cardCornerRadius="@dimen/card_elevation">
+
+                        <ProgressBar
+                            android:id="@+id/delivery_details_progress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:indeterminate="true"
+                            android:visibility="gone"
+                            android:layout_gravity="center"/>
+
+                        <LinearLayout
+                            android:id="@+id/profile_delivery_details"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/padding_large"
+                            android:visibility="visible"
+                            android:orientation="horizontal">
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/completed"
+                                    android:layout_gravity="center_horizontal"
+                                    android:textColor="@android:color/black"
+                                />
+                                <TextView
+                                    android:id="@+id/completed_deliveries_no"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/textsize_large"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginTop="@dimen/margin_normal"
+                                    android:textColor="@color/colorPrimary"
+                                />
+
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/margin_xlarge"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/pending"
+                                    android:layout_gravity="center_horizontal"
+                                    android:textColor="@android:color/black"
+                                />
+                                <TextView
+                                    android:id="@+id/pending_deliveries_no"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/textsize_large"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginTop="@dimen/margin_normal"
+                                    android:textColor="@color/colorPrimary"
+                                />
+
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/margin_xlarge"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/cancelled"
+                                    android:layout_gravity="center_horizontal"
+                                    android:textColor="@android:color/black"
+                                />
+                                <TextView
+                                    android:id="@+id/cancelled_deliveries_no"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/textsize_large"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginTop="@dimen/margin_normal"
+                                    android:textColor="@color/colorPrimary"
+                                />
+
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/my_deliveries_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_normal"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:textSize="@dimen/textsize_large"
+                    android:text="My Deliveries"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:textStyle="bold"/>
+
+                <FrameLayout
+                    android:id="@+id/my_deliveries_progress_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent_white"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/margin_normal">
+
+                        <TextView
+                            android:id="@+id/deliveries_error_message_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"/>
+
+                        <ProgressBar
+                            android:id="@+id/deliveries_loading_progress_bar"
+                            android:layout_width="@dimen/progress_size_normal"
+                            android:layout_height="@dimen/progress_size_normal"
+                            android:indeterminate="true"
+                            android:layout_marginStart="@dimen/margin_normal"
+                            android:layout_gravity="center_vertical" />
+
+                        <ImageView
+                            android:id="@+id/deliveries_retry_loading_button"
+                            android:layout_width="@dimen/progress_size_normal"
+                            android:layout_height="@dimen/progress_size_normal"
+                            android:layout_gravity="center_vertical"
+                            android:visibility="gone"
+                            android:layout_marginStart="@dimen/margin_normal"
+                            android:background="@drawable/ic_refresh"
+                        />
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmer_view_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="@{viewModel.myDeliveries}"
+                    android:layout_marginBottom="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    shimmer:duration="200">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <include layout="@layout/shimmer_delivery" />
+
+                        <include layout="@layout/shimmer_delivery" />
+
+                        <include layout="@layout/shimmer_delivery" />
+
+                    </LinearLayout>
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/my_deliveries_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintVertical_bias="0"
+                    android:layout_marginBottom="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:data="@{viewModel.myDeliveries}"/>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

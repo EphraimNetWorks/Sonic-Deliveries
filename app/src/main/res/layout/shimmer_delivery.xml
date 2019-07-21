@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+          android:orientation="vertical"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_normal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/delivery_status_image"
+            android:layout_width="@dimen/delivery_image_size"
+            android:layout_height="@dimen/delivery_image_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_normal"
+            android:background="@drawable/shimmer_background"/>
+
+        <LinearLayout
+            android:id="@+id/delivery_details_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_normal"
+            app:layout_constraintStart_toEndOf="@id/delivery_status_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/delivery_status_image"
+            app:layout_constraintBottom_toBottomOf="@id/delivery_status_image"
+            app:layout_constraintVertical_bias="0">
+
+            <TextView
+                android:id="@+id/delivery_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/delivery_item_title_size"
+                android:background="@drawable/shimmer_background"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/delivery_points"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_normal_size"
+                android:textSize="@dimen/textsize_normal"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:background="@drawable/shimmer_background"
+                android:textColor="@android:color/black"
+                />
+        </LinearLayout>
+
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/margin_small"
+            app:layout_constraintTop_toBottomOf="@id/delivery_details_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageView
+                android:layout_width="@dimen/delivery_icon_size"
+                android:layout_height="@dimen/delivery_icon_size"
+                android:background="@drawable/shimmer_background"/>
+
+            <TextView
+                android:layout_width="@dimen/delivery_image_size"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/shimmer_background"
+                android:textStyle="italic"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>

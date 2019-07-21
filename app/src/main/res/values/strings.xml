@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">DeliveryApp</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
+    <string name="name">Name</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">FORGOT PASSWORD ?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_up_message">Sign Up with Sonic Deliveries</string>
+    <string name="empty_email_field_error">Email field must not be empty</string>
+    <string name="invalid_email_error_message">Enter a valid email address</string>
+    <string name="empty_password_field_error_message">Password field must not be empty</string>
+    <string name="invalid_password_error_message">Password length must be 6 or more</string>
+    <string name="empty_name_error_message">Name must not be empty</string>
+    <string name="empty_phone_error_message">Phone number must not be empty</string>
+    <string name="invalid_phone_error_message">Enter a valid phone number</string>
+    <string name="password_dont_match_error_message">Passwords don\'t match</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="pending">Pending</string>
+    <string name="completed">Completed</string>
+</resources>

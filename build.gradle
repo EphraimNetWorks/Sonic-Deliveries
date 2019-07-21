@@ -1,0 +1,51 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext.kotlin_version = '1.3.41'
+    repositories {
+        google()
+        jcenter()
+        
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.0'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        
+    }
+}
+
+ext {
+    expandableRecyclerViewVersion = "1.4"
+    supportLibraryVersion = "27.0.2"
+    projectLombokVersion = "1.16.18"
+    archLifecycleVersion = "1.0.0"
+    archRoomVersion = "1.0.0"
+    daggerVersion = "2.x"
+    gsonVersion = "2.8.2"
+    glideVersion = "4.9.0"
+    circularImageViewVersion = "2.2.0"
+    signaturePadVersion = "1.2.1"
+    gsonConverterVersion = "2.3.0"
+    timberVersion = "4.5.1"
+    retrofitVersion = "2.3.0"
+    rxAndroidVersion = "2.0.1"
+    rxVersion = "2.1.6"
+    imagePickerVersion = "1.2.0"
+    easyPermissions = "1.1.3"
+    loggingInterceptorVersion = "3.10.0"
+    kotlin_version = '1.3.41'
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

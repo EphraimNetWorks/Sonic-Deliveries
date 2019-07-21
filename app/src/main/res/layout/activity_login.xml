@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="networkState"
+            type="com.example.deliveryapp.data.remote.NetworkState"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.login.LoginActivity">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/login_banner_height"
+                    android:background="@drawable/login_top"/>
+
+            <TextView
+                android:id="@+id/login_error_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{networkState.message}"
+                app:networkStatus="@{networkState.status}"
+                android:textSize="@dimen/textsize_normal"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@android:color/holo_red_light"
+                android:layout_marginStart="@dimen/margin_large"
+                android:layout_marginEnd="@dimen/margin_large"
+                android:layout_marginTop="@dimen/margin_xlarge"/>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/login_email_text_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/form_margin_start"
+                android:layout_marginEnd="@dimen/form_margin_start"
+                android:layout_marginTop="@dimen/margin_large"
+                android:orientation="horizontal">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_email_editext"
+                    android:hint="@string/email"
+                    android:textSize="@dimen/textsize_small"
+                    android:drawableStart="@drawable/ic_mail"
+                    android:drawablePadding="@dimen/padding_large"
+                    android:paddingStart="@dimen/padding_large"
+                    android:paddingEnd="@dimen/padding_large"
+                    android:paddingTop="@dimen/form_padding_top"
+                    android:maxLines="1"
+                    android:inputType="textEmailAddress"
+                    android:paddingBottom="@dimen/padding_large"
+                    android:textCursorDrawable="@drawable/cursor_color"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/form_background_register"
+                    android:layout_height="wrap_content"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/login_password_text_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/form_margin_start"
+                android:layout_marginEnd="@dimen/form_margin_start"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:orientation="horizontal">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_password_editext"
+                    android:hint="@string/password"
+                    android:textSize="@dimen/textsize_small"
+                    android:drawableStart="@drawable/ic_vpn"
+                    android:drawablePadding="@dimen/padding_large"
+                    android:paddingStart="@dimen/padding_large"
+                    android:paddingEnd="@dimen/padding_large"
+                    android:paddingTop="@dimen/form_padding_top"
+                    android:maxLines="1"
+                    android:inputType="textPassword"
+                    android:paddingBottom="@dimen/padding_large"
+                    android:textCursorDrawable="@drawable/cursor_color"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/form_background_register"
+                    android:layout_height="wrap_content"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_large"
+                android:paddingBottom="@dimen/padding_large"
+                android:layout_marginStart="@dimen/form_margin_start"
+                android:layout_marginEnd="@dimen/form_margin_start"
+                android:layout_marginTop="@dimen/margin_large">
+                <Button
+                    android:id="@+id/login_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_normal_size"
+                    android:textSize="@dimen/textsize_small"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/login"
+                    android:onClick="validateAndLoginUser"
+                    android:background="@drawable/blue_button"
+                />
+
+                <ProgressBar
+                    android:id="@+id/loading_progress_bar"
+                    android:layout_width="@dimen/progress_size_normal"
+                    android:layout_height="@dimen/progress_size_normal"
+                    android:layout_gravity="center_horizontal"
+                    app:networkStatus="@{networkState.status}"/>
+            </FrameLayout>
+
+            <TextView
+                    android:id="@+id/forgot_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/textsize_small"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:layout_gravity="center"
+                    android:text="@string/forgot_password"
+                    android:textStyle="bold"
+            />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
