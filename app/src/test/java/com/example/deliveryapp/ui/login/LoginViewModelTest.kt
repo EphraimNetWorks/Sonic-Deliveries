@@ -125,9 +125,5 @@ class LoginViewModelTest {
         assertEquals(loginViewModel.validationMap.value!![LoginViewModel.VAL_MAP_PASSWORD_KEY]!!,LoginViewModel.VAL_VALID)
     }
 
-    @Test
-    fun `set network state on get network state`(){
-        assertNotNull(loginViewModel.getNetworkState().value)
-    }
 
 }

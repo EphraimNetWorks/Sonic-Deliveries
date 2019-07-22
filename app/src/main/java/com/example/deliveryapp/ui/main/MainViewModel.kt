@@ -12,10 +12,9 @@ import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.utils.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.google.gson.Gson
+import kotlinx.coroutines.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -39,10 +38,8 @@ class MainViewModel @Inject constructor(
 
     }
 
-    fun initializeCurrentUser(){
-        GlobalScope.launch(dispatcherProvider.Main + viewModelJob) {
-            currentUser = userRepo.getCurrentUser()
-        }
+    private fun initializeCurrentUser() = runBlocking{
+        currentUser = userRepo.getCurrentUser()
     }
 
     fun getNetworkState():LiveData<NetworkState>{

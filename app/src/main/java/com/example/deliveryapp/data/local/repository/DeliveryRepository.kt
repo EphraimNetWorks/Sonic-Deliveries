@@ -17,8 +17,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class DeliveryRepository(private val apiService:ApiService, private val deliveryDao: DeliveryDao){
+
+class DeliveryRepository @Inject constructor(private val apiService:ApiService, private val deliveryDao: DeliveryDao){
 
     var myDeliveries :MutableLiveData<List<Delivery>> = MutableLiveData()
 

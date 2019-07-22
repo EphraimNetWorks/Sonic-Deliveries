@@ -1,10 +1,7 @@
 package com.example.deliveryapp.utils
 
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import androidx.paging.PagedList
@@ -17,56 +14,76 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 
 
-class BindingUtils {
+object BindingUtils {
 
+    @JvmStatic
     @BindingAdapter("data")
-    fun <T> setRecyclerViewProperties(recyclerView: RecyclerView, data: T) {
-        if (recyclerView.adapter is BindableAdapter<*>) {
-            (recyclerView.adapter as BindableAdapter<T>).submitItems(data)
+    fun <T> setRecyclerViewProperties(recyclerView: RecyclerView, data: PagedList<T>?) {
+        if(data!=null) {
+            if (recyclerView.adapter is BindablePagingAdapter<*>) {
+                (recyclerView.adapter as BindablePagingAdapter<T>).submitItems(data)
+            }
         }
     }
 
-    @BindingAdapter("data")
-    fun <T> setRecyclerViewProperties(recyclerView: RecyclerView, data: PagedList<T>) {
-        if (recyclerView.adapter is BindablePagingAdapter<*>) {
-            (recyclerView.adapter as BindablePagingAdapter<T>).submitItems(data)
-        }
-    }
-
-    @BindingAdapter("android:src")
-    fun setImageResource(imageView: ImageView, url: String) {
+    @JvmStatic
+    @BindingAdapter("imageUrl")
+    fun setImageResource(imageView: ImageView, url: String?) {
         Glide.with(imageView)
-            .load(url)
+            .load(url?:"")
             .apply(RequestOptions().placeholder(R.drawable.ic_account_circle).diskCacheStrategy(DiskCacheStrategy.ALL))
             .into(imageView)
     }
 
+    @JvmStatic
     @BindingAdapter("android:visibility")
-    fun setShimmerVisibility(shimmerFrameLayout: ShimmerFrameLayout, dataList: Any?) {
+    fun setShimmerVisibility(shimmerFrameLayout: ShimmerFrameLayout, dataList:PagedList<*>?) {
         when (dataList) {
             null -> shimmerFrameLayout.visibility = View.VISIBLE
-            is Iterable<*> -> shimmerFrameLayout.visibility = if (dataList.toList().isNullOrEmpty()) View.VISIBLE else View.GONE
-            else -> shimmerFrameLayout.visibility = View.GONE
+            else -> shimmerFrameLayout.visibility =
+                if (dataList.isNullOrEmpty()) View.VISIBLE else View.GONE
         }
     }
 
+    @JvmStatic
     @BindingAdapter("networkStatus")
-    fun setNetworkState(progressBar: ProgressBar, networkStatus: Status) {
-        progressBar.visibility = if(networkStatus == Status.RUNNING) View.VISIBLE else View.GONE
+    fun setShimmerNetworkVisibility(shimmerFrameLayout: ShimmerFrameLayout, networkStatus: Status?) {
+        when (networkStatus) {
+            null -> shimmerFrameLayout.visibility = View.VISIBLE
+            else -> shimmerFrameLayout.visibility =
+                if (networkStatus == Status.RUNNING) View.VISIBLE else View.GONE
+        }
     }
 
+    @JvmStatic
     @BindingAdapter("networkStatus")
-    fun setNetworkState(retryButton: ImageView, networkStatus: Status) {
-        retryButton.visibility = if(networkStatus == Status.FAILED) View.VISIBLE else View.GONE
+    fun setNetworkState(progressBar: ProgressBar, networkStatus: Status?) {
+
+        progressBar.visibility = if(networkStatus == null) View.GONE else if (networkStatus == Status.RUNNING) View.VISIBLE else View.GONE
     }
 
+    @JvmStatic
     @BindingAdapter("networkStatus")
-    fun setNetworkState(retryButton: Button, networkStatus: Status) {
-        retryButton.visibility = if(networkStatus == Status.FAILED) View.VISIBLE else View.GONE
+    fun setNetworkState(retryButton: ImageView, networkStatus: Status?) {
+        retryButton.visibility = if(networkStatus == null) View.GONE else if (networkStatus == Status.FAILED) View.VISIBLE else View.GONE
     }
 
+    @JvmStatic
     @BindingAdapter("networkStatus")
-    fun setNetworkState(errorTextview: TextView, networkStatus: Status) {
-        errorTextview.visibility = if(networkStatus == Status.FAILED) View.VISIBLE else View.GONE
+    fun setNetworkState(frameLayout: FrameLayout, networkStatus: Status?) {
+        frameLayout.visibility = if(networkStatus == null) View.VISIBLE else if (networkStatus == Status.SUCCESS) View.GONE else View.VISIBLE
+    }
+
+    @JvmStatic
+    @BindingAdapter("networkStatus")
+    fun setNetworkState(errorTextview: TextView, networkStatus: Status?) {
+        errorTextview.visibility = if(networkStatus == null) View.INVISIBLE else if (networkStatus == Status.FAILED) View.VISIBLE else View.INVISIBLE
+    }
+
+    @JvmStatic
+    @BindingAdapter("networkStatus")
+    fun setNetworkState(editText: EditText, networkStatus: Status?) {
+        editText.isClickable = if(networkStatus == null) true
+        else networkStatus == Status.RUNNING
     }
 }

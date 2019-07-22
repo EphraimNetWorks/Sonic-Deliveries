@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "614322300792",
-    "firebase_url": "https://deliveryapp-d820b.firebaseio.com",
-    "project_id": "deliveryapp-d820b",
-    "storage_bucket": "deliveryapp-d820b.appspot.com"
+    "project_number": "1087886618845",
+    "firebase_url": "https://sonic-deliveries.firebaseio.com",
+    "project_id": "sonic-deliveries",
+    "storage_bucket": "sonic-deliveries.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:614322300792:android:016204775c98a26b",
+        "mobilesdk_app_id": "1:1087886618845:android:d8edabbdbaa92305",
         "android_client_info": {
-          "package_name": "com.scientekk.deliveryapp"
+          "package_name": "com.example.deliveryapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "614322300792-aeo28rvgkpihj1g2ltr1ta56lgsl3deh.apps.googleusercontent.com",
+          "client_id": "1087886618845-t0s1j5mfdef7dr7sh1gj3hhaf39oigu0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.deliveryapp",
+            "certificate_hash": "0412f1c21941cb3c11ff28ba6658c95ecc642dd0"
+          }
+        },
+        {
+          "client_id": "1087886618845-v985b598o1tr738bp8doan5mdoteqqbp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBE97etO-kWDRyDvJyW6h5-KDZZtU7jT8E"
+          "current_key": "AIzaSyDoTIBu9QQcDD-I0rSqqh5WsVgRDyFXykg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "614322300792-aeo28rvgkpihj1g2ltr1ta56lgsl3deh.apps.googleusercontent.com",
+              "client_id": "1087886618845-v985b598o1tr738bp8doan5mdoteqqbp.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

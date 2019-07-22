@@ -12,7 +12,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
     defaultConfig {
-        applicationId "com.scientekk.deliveryapp"
+        applicationId "com.example.deliveryapp"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
@@ -142,14 +142,9 @@ dependencies {
 
     implementation 'com.vanniktech:emoji-ios:0.6.0'
 
-    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
-        transitive = true
-    }
-
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-2'
 
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
-
 
     implementation 'com.google.firebase:firebase-core:17.0.0'
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'

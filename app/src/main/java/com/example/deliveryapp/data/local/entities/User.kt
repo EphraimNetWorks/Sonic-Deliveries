@@ -17,4 +17,10 @@ class User {
     var email:String?= null
 
     var profilePicUrl:String? = null
+
+    override fun equals(other: Any?): Boolean {
+        return if(other is User){
+            other.id == id
+        }else false
+    }
 }

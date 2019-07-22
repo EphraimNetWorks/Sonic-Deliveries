@@ -27,14 +27,16 @@ class UserRepository(private val apiService:ApiService, private val userDao: Use
         networkState.postValue(NetworkState.LOADING)
         apiService.loginUser(email,password, object : ApiCallback<User?>{
             override fun onSuccess(result: User?) {
-                GlobalScope.launch(Dispatchers.IO) {
+                Thread {
                     userDao.saveUser(result!!)
-                }
+                }.start()
                 networkState.postValue(NetworkState.LOADED)
+                Timber.d("login success")
             }
 
             override fun onFailed(errMsg: String) {
                 networkState.postValue(NetworkState.error(errMsg))
+                Timber.w("login failed with error $errMsg")
             }
         })
     }

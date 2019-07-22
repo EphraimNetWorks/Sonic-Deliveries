@@ -7,10 +7,9 @@ import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.utils.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.google.gson.Gson
+import kotlinx.coroutines.*
+import timber.log.Timber
 import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -37,10 +36,9 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
         validationMap.value = initialMap
     }
 
-    private fun initializeCurrentUser(){
-        GlobalScope.launch(dispatcherProvider.Main + viewModelJob) {
-            currentUser = userRepo.getCurrentUser()
-        }
+    private fun initializeCurrentUser() = runBlocking{
+        currentUser = userRepo.getCurrentUser()
+        Timber.e(Gson().toJson(currentUser))
     }
 
     fun validateLoginDetails(email:String, password:String){

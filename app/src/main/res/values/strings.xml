@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DeliveryApp</string>
+    <string name="app_name">Sonic Deliveries</string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -29,4 +29,5 @@
     <string name="cancelled">Cancelled</string>
     <string name="pending">Pending</string>
     <string name="completed">Completed</string>
+    <string name="don_t_have_an_account_sign_up_here">Don\'t have an account? Sign up here</string>
 </resources>

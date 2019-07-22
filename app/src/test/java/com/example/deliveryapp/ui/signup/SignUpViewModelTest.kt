@@ -109,14 +109,14 @@ class SignUpViewModelTest {
 
     @Test
     fun `set valid name if name is valid`() {
-        signUpViewModel.validateEmail("Ephraim Nartey")
-        assertEquals(signUpViewModel.validationMap.value!![SignUpViewModel.VAL_MAP_EMAIL_KEY]!!,SignUpViewModel.INVALID_EMAIL_ADDRESS)
+        signUpViewModel.validateName("Ephraim Nartey")
+        assertEquals(signUpViewModel.validationMap.value!![SignUpViewModel.VAL_MAP_NAME_KEY]!!,SignUpViewModel.VAL_VALID)
     }
 
     @Test
     fun `set valid phone if phone is valid`() {
-        signUpViewModel.validateEmail("+233501384237")
-        assertEquals(signUpViewModel.validationMap.value!![SignUpViewModel.VAL_MAP_EMAIL_KEY]!!,SignUpViewModel.INVALID_EMAIL_ADDRESS)
+        signUpViewModel.validatePhone("+233501384237")
+        assertEquals(signUpViewModel.validationMap.value!![SignUpViewModel.VAL_MAP_PHONE_KEY]!!,SignUpViewModel.VAL_VALID)
     }
 
     @Test
