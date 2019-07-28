@@ -112,4 +112,21 @@ class DeliveryRepository @Inject constructor(private val apiService:ApiService, 
             }
         })
     }
+
+    fun submitNewDelivery(newDelivery: Delivery) {
+        networkState.postValue(NetworkState.LOADING)
+
+        apiService.sendNewDelivery(newDelivery, object : ApiCallback<Boolean>{
+            override fun onSuccess(result: Boolean) {
+                Thread{
+                    deliveryDao.saveMyDelivery(newDelivery)
+                }.start()
+                networkState.postValue(NetworkState.LOADED)
+            }
+
+            override fun onFailed(errMsg: String) {
+                networkState.postValue(NetworkState.error(errMsg))
+            }
+        })
+    }
 }

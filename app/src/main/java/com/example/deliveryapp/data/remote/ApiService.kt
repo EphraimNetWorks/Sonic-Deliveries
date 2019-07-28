@@ -29,14 +29,15 @@ class ApiService {
                         .addOnCompleteListener { task1->
                             if(task.isSuccessful){
                                 callback.onSuccess(task1.result!!.toObject(User::class.java))
+                                Timber.w("login and read user success")
                             }else{
-                                callback.onFailed(task1.exception!!.message!!)
-                                Timber.w("read user failed with error:${task.exception!!.message!!}")
+                                callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
+                                Timber.w("read user failed with error:${task.exception?.message}")
                             }
                         }
                 }else{
-                    callback.onFailed(task.exception!!.message!!)
-                    Timber.w("login user failed with error:${task.exception!!.message!!}")
+                    callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
+                    Timber.w("login user failed with error:${task.exception?.message}")
                 }
             }
     }
@@ -55,14 +56,15 @@ class ApiService {
                     db.collection(COLLECTION_USERS).document(sonicUser.id).set(sonicUser).addOnCompleteListener { task2 ->
                         if(task2.isSuccessful){
                             callback.onSuccess(sonicUser)
+                            Timber.w("sign up user success")
                         }else{
-                            callback.onFailed(task2.exception!!.message!!)
-                            Timber.w("save signedup user failed with error:${task.exception!!.message!!}")
+                            callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
+                            Timber.w("save signedup user failed with error:${task.exception?.message}")
                         }
                     }
                 }else{
-                    callback.onFailed(task.exception!!.message!!)
-                    Timber.w("sign up user failed with error:${task.exception!!.message!!}")
+                    callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
+                    Timber.w("sign up user failed with error:${task.exception?.message}")
                 }
             }
     }
@@ -74,8 +76,10 @@ class ApiService {
                 val deliveries = gson.fromJson<List<Delivery>>(gson.toJson(task.result?.data),
                     object :TypeToken<List<Delivery>>(){}.type)
                 callback.onSuccess(deliveries?: listOf())
+                Timber.w("load my deliveries success with size: ${deliveries.size}")
             }else{
-                callback.onFailed(task.exception!!.message!!)
+                callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
+                Timber.w("load my delivery failed with error:${task.exception?.message}")
             }
         }
     }
@@ -87,18 +91,35 @@ class ApiService {
             .addOnCompleteListener { task ->
                 if(task.isSuccessful){
                     callback.onSuccess(true)
+                    Timber.w("cancel delivery success")
                 }else{
-                    callback.onFailed(task.exception!!.message!!)
+                    callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
+                    Timber.w("cancel delivery failed with error:${task.exception?.message}")
                 }
             }
+    }
+
+    fun sendNewDelivery(newDelivery: Delivery, callback: ApiCallback<Boolean>) {
+        val deliveryId = db.collection("$COLLECTION_DELIVERIES/$userId").document().id
+        newDelivery.id = deliveryId
+
+        db.collection("$COLLECTION_DELIVERIES/$userId").document(deliveryId).set(newDelivery).addOnCompleteListener {task->
+            if(task.isSuccessful){
+                callback.onSuccess(true)
+                Timber.w("send new delivery success")
+            }else{
+                callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
+                Timber.w("send new delivery failed with error:${task.exception?.message}")
+            }
+        }
     }
 
     companion object{
 
         const val COLLECTION_USERS = "users"
         const val COLLECTION_DELIVERIES = "deliveries"
-        const val FIELD_USERS_ID = "id"
-        const val FIELD_DELIVERY_ID = "id"
+
+        const val UNKNOWN_FAILURE_ERROR = "Unknown reason for failure"
 
     }
 }

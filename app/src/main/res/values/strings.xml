@@ -51,4 +51,11 @@
     <string name="additional_information">Additional Information</string>
     <string name="pick_up_date">Pick-Up Date</string>
     <string name="item_name_capitalized">Item Name</string>
+    <string name="empty_item_name_error">Enter name of package to be delivered</string>
+    <string name="empty_pickup_address_error">Select or enter item pick-up address</string>
+    <string name="empty_destination_address_error">Select or enter destination address</string>
+    <string name="empty_pick_up_date_error">Select a date for us to pickup your item</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="submit">Submit</string>
 </resources>

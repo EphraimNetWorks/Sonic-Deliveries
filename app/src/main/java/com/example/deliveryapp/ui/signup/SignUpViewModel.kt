@@ -1,9 +1,11 @@
 package com.example.deliveryapp.ui.signup
 
 import android.util.Patterns
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.data.remote.request.SignUpRequest
@@ -14,18 +16,18 @@ import javax.inject.Inject
 
 class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) :ViewModel(){
     private lateinit var networkState: LiveData<NetworkState>
-    var validationMap: MutableLiveData<WeakHashMap<String, String>> = MutableLiveData()
+    var validationMap: MutableLiveData<WeakHashMap<String, Int>> = MutableLiveData()
 
     init {
         initializeValidationMap()
     }
 
     private fun initializeValidationMap(){
-        val initialMap = WeakHashMap<String,String>()
-        initialMap[VAL_MAP_EMAIL_KEY] = ""
-        initialMap[VAL_MAP_PASSWORD_KEY] = ""
-        initialMap[VAL_MAP_PHONE_KEY] = ""
-        initialMap[VAL_MAP_NAME_KEY] = ""
+        val initialMap = WeakHashMap<String,Int>()
+        initialMap[VAL_MAP_EMAIL_KEY] = VAL_DEFAULT
+        initialMap[VAL_MAP_PASSWORD_KEY] = VAL_DEFAULT
+        initialMap[VAL_MAP_PHONE_KEY] = VAL_DEFAULT
+        initialMap[VAL_MAP_NAME_KEY] = VAL_DEFAULT
         validationMap.value = initialMap
     }
 
@@ -103,19 +105,28 @@ class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) 
 
     companion object{
 
-        const val EMPTY_NAME = "Empty name"
+        @StringRes
+        const val EMPTY_NAME = R.string.empty_name_error_message
 
-        const val INVALID_EMAIL_ADDRESS = "Invalid Email"
-        const val EMPTY_EMAIL_ADDRESS = "Empty Email"
+        @StringRes
+        const val INVALID_EMAIL_ADDRESS = R.string.invalid_email_error_message
+        @StringRes
+        const val EMPTY_EMAIL_ADDRESS = R.string.empty_email_field_error
 
-        const val INVALID_PHONE_NUMBER = "Invalid phone number"
-        const val EMPTY_PHONE_NUMBER = "Empty phone number"
+        @StringRes
+        const val INVALID_PHONE_NUMBER = R.string.invalid_phone_error_message
+        @StringRes
+        const val EMPTY_PHONE_NUMBER = R.string.empty_phone_error_message
 
-        const val INVALID_PASSWORD = "Invalid password"
-        const val PASSWORDS_DONT_MATCH = "Passwords don't match"
-        const val EMPTY_PASSWORD = "Empty password"
+        @StringRes
+        const val INVALID_PASSWORD = R.string.invalid_password
+        @StringRes
+        const val PASSWORDS_DONT_MATCH = R.string.password_dont_match_error_message
+        @StringRes
+        const val EMPTY_PASSWORD = R.string.empty_password_field_error_message
 
-        const val VAL_VALID = "valid"
+        const val VAL_VALID = 1
+        const val VAL_DEFAULT = 0
 
 
         const val VAL_MAP_EMAIL_KEY = "email"

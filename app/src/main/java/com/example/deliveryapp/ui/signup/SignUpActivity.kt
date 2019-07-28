@@ -72,41 +72,27 @@ class SignUpActivity : AppCompatActivity() {
         startActivity(Intent(this, MainActivity::class.java))
     }
 
-    fun processValidationMap(valMap: WeakHashMap<String, String>){
+    fun processValidationMap(valMap: WeakHashMap<String, Int>){
         resetTextInputLayoutErrors()
+
         if(valMap[SignUpViewModel.VAL_MAP_NAME_KEY]!= SignUpViewModel.VAL_VALID){
-            val errorMessage = when(valMap[SignUpViewModel.VAL_MAP_NAME_KEY]){
-                SignUpViewModel.EMPTY_NAME -> getString(R.string.empty_name_error_message)
-                else -> throw IllegalArgumentException("Unknown validation error")
-            }
-            binding.signupNameTextLayout.error = errorMessage
+
+            binding.signupNameTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_NAME_KEY]!!)
 
         }else if(valMap[SignUpViewModel.VAL_MAP_PHONE_KEY]!= SignUpViewModel.VAL_VALID){
-            val errorMessage = when(valMap[SignUpViewModel.VAL_MAP_PHONE_KEY]){
-                SignUpViewModel.EMPTY_PHONE_NUMBER -> getString(R.string.empty_phone_error_message)
-                SignUpViewModel.INVALID_PHONE_NUMBER -> getString(R.string.invalid_phone_error_message)
-                else -> throw IllegalArgumentException("Unknown validation error")
-            }
-            binding.signupPhoneTextLayout.error = errorMessage
+
+            binding.signupPhoneTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_PHONE_KEY]!!)
 
         }else if(valMap[SignUpViewModel.VAL_MAP_EMAIL_KEY]!= SignUpViewModel.VAL_VALID){
-            val errorMessage = when(valMap[SignUpViewModel.VAL_MAP_EMAIL_KEY]){
-                SignUpViewModel.EMPTY_EMAIL_ADDRESS -> getString(R.string.empty_email_field_error)
-                SignUpViewModel.INVALID_EMAIL_ADDRESS -> getString(R.string.invalid_email_error_message)
-                else -> throw IllegalArgumentException("Unknown validation error")
-            }
-            binding.signupEmailTextLayout.error = errorMessage
+
+            binding.signupEmailTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_EMAIL_KEY]!!)
 
         }else if (valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY] != SignUpViewModel.VAL_VALID){
-            val errorMessage = when(valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY]){
-                SignUpViewModel.EMPTY_PASSWORD -> getString(R.string.empty_password_field_error_message)
-                SignUpViewModel.INVALID_PASSWORD -> getString(R.string.invalid_password_error_message)
-                SignUpViewModel.PASSWORDS_DONT_MATCH -> getString(R.string.password_dont_match_error_message)
-                else -> throw IllegalArgumentException("Unknown validation error")
-            }
-            binding.signupPasswordTextLayout.error = errorMessage
+
+            binding.signupPasswordTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY]!!)
+
             if(valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY] == SignUpViewModel.PASSWORDS_DONT_MATCH){
-                binding.signupConfirmPasswordTextLayout.error = errorMessage
+                binding.signupConfirmPasswordTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY]!!)
             }
 
         }else{

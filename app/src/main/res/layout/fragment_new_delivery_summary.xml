@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable name="delivery" type="com.example.deliveryapp.data.local.entities.Delivery"/>
+    </data>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                  android:orientation="vertical"
+                  android:background="@color/white"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="Summary"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_large"
+            app:layout_constraintStart_toStartOf="parent" />
+        
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_normal"
+                android:background="@drawable/summary_background"
+                android:layout_margin="@dimen/margin_normal"
+                android:orientation="vertical">
+        
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_large">
+                    <TextView
+                        android:id="@+id/summary_item_name_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:text="@string/item_name_capitalized"
+                        android:padding="@dimen/padding_small"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/textsize_normal"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+            
+                    <TextView
+                        android:id="@+id/summary_item_name_textview"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_normal"
+                        android:layout_marginBottom="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        android:padding="@dimen/padding_small"
+                        android:gravity="end"
+                        android:text="@{delivery.title}"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/textsize_normal"
+                        android:textStyle="bold"
+                        android:layout_marginStart="@dimen/margin_large"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        app:layout_constraintStart_toEndOf="@id/summary_item_name_title"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+        
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:background="@color/grey"/>
+        
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal">
+                    <TextView
+                        android:id="@+id/summary_pick_up_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:text="@string/pick_up_point"
+                        android:padding="@dimen/padding_small"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/textsize_normal"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+            
+                    <TextView
+                        android:id="@+id/summary_pick_up_textview"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_normal"
+                        android:layout_marginBottom="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        android:padding="@dimen/padding_small"
+                        android:text="@{delivery.pickUpAddress}"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/textsize_normal"
+                        android:textStyle="bold"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="@dimen/margin_large"
+                        android:gravity="end"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        app:layout_constraintStart_toEndOf="@id/summary_pick_up_title"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+        
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:background="@color/grey"/>
+        
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal">
+                    <TextView
+                        android:id="@+id/summary_destination_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:text="@string/destination"
+                        android:padding="@dimen/padding_small"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/textsize_normal"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+            
+                    <TextView
+                        android:id="@+id/summary_destination_textview"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_normal"
+                        android:layout_marginBottom="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        android:padding="@dimen/padding_small"
+                        android:text="@{delivery.destinationAddress}"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/textsize_normal"
+                        android:textStyle="bold"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="@dimen/margin_large"
+                        android:gravity="end"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        app:layout_constraintStart_toEndOf="@id/summary_destination_title"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+        
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:background="@color/grey"/>
+        
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal">
+                    <TextView
+                        android:id="@+id/summary_pickup_date_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:text="@string/pick_up_date"
+                        android:padding="@dimen/padding_small"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/textsize_normal"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+        
+                    <TextView
+                        android:id="@+id/summary_pickup_date_textview"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_normal"
+                        android:layout_marginBottom="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        android:padding="@dimen/padding_small"
+                        android:text="@{delivery.pickUpTimeDate.dateFormat1}"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/textsize_normal"
+                        android:layout_marginStart="@dimen/margin_large"
+                        android:textStyle="bold"
+                        android:gravity="end"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        app:layout_constraintStart_toEndOf="@id/summary_pickup_date_title"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+        
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:background="@color/grey"/>
+        
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_large"
+                    android:layout_marginTop="@dimen/margin_normal">
+                    <TextView
+                        android:id="@+id/summary_addi_info_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        android:text="@string/additional_information"
+                        android:padding="@dimen/padding_small"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/textsize_normal"
+                        app:layout_constraintStart_toStartOf="parent"/>
+            
+                    <TextView
+                        android:id="@+id/additional_info_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginBottom="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        android:padding="@dimen/padding_small"
+                        android:layout_below="@id/summary_addi_info_title"
+                        android:text="@{delivery.additionalInfo}"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/textsize_normal"
+                        android:textStyle="bold"
+                        android:layout_alignParentStart="true"/>
+                </RelativeLayout>
+                
+            </LinearLayout>
+    </LinearLayout>
+</layout>

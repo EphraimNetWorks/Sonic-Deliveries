@@ -4,7 +4,7 @@ import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.deliveryapp.data.local.models.MyDate
-import com.google.type.LatLng
+import com.google.android.gms.maps.model.LatLng
 import java.io.Serializable
 
 @Entity
@@ -20,11 +20,11 @@ class Delivery : Serializable{
 
     var title: String? = null
 
-    var origin: String? = null
+    var pickUpAddress: String? = null
 
-    var originLocation: LatLng? = null
+    var pickUpLocation: LatLng? = null
 
-    var destination: String? = null
+    var destinationAddress: String?= null
 
     var destinationLocation: LatLng? = null
 
@@ -53,6 +53,8 @@ class Delivery : Serializable{
         }
 
     var deliveryTimeDate: MyDate? = null
+
+    var additionalInfo:String = "None"
 
     companion object{
         const val STATUS_COMPLETED = 2
