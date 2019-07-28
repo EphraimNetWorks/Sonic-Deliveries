@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <androidx.cardview.widget.CardView
+       android:orientation="vertical"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_normal"
+       app:cardCornerRadius="@dimen/margin_large"
+        android:elevation="@dimen/card_elevation"
+        >
+    
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/padding_normal"
+            android:paddingStart="@dimen/padding_normal"
+            android:paddingEnd="@dimen/padding_normal"
+            android:layout_margin="@dimen/margin_normal">
+            
+            <ImageView
+                android:layout_width="@dimen/main_page_delivery_image_size"
+                android:layout_height="@dimen/main_page_delivery_image_size"
+                android:src="@drawable/icon_orange"
+                android:layout_marginTop="@dimen/margin_normal"/>
+            
+    
+            <TextView
+                android:id="@+id/delivery_item_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="28dp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textSize="@dimen/textsize_normal"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:text="Hp Omen Laptop"/>
+    
+            <TextView
+                android:id="@+id/delivery_origin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textSize="@dimen/textsize_small"
+                android:text="Delivering from Tema"/>
+    
+    
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_marginBottom="@dimen/margin_large">
+    
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Estimated Time of Arrival"
+                    android:layout_alignParentStart="true"
+                    android:textSize="@dimen/textsize_normal"
+                />
+    
+                <TextView
+                    android:id="@+id/delivery_eta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wednesday Jan 18,2019"
+                    android:textSize="@dimen/textsize_small"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@android:color/holo_blue_light"
+                    android:textStyle="bold"
+    
+                />
+            </LinearLayout>
+        </LinearLayout>
+        
+    </androidx.cardview.widget.CardView>
+
+</layout>

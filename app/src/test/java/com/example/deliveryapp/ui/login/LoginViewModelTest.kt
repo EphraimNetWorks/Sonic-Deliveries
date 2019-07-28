@@ -17,6 +17,7 @@ import org.junit.Assert.*
 import org.junit.Rule
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import java.util.regex.Pattern
 
 class LoginViewModelTest {
 
@@ -125,5 +126,11 @@ class LoginViewModelTest {
         assertEquals(loginViewModel.validationMap.value!![LoginViewModel.VAL_MAP_PASSWORD_KEY]!!,LoginViewModel.VAL_VALID)
     }
 
+
+    companion object{
+        private const val EMAIL_PATTERN =
+            "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
+        private val EMAIL_ADDRESS_PATTERN = Pattern.compile(EMAIL_PATTERN)
+    }
 
 }

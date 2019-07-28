@@ -13,7 +13,17 @@ interface DeliveryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveMyDelivery(myDelivery: Delivery)
 
-    @Query("SELECT * FROM delivery ORDER BY createdAt DESC")
-    fun getMyDeliveries(): DataSource.Factory<Int, Delivery>
+    @Query("SELECT * FROM delivery WHERE deliveryStatus=:status ORDER BY createdAt DESC")
+    fun getDeliveriesPlaced(status: String = Delivery.STATUS_PLACED): DataSource.Factory<Int, Delivery>
+
+    @Query("SELECT * FROM delivery WHERE deliveryStatus=:status ORDER BY createdAt DESC")
+    fun getDeliveriesInTransit(status: String = Delivery.STATUS_IN_TRANSIT): DataSource.Factory<Int, Delivery>
+
+    @Query("SELECT * FROM delivery WHERE deliveryStatus=:status OR deliveryStatus=:status2 ORDER BY createdAt DESC")
+    fun getCompletedDeliveries(status: String = Delivery.STATUS_COMPLETED,
+                               status2:String = Delivery.STATUS_CANCELLED): DataSource.Factory<Int, Delivery>
+
+    @Query("UPDATE delivery SET deliveryStatus=:status WHERE id =:deliveryId ")
+    fun updateDeliveryStatus(deliveryId:String, status: String)
 
 }

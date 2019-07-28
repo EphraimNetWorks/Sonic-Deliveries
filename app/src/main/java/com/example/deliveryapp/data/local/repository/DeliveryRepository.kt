@@ -22,20 +22,38 @@ import javax.inject.Inject
 
 class DeliveryRepository @Inject constructor(private val apiService:ApiService, private val deliveryDao: DeliveryDao){
 
-    var myDeliveries :MutableLiveData<List<Delivery>> = MutableLiveData()
-
     private var retryCompletable: Completable? = null
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val networkState = MutableLiveData<NetworkState>()
 
-    fun getMyDeliveries(dispatcherProvider: DispatcherProvider = DispatcherProvider()): DataSource.Factory<Int,Delivery>{
+    fun getDeliveriesPlaced(dispatcherProvider: DispatcherProvider = DispatcherProvider()): DataSource.Factory<Int,Delivery>{
 
         networkState.postValue(NetworkState.LOADING)
         val scope = CoroutineScope(dispatcherProvider.IO)
         scope.launch {
             loadMyDeliveries()
         }
-        return deliveryDao.getMyDeliveries()
+        return deliveryDao.getDeliveriesPlaced()
+    }
+
+    fun getDeliveriesInTransit(dispatcherProvider: DispatcherProvider = DispatcherProvider()): DataSource.Factory<Int,Delivery>{
+
+        networkState.postValue(NetworkState.LOADING)
+        val scope = CoroutineScope(dispatcherProvider.IO)
+        scope.launch {
+            loadMyDeliveries()
+        }
+        return deliveryDao.getDeliveriesInTransit()
+    }
+
+    fun getCompletedDeliveries(dispatcherProvider: DispatcherProvider = DispatcherProvider()): DataSource.Factory<Int,Delivery>{
+
+        networkState.postValue(NetworkState.LOADING)
+        val scope = CoroutineScope(dispatcherProvider.IO)
+        scope.launch {
+            loadMyDeliveries()
+        }
+        return deliveryDao.getCompletedDeliveries()
     }
 
     private fun loadMyDeliveries(){
@@ -70,11 +88,28 @@ class DeliveryRepository @Inject constructor(private val apiService:ApiService, 
         }
     }
 
-    private fun setRetry(action: Action) {
+    private fun setRetry(action: Action?) {
         if (action == null) {
             this.retryCompletable = null
         } else {
             this.retryCompletable = Completable.fromAction(action)
         }
+    }
+
+    fun cancelDelivery(deliveryId: String) {
+        networkState.postValue(NetworkState.LOADING)
+
+        apiService.cancelDelivery(deliveryId, object : ApiCallback<Boolean>{
+            override fun onSuccess(result: Boolean) {
+                Thread{
+                    deliveryDao.updateDeliveryStatus(deliveryId,Delivery.STATUS_CANCELLED)
+                }.start()
+                networkState.postValue(NetworkState.LOADED)
+            }
+
+            override fun onFailed(errMsg: String) {
+                networkState.postValue(NetworkState.error(errMsg))
+            }
+        })
     }
 }

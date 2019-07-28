@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:app="http://schemas.android.com/apk/res-auto"
+   android:orientation="vertical"
+   android:layout_width="wrap_content"
+   android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_normal"
+   app:cardCornerRadius="@dimen/margin_large"
+    android:elevation="@dimen/card_elevation"
+    >
+
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/padding_normal"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal"
+        android:layout_margin="@dimen/margin_normal">
+        
+        <ImageView
+            android:layout_width="@dimen/main_page_delivery_image_size"
+            android:layout_height="@dimen/main_page_delivery_image_size"
+            android:background="@drawable/shimmer_background"
+            android:layout_marginTop="@dimen/margin_normal"/>
+        
+
+        <TextView
+            android:id="@+id/delivery_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="28dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textSize="@dimen/textsize_normal"
+            android:textStyle="bold"
+            android:background="@drawable/shimmer_background"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/delivery_origin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textSize="@dimen/textsize_small"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/shimmer_background"/>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginBottom="@dimen/margin_large">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_background"
+                android:textColor="@android:color/transparent"
+                android:text="Pick Up Date"
+                android:layout_alignParentStart="true"
+                android:textSize="@dimen/textsize_normal"
+            />
+
+            <TextView
+                android:id="@+id/pick_up_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shimmer_background"
+                android:textColor="@android:color/transparent"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="Wednesday Jan 18,2019"
+                android:textSize="@dimen/textsize_small"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"
+
+            />
+        </LinearLayout>
+    </LinearLayout>
+    
+</androidx.cardview.widget.CardView>

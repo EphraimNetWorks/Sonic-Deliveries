@@ -11,7 +11,7 @@ import com.example.deliveryapp.data.local.entities.User
 
 
 @Database(entities = [User::class,Delivery::class], version = 1, exportSchema = false)
-//@androidx.room.TypeConverters(SonicTypeConverter::class)
+@androidx.room.TypeConverters(SonicTypeConverter::class)
 abstract class LocalDatabase : RoomDatabase(){
 
     abstract fun deliveryDao() : DeliveryDao

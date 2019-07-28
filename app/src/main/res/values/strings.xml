@@ -30,4 +30,25 @@
     <string name="pending">Pending</string>
     <string name="completed">Completed</string>
     <string name="don_t_have_an_account_sign_up_here">Don\'t have an account? Sign up here</string>
+    <string name="placed">Placed</string>
+    <string name="in_transit">In Transit</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="delivering_package_from">Delivering package from</string>
+    <string name="delivered_on">Delivered on</string>
+    <string name="delivered">Delivered</string>
+    <string name="item_name">ITEM NAME</string>
+    <string name="delivered_summary_message">was succesfully delivered on</string>
+    <string name="cancelled_summary_message">\'s delivery was cancelled on</string>
+    <string name="in_transit_summary_message">The estimated time of arrival of your next delivery is</string>
+    <string name="placed_summary_message_prefix">A delivery order for</string>
+    <string name="placed_summary_message_suffix">was successfully placed on</string>
+    <string name="delivery_order_placed">Delivery order placed</string>
+    <string name="package_in_transit">Package in transit</string>
+    <string name="delivery_complete">Delivery complete</string>
+    <string name="delivery_cancelled">Delivery Cancelled</string>
+    <string name="pick_up_point">Pick-Up Point</string>
+    <string name="destination">Destination</string>
+    <string name="additional_information">Additional Information</string>
+    <string name="pick_up_date">Pick-Up Date</string>
+    <string name="item_name_capitalized">Item Name</string>
 </resources>

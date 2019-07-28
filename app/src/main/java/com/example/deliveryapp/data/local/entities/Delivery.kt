@@ -3,9 +3,12 @@ package com.example.deliveryapp.data.local.entities
 import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.deliveryapp.data.local.models.MyDate
+import com.google.type.LatLng
+import java.io.Serializable
 
 @Entity
-class Delivery {
+class Delivery : Serializable{
 
     @PrimaryKey
     @NonNull
@@ -13,19 +16,48 @@ class Delivery {
 
     var createdAt:String? = null
 
+    var updatedAt:String? = null
+
     var title: String? = null
 
     var origin: String? = null
 
+    var originLocation: LatLng? = null
+
     var destination: String? = null
 
-    var deliveryStatus: String = STATUS_PENDING
+    var destinationLocation: LatLng? = null
 
-    var deliveredAt:String? = null
+    var deliveryStatus: Int = STATUS_PLACED
+
+    var estimatedTimeOfArrival:Long? = null
+        set(value) {
+            estimatedTimeOfArrivalDate = MyDate(value!!)
+            field = value
+        }
+
+    var estimatedTimeOfArrivalDate: MyDate? = null
+
+    var pickUpTime:Long? = null
+        set(value) {
+            pickUpTimeDate = MyDate(value!!)
+            field = value
+        }
+
+    var pickUpTimeDate: MyDate? = null
+
+    var deliveryTime:Long? = null
+        set(value) {
+            deliveryTimeDate = MyDate(value!!)
+            field = value
+        }
+
+    var deliveryTimeDate: MyDate? = null
 
     companion object{
-        const val STATUS_COMPLETED = "completed"
-        const val STATUS_PENDING = "pending"
-        const val STATUS_CANCELLED = "cancelled"
+        const val STATUS_COMPLETED = 2
+        const val STATUS_IN_TRANSIT = 1
+        const val STATUS_CANCELLED = 3
+        const val STATUS_PLACED = 0
     }
 }

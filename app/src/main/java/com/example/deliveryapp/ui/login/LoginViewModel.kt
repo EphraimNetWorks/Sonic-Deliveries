@@ -1,5 +1,6 @@
 package com.example.deliveryapp.ui.login
 
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,11 +47,11 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
         validatePassword(password)
     }
 
-    fun validateEmail(email:String){
+    fun validateEmail(email:String, emailPattern:Pattern = Patterns.EMAIL_ADDRESS){
         var validationMessage = VAL_VALID
         if(email.isEmpty()){
             validationMessage = EMPTY_EMAIL_ADDRESS
-        }else if(!EMAIL_ADDRESS_PATTERN.matcher(email).matches()){
+        }else if(!emailPattern.matcher(email).matches()){
             validationMessage = INVALID_EMAIL_ADDRESS
         }
         val map = validationMap.value!!
@@ -94,10 +95,6 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
 
         const val VAL_MAP_EMAIL_KEY = "email"
         const val VAL_MAP_PASSWORD_KEY = "password"
-
-        private const val EMAIL_PATTERN =
-            "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
-        private val EMAIL_ADDRESS_PATTERN = Pattern.compile(EMAIL_PATTERN)
 
     }
 }

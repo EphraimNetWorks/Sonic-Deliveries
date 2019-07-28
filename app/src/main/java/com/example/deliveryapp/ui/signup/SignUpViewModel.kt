@@ -1,5 +1,6 @@
 package com.example.deliveryapp.ui.signup
 
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,11 +47,11 @@ class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) 
 
     }
 
-    fun validateEmail(email:String){
+    fun validateEmail(email:String, emailPattern: Pattern = Patterns.EMAIL_ADDRESS){
         var validationMessage = VAL_VALID
         if(email.isEmpty()){
             validationMessage = EMPTY_EMAIL_ADDRESS
-        }else if(!EMAIL_ADDRESS_PATTERN.matcher(email).matches()){
+        }else if(!emailPattern.matcher(email).matches()){
             validationMessage = INVALID_EMAIL_ADDRESS
         }
         val map = validationMap.value!!
@@ -59,11 +60,11 @@ class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) 
 
     }
 
-    fun validatePhone(phone:String){
+    fun validatePhone(phone:String,phonePattern: Pattern = Patterns.PHONE){
         var validationMessage = VAL_VALID
         if(phone.isEmpty()){
             validationMessage = EMPTY_PHONE_NUMBER
-        }else if(!PHONE_PATTERN.matcher(phone).matches()){
+        }else if(!phonePattern.matcher(phone).matches()){
             validationMessage = INVALID_PHONE_NUMBER
         }
         val map = validationMap.value!!
@@ -121,15 +122,6 @@ class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) 
         const val VAL_MAP_PASSWORD_KEY = "password"
         const val VAL_MAP_PHONE_KEY = "phone"
         const val VAL_MAP_NAME_KEY = "name"
-
-
-        private const val EMAIL_PATTERN =
-            "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
-
-        private const val PHONE_NUMBER_PATTERN = "^\\+[1-9]{1}[0-9]{3,14}\$"
-
-        private val EMAIL_ADDRESS_PATTERN = Pattern.compile(EMAIL_PATTERN)
-        private val PHONE_PATTERN = Pattern.compile(PHONE_NUMBER_PATTERN)
 
     }
 }

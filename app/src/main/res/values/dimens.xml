@@ -15,6 +15,7 @@
     <dimen name="button_normal_size">50dp</dimen>
     <dimen name="textsize_normal">14sp</dimen>
     <dimen name="delivery_image_size">100dp</dimen>
+    <dimen name="main_page_delivery_image_size">50dp</dimen>
     <dimen name="delivery_item_title_size">24sp</dimen>
     <dimen name="delivery_icon_size">25dp</dimen>
     <dimen name="margin_small">4dp</dimen>
@@ -22,4 +23,20 @@
     <dimen name="textsize_large">16sp</dimen>
     <dimen name="card_elevation">8dp</dimen>
     <dimen name="profile_pic_size">100dp</dimen>
+    <dimen name="textsize_xlarge">20sp</dimen>
+    <dimen name="textsize_xxlarge">24sp</dimen>
+    <dimen name="delivery_summary_margin">32dp</dimen>
+    <dimen name="margin_mlarge">24dp</dimen>
+    <dimen name="padding_small">4dp</dimen>
+    
+    
+    <dimen name="new_hr_vehicle_image_size">100dp</dimen>
+    <dimen name="new_hr_brand_image_size">20dp</dimen>
+    <dimen name="new_hr_edit_button_size">25dp</dimen>
+    <dimen name="additional_info_edittext_height">170dp</dimen>
+    <dimen name="maps_height">300dp</dimen>
+    <dimen name="pickup_name_max_width">150dp</dimen>
+    <dimen name="new_hr_location_button_size">30dp</dimen>
+    <dimen name="retry_button_size">50dp</dimen>
+    <dimen name="button_padding">10dp</dimen>
 </resources>

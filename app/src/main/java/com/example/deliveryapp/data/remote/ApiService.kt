@@ -80,6 +80,19 @@ class ApiService {
         }
     }
 
+    fun cancelDelivery(deliveryId: String, callback: ApiCallback<Boolean>) {
+
+        db.collection(COLLECTION_DELIVERIES).document("${userId!!}/$deliveryId")
+            .update("deliveryStatus",Delivery.STATUS_CANCELLED)
+            .addOnCompleteListener { task ->
+                if(task.isSuccessful){
+                    callback.onSuccess(true)
+                }else{
+                    callback.onFailed(task.exception!!.message!!)
+                }
+            }
+    }
+
     companion object{
 
         const val COLLECTION_USERS = "users"

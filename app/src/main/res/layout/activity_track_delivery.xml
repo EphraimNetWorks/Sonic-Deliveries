@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <data>
+        <variable name="delivery" type="com.example.deliveryapp.data.local.entities.Delivery"/>
+    </data>
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".ui.track_delivery.TrackDeliveryActivity">
+    
+        
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:elevation="@dimen/card_elevation"
+            app:theme="@style/myToolbarButtonStyle" />
+        
+        <RelativeLayout
+            android:id="@+id/delivery_details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            android:elevation="@dimen/card_elevation"
+            android:background="#ECEFF1"
+            android:padding="@dimen/padding_large">
+    
+            <LinearLayout
+                android:id="@+id/item_name_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/item_name"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/textsize_normal"
+                />
+                <TextView
+                    android:id="@+id/item_name_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:text="@{delivery.title}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/textsize_large"
+                />
+            </LinearLayout>
+    
+            <LinearLayout
+                android:id="@+id/item_eta_layout"
+                android:layout_below="@id/item_name_layout"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="ESTIMATED TIME"
+                    android:textSize="@dimen/textsize_normal"
+                />
+                <TextView
+                    android:id="@+id/item_eta_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:text="@{delivery.estimatedTimeOfArrivalDate.dateFormat1}"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/holo_blue_light"
+                    android:textSize="@dimen/textsize_large"
+                />
+            </LinearLayout>
+    
+            <LinearLayout
+                android:id="@+id/item_delivery_id_layout"
+                android:layout_below="@id/item_name_layout"
+                android:layout_toEndOf="@id/item_eta_layout"
+                android:layout_marginStart="@dimen/margin_mlarge"
+                android:layout_width="match_parent"
+                android:layout_alignTop="@id/item_eta_layout"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DELIVERY ID"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/textsize_normal"
+                />
+                <TextView
+                    android:id="@+id/item_delivery_id_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:text="@{delivery.id.toUpperCase()}"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/holo_blue_light"
+                    android:textSize="@dimen/textsize_large"
+                />
+            </LinearLayout>
+        </RelativeLayout>
+        
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/delivery_timeline_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintTop_toBottomOf="@id/delivery_details_layout"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        
+            
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    
+</layout>

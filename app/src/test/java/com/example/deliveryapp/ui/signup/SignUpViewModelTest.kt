@@ -137,4 +137,5 @@ class SignUpViewModelTest {
     fun `set network state on get network state`(){
         assertNotNull(signUpViewModel.getNetworkState().value)
     }
+
 }
