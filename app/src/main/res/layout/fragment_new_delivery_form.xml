@@ -67,6 +67,7 @@
                     android:layout_marginStart="@dimen/margin_normal"
                     android:textSize="@dimen/textsize_large"/>
                 
+                
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/pick_up_point_text_layout"
                     android:layout_width="match_parent"
@@ -89,6 +90,18 @@
                         android:layout_height="wrap_content"/>
                 
                 </com.google.android.material.textfield.TextInputLayout>
+    
+                <ProgressBar
+                    android:id="@+id/pick_up_address_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    android:padding="@dimen/padding_large"
+                    app:layout_constraintTop_toTopOf="@id/pick_up_point_text_layout"
+                    app:layout_constraintBottom_toBottomOf="@id/pick_up_point_text_layout"
+                    app:layout_constraintEnd_toEndOf="@id/pick_up_point_text_layout"/>
                 
                 <ImageView
                     android:id="@+id/pick_up_select_location_from_map"
@@ -150,6 +163,18 @@
                         android:layout_height="wrap_content"/>
                 
                 </com.google.android.material.textfield.TextInputLayout>
+    
+                <ProgressBar
+                    android:id="@+id/destination_address_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    android:padding="@dimen/padding_large"
+                    app:layout_constraintTop_toTopOf="@id/destination_text_layout"
+                    app:layout_constraintBottom_toBottomOf="@id/destination_text_layout"
+                    app:layout_constraintEnd_toEndOf="@id/destination_text_layout"/>
                 
                 <ImageView
                     android:id="@+id/destination_select_location_from_map"

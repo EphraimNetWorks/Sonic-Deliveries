@@ -10,13 +10,23 @@ import androidx.lifecycle.ViewModel
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.DirectionsApi
+import com.google.maps.GeoApiContext
+import com.google.maps.PendingResult
+import com.google.maps.model.DirectionsResult
+import com.google.maps.model.TravelMode
+import org.joda.time.DateTime
+import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
 
 class DeliveryFormViewModel :ViewModel(){
 
 
     var validationMap: MutableLiveData<HashMap<String, Int>> = MutableLiveData()
+
+    var directionsResult:MutableLiveData<DirectionsResult> = MutableLiveData()
 
     var newDeliveryIsValid: LiveData<Boolean> = MutableLiveData()
 
@@ -95,6 +105,29 @@ class DeliveryFormViewModel :ViewModel(){
         map[VAL_MAP_ITEM_NAME] = validationMessage
         validationMap.value = map
 
+    }
+
+    fun getDirections(origin: com.google.maps.model.LatLng, destination: com.google.maps.model.LatLng, apiKey: String) {
+        val geoApiContext = GeoApiContext()
+        geoApiContext.setQueryRateLimit(3)
+            .setApiKey(apiKey)
+            .setConnectTimeout(1, TimeUnit.SECONDS)
+            .setReadTimeout(1, TimeUnit.SECONDS)
+            .setWriteTimeout(1, TimeUnit.SECONDS)
+
+        DirectionsApi.newRequest(geoApiContext)
+            .mode(TravelMode.DRIVING).origin(origin)
+            .destination(destination).departureTime(DateTime())
+            .setCallback(object : PendingResult.Callback<DirectionsResult> {
+                override fun onResult(result: DirectionsResult) {
+                    directionsResult.postValue(result)
+                    Timber.e("Get Directions Result success")
+                }
+
+                override fun onFailure(e: Throwable) {
+                    Timber.e("Get Directions Result failed with error: %s", e.message)
+                }
+            })
     }
 
     companion object{
