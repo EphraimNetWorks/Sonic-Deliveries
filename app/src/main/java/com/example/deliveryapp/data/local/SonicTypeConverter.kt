@@ -3,8 +3,8 @@ package com.example.deliveryapp.data.local
 
 import androidx.room.TypeConverter
 import com.example.deliveryapp.data.local.models.MyDate
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
-import com.google.type.LatLng
 
 class SonicTypeConverter {
 

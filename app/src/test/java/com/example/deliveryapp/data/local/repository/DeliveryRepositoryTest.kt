@@ -32,25 +32,25 @@ class DeliveryRepositoryTest {
     @Captor
     lateinit var callbackCaptor: ArgumentCaptor<ApiCallback<List<Delivery>>>
 
-    lateinit var deliveryRepository: DeliveryRepository
+    private lateinit var deliveryRepository: DeliveryRepository
 
     private val testDispatcherProvider = DispatcherProvider(Dispatchers.Unconfined,Dispatchers.Unconfined)
 
     private val list = listOf(
         Delivery().apply {
             title = "1"
-            origin = "Accra"
-            destination = "Tema"
-            deliveryStatus = Delivery.STATUS_PENDING
+            pickUpAddress = "Accra"
+            destinationAddress = "Tema"
+            deliveryStatus = Delivery.STATUS_IN_TRANSIT
         }, Delivery().apply {
             title = "2"
-            origin = "Kumasi"
-            destination = "Tema"
+            pickUpAddress = "Kumasi"
+            destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_COMPLETED
         }, Delivery().apply {
             title = "3"
-            origin = "Accra"
-            destination = "Tema"
+            pickUpAddress = "Accra"
+            destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_COMPLETED
         }
     )
@@ -64,9 +64,9 @@ class DeliveryRepositoryTest {
     }
 
     @Test
-    fun `set network state to loading on get my deliveries`(){
+    fun `set network state to loading on get placed deliveries`(){
 
-        deliveryRepository.getMyDeliveries()
+        deliveryRepository.getDeliveriesPlaced()
 
         assertEquals(
             deliveryRepository.getNetworkState().value!!.status,
@@ -76,8 +76,32 @@ class DeliveryRepositoryTest {
     }
 
     @Test
-    fun `process getmydeliveries result when positive callback called`(){
-        deliveryRepository.getMyDeliveries(testDispatcherProvider)
+    fun `set network state to loading on get in transit deliveries`(){
+
+        deliveryRepository.getDeliveriesInTransit()
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.RUNNING
+        )
+
+    }
+
+    @Test
+    fun `set network state to loading on get completed deliveries`(){
+
+        deliveryRepository.getCompletedDeliveries()
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.RUNNING
+        )
+
+    }
+
+    @Test
+    fun `process getPlaceddeliveries result when positive callback called`(){
+        deliveryRepository.getDeliveriesPlaced(testDispatcherProvider)
 
         verify(apiService).loadMyDeliveries(capture(callbackCaptor))
 
@@ -92,9 +116,75 @@ class DeliveryRepositoryTest {
     }
 
     @Test
-    fun `process getmydeliveries result when negative callback called`(){
+    fun `process getPlaceddeliveries result when negative callback called`(){
         val errorMessage = " This is an error"
-        deliveryRepository.getMyDeliveries(testDispatcherProvider)
+        deliveryRepository.getDeliveriesPlaced(testDispatcherProvider)
+
+        verify(apiService).loadMyDeliveries(capture(callbackCaptor))
+
+        val callback = callbackCaptor.value
+
+        callback.onFailed(errorMessage)
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.message,
+            errorMessage
+        )
+    }
+
+    @Test
+    fun `process getInTransitdeliveries result when positive callback called`(){
+        deliveryRepository.getDeliveriesInTransit(testDispatcherProvider)
+
+        verify(apiService).loadMyDeliveries(capture(callbackCaptor))
+
+        val callback = callbackCaptor.value
+
+        callback.onSuccess(list)
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.SUCCESS
+        )
+    }
+
+    @Test
+    fun `process getInTransitdeliveries result when negative callback called`(){
+        val errorMessage = " This is an error"
+        deliveryRepository.getDeliveriesInTransit(testDispatcherProvider)
+
+        verify(apiService).loadMyDeliveries(capture(callbackCaptor))
+
+        val callback = callbackCaptor.value
+
+        callback.onFailed(errorMessage)
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.message,
+            errorMessage
+        )
+    }
+
+    @Test
+    fun `process getCompleteddeliveries result when positive callback called`(){
+        deliveryRepository.getCompletedDeliveries(testDispatcherProvider)
+
+        verify(apiService).loadMyDeliveries(capture(callbackCaptor))
+
+        val callback = callbackCaptor.value
+
+        callback.onSuccess(list)
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.SUCCESS
+        )
+    }
+
+    @Test
+    fun `process getCompleteddeliveries result when negative callback called`(){
+        val errorMessage = " This is an error"
+        deliveryRepository.getCompletedDeliveries(testDispatcherProvider)
 
         verify(apiService).loadMyDeliveries(capture(callbackCaptor))
 

@@ -7,6 +7,7 @@ import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.test.espresso.idling.CountingIdlingResource
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivitySignUpBinding
@@ -31,10 +32,11 @@ class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this,R.layout.activity_sign_up)
+
         AndroidInjection.inject(this)
         viewModel = ViewModelProviders.of(this,viewModelFactory).get(SignUpViewModel::class.java)
 
-        binding.loginButton.setOnClickListener {
+        binding.signupButton.setOnClickListener {
             val name = binding.signupNameEditext.text.toString()
             val phone = binding.signupPhoneEditext.text.toString()
             val email = binding.signupEmailEditext.text.toString()
@@ -48,6 +50,7 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun validateAndSignUpUser(name:String, phone:String, email:String, password:String, confirmPassword: String){
 
+        idlingResource?.increment()
         viewModel.validateSignUpDetails(name, phone, email, password, confirmPassword)
 
         viewModel.validationMap.observe(this, Observer { valMap-> processValidationMap(valMap)})
@@ -62,9 +65,11 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun handleNetworkState(networkState: NetworkState) {
         if(networkState.status == Status.SUCCESS){
+            idlingResource?.decrement()
             goToNextActivity()
         }else if(networkState.status == Status.FAILED){
-            binding.loginButton.visibility = View.VISIBLE
+            idlingResource?.decrement()
+            binding.signupButton.visibility = View.VISIBLE
         }
     }
 
@@ -75,6 +80,7 @@ class SignUpActivity : AppCompatActivity() {
     fun processValidationMap(valMap: WeakHashMap<String, Int>){
         resetTextInputLayoutErrors()
 
+        idlingResource?.decrement()
         if(valMap[SignUpViewModel.VAL_MAP_NAME_KEY]!= SignUpViewModel.VAL_VALID){
 
             binding.signupNameTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_NAME_KEY]!!)
@@ -97,7 +103,8 @@ class SignUpActivity : AppCompatActivity() {
 
         }else{
 
-            binding.loginButton.visibility = View.GONE
+            binding.signupButton.visibility = View.GONE
+            idlingResource?.increment()
             viewModel.signUpUser(binding.signupNameEditext.text.toString(),
                 binding.signupPhoneEditext.text.toString(),
                 binding.signupEmailEditext.text.toString(),
@@ -120,4 +127,7 @@ class SignUpActivity : AppCompatActivity() {
         viewModel.getNetworkState().removeObservers(this)
         super.onDestroy()
     }
+
+    //idling resource for expresso tests
+    var idlingResource: CountingIdlingResource? = null
 }

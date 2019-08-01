@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.test.espresso.idling.CountingIdlingResource
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivityLoginBinding
@@ -47,6 +48,7 @@ class LoginActivity : AppCompatActivity(){
 
     fun validateAndLoginUser(view: View){
 
+        idlingResource?.increment()
         viewModel.validateLoginDetails(binding.loginEmailEditext.text.toString(),
             binding.loginEmailEditext.text.toString())
 
@@ -61,8 +63,10 @@ class LoginActivity : AppCompatActivity(){
 
     private fun handleNetworkState(networkState: NetworkState) {
         if(networkState.status == Status.SUCCESS){
+            idlingResource?.decrement()
             goToNextActivity()
         }else if(networkState.status == Status.FAILED){
+            idlingResource?.decrement()
             binding.loginButton.visibility = View.VISIBLE
         }
     }
@@ -75,6 +79,7 @@ class LoginActivity : AppCompatActivity(){
     private fun processValidationMap(valMap: WeakHashMap<String,String>, email:String, password:String){
         resetTextInputErrors()
 
+        idlingResource?.decrement()
         when {
             valMap[LoginViewModel.VAL_MAP_EMAIL_KEY]!= LoginViewModel.VAL_VALID -> {
                 val errorMessage = when(valMap[LoginViewModel.VAL_MAP_EMAIL_KEY]){
@@ -95,6 +100,8 @@ class LoginActivity : AppCompatActivity(){
 
             }
             else -> {
+
+                idlingResource?.increment()
                 binding.loginButton.visibility = View.GONE
                 Timber.e("email: $email, password:$password")
                 viewModel.loginUser(email,password)}
@@ -121,4 +128,7 @@ class LoginActivity : AppCompatActivity(){
         viewModel.getNetworkState().removeObservers(this)
         super.onDestroy()
     }
+
+    // idling resource for espresso tests
+    var idlingResource: CountingIdlingResource? = null
 }

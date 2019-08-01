@@ -46,7 +46,7 @@ class NewDeliveryActivity : AppCompatActivity() {
         }
         binding = DataBindingUtil.setContentView(this,R.layout.activity_new_order)
 
-        viewModel = ViewModelProviders.of(this).get(NewDeliveryViewModel::class.java)
+        viewModel = ViewModelProviders.of(this,viewModelFactory).get(NewDeliveryViewModel::class.java)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 

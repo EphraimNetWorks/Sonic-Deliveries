@@ -36,22 +36,57 @@ class MainViewModelTest{
 
     private lateinit var mainViewModel: MainViewModel
 
-    private val deliveries = MutableLiveData<List<Delivery>>()
-    private val list = listOf(
+    private val inTransitList = listOf(
         Delivery().apply {
             title = "1"
-            origin = "Accra"
-            destination = "Tema"
-            deliveryStatus = Delivery.STATUS_PENDING
+            pickUpAddress = "Accra"
+            destinationAddress = "Tema"
+            deliveryStatus = Delivery.STATUS_IN_TRANSIT
         },Delivery().apply {
             title = "2"
-            origin = "Kumasi"
-            destination = "Tema"
+            pickUpAddress = "Kumasi"
+            destinationAddress = "Tema"
+            deliveryStatus = Delivery.STATUS_IN_TRANSIT
+        },Delivery().apply {
+            title = "3"
+            pickUpAddress = "Accra"
+            destinationAddress = "Tema"
+            deliveryStatus = Delivery.STATUS_IN_TRANSIT
+        }
+    )
+    private val placedList = listOf(
+        Delivery().apply {
+            title = "1"
+            pickUpAddress = "Accra"
+            destinationAddress = "Tema"
+            deliveryStatus = Delivery.STATUS_PLACED
+        },Delivery().apply {
+            title = "2"
+            pickUpAddress = "Kumasi"
+            destinationAddress = "Tema"
+            deliveryStatus = Delivery.STATUS_PLACED
+        },Delivery().apply {
+            title = "3"
+            pickUpAddress = "Accra"
+            destinationAddress = "Tema"
+            deliveryStatus = Delivery.STATUS_PLACED
+        }
+    )
+    private val completedList = listOf(
+        Delivery().apply {
+            title = "1"
+            pickUpAddress = "Accra"
+            destinationAddress = "Tema"
+            deliveryStatus = Delivery.STATUS_CANCELLED
+        },Delivery().apply {
+            title = "2"
+            pickUpAddress = "Kumasi"
+            destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_COMPLETED
         },Delivery().apply {
             title = "3"
-            origin = "Accra"
-            destination = "Tema"
+            pickUpAddress = "Accra"
+            destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_COMPLETED
         }
     )
@@ -74,16 +109,11 @@ class MainViewModelTest{
         MockKAnnotations.init(this)
 
         coEvery { userRepository.getCurrentUser() }.returns (user)
-        deliveries.postValue(list)
 
         runBlocking {
             mainViewModel = MainViewModel(deliveryRepository, userRepository, testProvider)
         }
 
-        //mock paged list
-        val dummyLD = MutableLiveData<PagedList<Delivery>>()
-        dummyLD.postValue(mockPagedList(list))
-        mainViewModel.myDeliveries = dummyLD
     }
 
     fun <T> mockPagedList(list: List<T>): PagedList<T> {
@@ -105,12 +135,45 @@ class MainViewModelTest{
     }
 
     @Test
-    fun `validate set deliveries`(){
+    fun `validate set placed deliveries`(){
 
-        assertNotNull(mainViewModel.myDeliveries)
-        assertEquals("1", mainViewModel.myDeliveries!!.value?.get(0)!!.title)
-        assertEquals("2", mainViewModel.myDeliveries!!.value?.get(1)!!.title)
-        assertEquals("3", mainViewModel.myDeliveries!!.value?.get(2)!!.title)
+        //mock paged list
+        val dummyLD = MutableLiveData<PagedList<Delivery>>()
+        dummyLD.postValue(mockPagedList(placedList))
+        mainViewModel.deliveriesPlaced = dummyLD
+
+        assertNotNull(mainViewModel.deliveriesPlaced)
+        assertEquals("1", mainViewModel.deliveriesPlaced!!.value?.get(0)!!.title)
+        assertEquals("2", mainViewModel.deliveriesPlaced!!.value?.get(1)!!.title)
+        assertEquals("3", mainViewModel.deliveriesPlaced!!.value?.get(2)!!.title)
+    }
+
+    @Test
+    fun `validate set in transit deliveries`(){
+
+        //mock paged list
+        val dummyLD = MutableLiveData<PagedList<Delivery>>()
+        dummyLD.postValue(mockPagedList(inTransitList))
+        mainViewModel.deliveriesInTransit = dummyLD
+
+        assertNotNull(mainViewModel.deliveriesInTransit)
+        assertEquals("4", mainViewModel.deliveriesInTransit!!.value?.get(0)!!.title)
+        assertEquals("5", mainViewModel.deliveriesInTransit!!.value?.get(1)!!.title)
+        assertEquals("6", mainViewModel.deliveriesInTransit!!.value?.get(2)!!.title)
+    }
+
+    @Test
+    fun `validate set completed deliveries`(){
+
+        //mock paged list
+        val dummyLD = MutableLiveData<PagedList<Delivery>>()
+        dummyLD.postValue(mockPagedList(completedList))
+        mainViewModel.completedDeliveries = dummyLD
+
+        assertNotNull(mainViewModel.completedDeliveries)
+        assertEquals("7", mainViewModel.completedDeliveries!!.value?.get(0)!!.title)
+        assertEquals("8", mainViewModel.completedDeliveries!!.value?.get(1)!!.title)
+        assertEquals("9", mainViewModel.completedDeliveries!!.value?.get(2)!!.title)
     }
 
     @Test
