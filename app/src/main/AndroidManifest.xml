@@ -33,11 +33,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>
-        
-        <activity
-            android:name=".ui.track_delivery.MapsActivity"
-            android:label="@string/title_activity_maps">
-        </activity>
+
         <activity android:name=".ui.track_delivery.TrackDeliveryActivity">
         </activity>
         <activity android:name=".ui.signup.SignUpActivity">

@@ -18,7 +18,7 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.example.deliveryapp.AndroidTestRunner"
     }
     buildTypes {
         release {
@@ -54,13 +54,23 @@ dependencies {
     testImplementation 'org.powermock:powermock-module-junit4:2.0.2'
     testImplementation 'org.powermock:powermock-api-mockito2:2.0.2'
     testImplementation "io.mockk:mockk:1.9"
+    kaptTest 'com.google.dagger:dagger-compiler:2.21'
 
     //Android Test Dependencies
+    androidTestImplementation 'org.mockito:mockito-android:3.0.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
+    androidTestImplementation 'com.github.tmurakami:dexopener:2.0.2'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'com.github.fabioCollini.daggermock:daggermock:0.8.5'
+    androidTestImplementation 'com.github.fabioCollini.daggermock:daggermock-kotlin:0.8.5'
+    androidTestAnnotationProcessor 'com.google.dagger:dagger-compiler:2.21'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.0'
+    kaptAndroidTest 'com.google.dagger:dagger-compiler:2.21'
+    androidTestImplementation 'com.github.tmurakami:dexopener:2.0.2'
 
     implementation 'com.azoft.carousellayoutmanager:carousel:1.2.4'
 
@@ -179,4 +189,8 @@ dependencies {
     implementation 'com.github.vipulasri:timelineview:1.1.0'
 
     implementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
+
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'org.slf4j:slf4j-log4j12:1.7.25'
+
 }

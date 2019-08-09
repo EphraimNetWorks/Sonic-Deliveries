@@ -50,16 +50,9 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun validateAndSignUpUser(name:String, phone:String, email:String, password:String, confirmPassword: String){
 
-        idlingResource?.increment()
-        viewModel.validateSignUpDetails(name, phone, email, password, confirmPassword)
+        val valMap = viewModel.validateSignUpDetails(name, phone, email, password, confirmPassword)
 
-        viewModel.validationMap.observe(this, Observer { valMap-> processValidationMap(valMap)})
-
-        viewModel.getNetworkState().observe(this, Observer { networkState->
-            binding.networkState = networkState
-            handleNetworkState(networkState)
-            goToNextActivity()
-        })
+        processValidationMap(valMap)
 
     }
 
@@ -77,10 +70,9 @@ class SignUpActivity : AppCompatActivity() {
         startActivity(Intent(this, MainActivity::class.java))
     }
 
-    fun processValidationMap(valMap: WeakHashMap<String, Int>){
+    fun processValidationMap(valMap: HashMap<String, Int>){
         resetTextInputLayoutErrors()
 
-        idlingResource?.decrement()
         if(valMap[SignUpViewModel.VAL_MAP_NAME_KEY]!= SignUpViewModel.VAL_VALID){
 
             binding.signupNameTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_NAME_KEY]!!)
@@ -104,11 +96,16 @@ class SignUpActivity : AppCompatActivity() {
         }else{
 
             binding.signupButton.visibility = View.GONE
-            idlingResource?.increment()
             viewModel.signUpUser(binding.signupNameEditext.text.toString(),
                 binding.signupPhoneEditext.text.toString(),
                 binding.signupEmailEditext.text.toString(),
                 binding.signupPasswordEditext.text.toString())
+
+            idlingResource?.increment()
+            viewModel.getNetworkState().observe(this, Observer { networkState->
+                binding.networkState = networkState
+                handleNetworkState(networkState)
+            })
         }
     }
 
@@ -123,7 +120,7 @@ class SignUpActivity : AppCompatActivity() {
 
 
     override fun onDestroy() {
-        viewModel.validationMap.removeObservers(this)
+
         viewModel.getNetworkState().removeObservers(this)
         super.onDestroy()
     }

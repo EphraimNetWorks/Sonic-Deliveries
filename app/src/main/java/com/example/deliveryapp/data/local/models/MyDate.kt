@@ -1,8 +1,10 @@
 package com.example.deliveryapp.data.local.models
 
-class MyDate(var timeStamp:Long) {
+import java.io.Serializable
+
+class MyDate(var timeStamp:Long) : Serializable{
     // format 1 = Wednesday Jan 12,2039
     fun getDateFormat1():String{
-        return ""
+        return "Tuesday January 1,2019"
     }
 }

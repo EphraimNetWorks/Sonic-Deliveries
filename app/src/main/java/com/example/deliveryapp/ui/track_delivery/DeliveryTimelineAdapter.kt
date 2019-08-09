@@ -51,15 +51,15 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
         fun bindTimelineEvent(position: Int){
 
             when(position){
-                Delivery.STATUS_PLACED-> {
+                0-> {
                     binding.deliveryStatusText.text = itemView.context.getString(R.string.delivery_order_placed)
                     binding.deliveryStatusIcon.setImageResource(R.drawable.ic_check)
                 }
-                Delivery.STATUS_IN_TRANSIT-> {
+                1-> {
                     binding.deliveryStatusText.text = itemView.context.getString(R.string.package_in_transit)
                     binding.deliveryStatusIcon.setImageResource(R.drawable.ic_check)
                 }
-                3-> {
+                2-> {
                     if(delivery.deliveryStatus == Delivery.STATUS_CANCELLED){
                         binding.deliveryStatusText.text = itemView.context.getString(R.string.delivery_cancelled)
                         binding.deliveryStatusIcon.setImageResource(R.drawable.ic_check)
@@ -81,10 +81,12 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
                 binding.timeline.setEndLineColor(color,viewType)
                 binding.timeline.setStartLineColor(color,viewType)
             }
+
+            binding.executePendingBindings()
         }
 
         private fun setMarker(drawableResId: Int, colorFilter: Int) {
-            binding.timeline.marker = VectorDrawableUtils.getDrawable(itemView.context, drawableResId, ContextCompat.getColor(itemView.context, colorFilter))
+            binding.timeline.marker = VectorDrawableUtils.getDrawable(itemView.context, drawableResId, colorFilter)
         }
 
 

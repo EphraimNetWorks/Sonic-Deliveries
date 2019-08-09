@@ -12,6 +12,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/margin_normal"
             app:markerSize="20dp"
+            android:visibility="gone"
             app:lineWidth="2dp"
             app:startLineColor="@color/blue"
             app:endLineColor="@color/blue"/>

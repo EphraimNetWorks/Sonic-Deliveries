@@ -5,6 +5,7 @@ import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.ui.main.MainActivity
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
 import com.example.deliveryapp.ui.signup.SignUpActivity
+import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -23,5 +24,8 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector
     internal abstract fun bindNewDeliveryActivity(): NewDeliveryActivity
+
+    @ContributesAndroidInjector
+    internal abstract fun bindTrackDeliveryActivity(): TrackDeliveryActivity
 
 }

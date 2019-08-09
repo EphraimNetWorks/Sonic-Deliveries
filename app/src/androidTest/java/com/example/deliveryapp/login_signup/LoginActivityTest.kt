@@ -1,6 +1,10 @@
 package com.example.deliveryapp.login_signup
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
@@ -13,28 +17,45 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
-import com.example.deliveryapp.R
+import com.example.deliveryapp.*
+import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.utils.CustomMatchers
 import com.example.deliveryapp.utils.DataBindingIdlingResourceRule
+import com.example.deliveryapp.utils.DispatcherProvider
+import com.example.deliveryapp.utils.ViewModelFactory
+import com.example.deliveryapp.di.TestAppInjector
+import com.example.deliveryapp.di.TestMainModule
+import dagger.android.AndroidInjection.inject
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.DispatchingAndroidInjector_Factory
+import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
+import javax.inject.Provider
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class LoginActivityTest {
     @get:Rule
-    var activityRule: ActivityTestRule<LoginActivity>
-            = ActivityTestRule(LoginActivity::class.java)
+    val activityRule
+            = ActivityTestRule<LoginActivity>(LoginActivity::class.java,false,false)
 
     @Rule
     @JvmField
     val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityRule)
+
+    @Mock
+    private lateinit var userRepo: UserRepository
 
     private lateinit var testEmail:String
     private lateinit var testPassword:String
@@ -42,14 +63,25 @@ class LoginActivityTest {
 
     private lateinit var observerIdlingResource:CountingIdlingResource
 
+    private val testProvider = DispatcherProvider(
+        IO = Dispatchers.Unconfined,
+        Main = Dispatchers.Unconfined
+    )
+
     @Before
     fun setUp(){
-        activityRule.launchActivity(null)
+        MockitoAnnotations.initMocks(this)
+
+        TestAppInjector(TestMainModule(userRepo)).inject()
+
         observerIdlingResource = CountingIdlingResource("Sign Up Observer")
         IdlingRegistry.getInstance().register(observerIdlingResource)
+
+        testContext = getInstrumentation().targetContext
+
+        activityRule.launchActivity(Intent(testContext,LoginActivity::class.java))
         activityRule.activity.idlingResource = observerIdlingResource
 
-        testContext = getInstrumentation().context
     }
 
     @Test
@@ -60,7 +92,7 @@ class LoginActivityTest {
             .perform(click())
 
         onView(withId(R.id.login_email_text_layout))
-            .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_phone_error_message))))
+            .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_email_field_error))))
 
         onView(withId(R.id.login_email_editext))
             .perform(typeText(""), closeSoftKeyboard())
@@ -69,7 +101,7 @@ class LoginActivityTest {
             .perform(click())
 
         onView(withId(R.id.login_email_text_layout))
-            .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_phone_error_message))))
+            .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_email_field_error))))
 
         testEmail = "1"
 
@@ -80,7 +112,7 @@ class LoginActivityTest {
             .perform(click())
 
         onView(withId(R.id.login_email_text_layout))
-            .check(matches(CustomMatchers.withError(testContext.getString(R.string.invalid_phone_error_message))))
+            .check(matches(CustomMatchers.withError(testContext.getString(R.string.invalid_email_error_message))))
 
     }
 
@@ -156,7 +188,6 @@ class LoginActivityTest {
             toPackage(MAIN_PACKAGE_NAME)))
 
     }
-
 
 
     companion object{

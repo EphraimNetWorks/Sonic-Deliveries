@@ -1,9 +1,11 @@
 package com.example.deliveryapp.ui.login
 
 import android.util.Patterns
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
@@ -14,6 +16,7 @@ import timber.log.Timber
 import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 
 class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
@@ -21,20 +24,23 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
 ) :ViewModel(){
 
     private lateinit var networkState:LiveData<NetworkState>
-    var validationMap: MutableLiveData<WeakHashMap<String,String>> = MutableLiveData()
+    var validationMap: HashMap<String,Int> = HashMap()
     var currentUser :User? = null
     private val viewModelJob  = Job()
 
+    var EMAIL_ADDRESS_PATTERN:Pattern? = null
+
     init {
+        EMAIL_ADDRESS_PATTERN = Patterns.EMAIL_ADDRESS
+
         initializeCurrentUser()
         initializeValidationMap()
     }
 
     private fun initializeValidationMap(){
-        val initialMap = WeakHashMap<String,String>()
-        initialMap[VAL_MAP_EMAIL_KEY] = ""
-        initialMap[VAL_MAP_PASSWORD_KEY] = ""
-        validationMap.value = initialMap
+        validationMap = hashMapOf(Pair(VAL_MAP_EMAIL_KEY, VAL_DEFAULT),
+            Pair(VAL_MAP_PASSWORD_KEY, VAL_DEFAULT))
+
     }
 
     private fun initializeCurrentUser() = runBlocking{
@@ -42,21 +48,22 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
         Timber.e(Gson().toJson(currentUser))
     }
 
-    fun validateLoginDetails(email:String, password:String){
+    fun validateLoginDetails(email:String, password:String):HashMap<String,Int>{
         validateEmail(email)
         validatePassword(password)
+
+        return  validationMap
     }
 
-    fun validateEmail(email:String, emailPattern:Pattern = Patterns.EMAIL_ADDRESS){
+    fun validateEmail(email:String){
         var validationMessage = VAL_VALID
         if(email.isEmpty()){
             validationMessage = EMPTY_EMAIL_ADDRESS
-        }else if(!emailPattern.matcher(email).matches()){
+        }else if(!EMAIL_ADDRESS_PATTERN!!.matcher(email).matches()){
             validationMessage = INVALID_EMAIL_ADDRESS
         }
-        val map = validationMap.value!!
-        map[VAL_MAP_EMAIL_KEY] = validationMessage
-        validationMap.value = map
+
+        validationMap[VAL_MAP_EMAIL_KEY] = validationMessage
 
     }
 
@@ -67,9 +74,9 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
         }else if(password.length<6){
             validationMessage = INVALID_PASSWORD
         }
-        val map = validationMap.value!!
-        map[VAL_MAP_PASSWORD_KEY] = validationMessage
-        validationMap.value = map
+
+        validationMap[VAL_MAP_PASSWORD_KEY] = validationMessage
+
     }
 
     fun loginUser(email: String, password: String){
@@ -87,11 +94,20 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
     }
 
     companion object{
-        const val INVALID_EMAIL_ADDRESS = "Invalid Email"
-        const val EMPTY_EMAIL_ADDRESS = "Empty Email"
-        const val INVALID_PASSWORD = "Invalid password"
-        const val EMPTY_PASSWORD = "Empty password"
-        const val VAL_VALID = "valid"
+
+
+        @StringRes
+        const val INVALID_EMAIL_ADDRESS = R.string.invalid_email_error_message
+        @StringRes
+        const val EMPTY_EMAIL_ADDRESS = R.string.empty_email_field_error
+        @StringRes
+        const val INVALID_PASSWORD = R.string.invalid_password
+        @StringRes
+        const val EMPTY_PASSWORD = R.string.empty_password_field_error_message
+
+
+        const val VAL_VALID = 1
+        const val VAL_DEFAULT = 0
 
         const val VAL_MAP_EMAIL_KEY = "email"
         const val VAL_MAP_PASSWORD_KEY = "password"

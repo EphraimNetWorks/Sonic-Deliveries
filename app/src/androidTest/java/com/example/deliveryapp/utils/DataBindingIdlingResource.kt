@@ -1,6 +1,8 @@
 package com.example.deliveryapp.utils
 
+import android.app.Activity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentActivity
@@ -23,7 +25,10 @@ class DataBindingIdlingResource(
     override fun getName() = "DataBinding $id"
 
     override fun isIdleNow(): Boolean {
-        val idle = !getBindings().any { it.hasPendingBindings() }
+        val idle = if(getActivityBinding()==null) true else !(getActivityBinding()!!.hasPendingBindings())
+
+        if(idle) !getFragmentBindings().any { it.hasPendingBindings() }
+
         @Suppress("LiftReturnOrAssignment")
         if (idle) {
             if (wasNotIdle) {
@@ -48,7 +53,7 @@ class DataBindingIdlingResource(
     /**
      * Find all binding classes in all currently available fragments.
      */
-    private fun getBindings(): List<ViewDataBinding> {
+    private fun getFragmentBindings(): List<ViewDataBinding> {
         return (activityTestRule.activity as? FragmentActivity)
             ?.supportFragmentManager
             ?.fragments
@@ -59,5 +64,12 @@ class DataBindingIdlingResource(
                     )
                 }
             } ?: emptyList()
+    }
+
+    private fun getActivityBinding(): ViewDataBinding? {
+        return (activityTestRule.activity).currentFocus?.let { view ->
+            DataBindingUtil.getBinding(view)
+        }
+
     }
 }

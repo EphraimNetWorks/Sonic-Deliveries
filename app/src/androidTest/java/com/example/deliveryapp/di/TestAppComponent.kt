@@ -1,27 +1,23 @@
 package com.example.deliveryapp.di
 
 import android.app.Application
-import com.example.deliveryapp.Sonic
-
-
-import javax.inject.Singleton
-
-import dagger.BindsInstance
-import dagger.Component
-import dagger.android.support.AndroidSupportInjectionModule
-import io.acsint.heritageGhana.MtnHeritageGhanaApp.di.modules.ActivityBuilder
+import com.example.deliveryapp.AndroidTestApplication
 import com.example.deliveryapp.di.modules.MainModule
 import com.example.deliveryapp.di.modules.RoomModule
+import dagger.BindsInstance
+import dagger.Component
+import dagger.android.AndroidInjectionModule
+import dagger.android.support.AndroidSupportInjectionModule
+import io.acsint.heritageGhana.MtnHeritageGhanaApp.di.modules.ActivityBuilder
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.di.modules.ViewModelModule
+import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AndroidSupportInjectionModule::class,
-    RoomModule::class,
+@Component(modules = [AndroidSupportInjectionModule::class,ActivityBuilder::class,
+        RoomModule::class,
     ViewModelModule::class,
-    ActivityBuilder::class,
-    MainModule::class
-])
-interface AppComponent {
+    ActivityBuilder::class, MainModule::class])
+interface TestAppComponent : AppComponent{
 
     @Component.Builder
     interface Builder {
@@ -34,9 +30,8 @@ interface AppComponent {
         @BindsInstance
         fun mainModule(mainModule: MainModule): Builder
 
-        fun build(): AppComponent
+        fun build(): TestAppComponent
     }
 
-    fun inject(sonic: Sonic)
+    fun inject(testRunner: AndroidTestApplication)
 }
-

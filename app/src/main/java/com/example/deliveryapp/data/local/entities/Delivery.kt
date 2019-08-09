@@ -22,10 +22,12 @@ class Delivery : Serializable{
 
     var pickUpAddress: String? = null
 
+    @Transient
     var pickUpLocation: LatLng? = null
 
     var destinationAddress: String?= null
 
+    @Transient
     var destinationLocation: LatLng? = null
 
     var deliveryStatus: Int = STATUS_PLACED

@@ -20,7 +20,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class DeliveryRepository @Inject constructor(private val apiService:ApiService, private val deliveryDao: DeliveryDao){
+open class DeliveryRepository @Inject constructor(private val apiService:ApiService, private val deliveryDao: DeliveryDao){
 
     private var retryCompletable: Completable? = null
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -33,7 +33,7 @@ class DeliveryRepository @Inject constructor(private val apiService:ApiService, 
         scope.launch {
             loadMyDeliveries()
         }
-        return deliveryDao.getDeliveriesPlaced()
+        return deliveryDao.getDeliveriesPlaced()!!
     }
 
     fun getDeliveriesInTransit(dispatcherProvider: DispatcherProvider = DispatcherProvider()): DataSource.Factory<Int,Delivery>{
@@ -43,7 +43,7 @@ class DeliveryRepository @Inject constructor(private val apiService:ApiService, 
         scope.launch {
             loadMyDeliveries()
         }
-        return deliveryDao.getDeliveriesInTransit()
+        return deliveryDao.getDeliveriesInTransit()!!
     }
 
     fun getCompletedDeliveries(dispatcherProvider: DispatcherProvider = DispatcherProvider()): DataSource.Factory<Int,Delivery>{
@@ -53,7 +53,7 @@ class DeliveryRepository @Inject constructor(private val apiService:ApiService, 
         scope.launch {
             loadMyDeliveries()
         }
-        return deliveryDao.getCompletedDeliveries()
+        return deliveryDao.getCompletedDeliveries()!!
     }
 
     private fun loadMyDeliveries(){

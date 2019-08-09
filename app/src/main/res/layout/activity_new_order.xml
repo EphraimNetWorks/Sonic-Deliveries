@@ -82,8 +82,9 @@
             android:textSize="@dimen/textsize_large" />
     
         <include
+            android:id="@+id/loading_layout"
             layout="@layout/loading_screen"
-            bind:networkStatus="@{viewModel.networkState}"
+            app:networkState="@{viewModel.networkState}"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

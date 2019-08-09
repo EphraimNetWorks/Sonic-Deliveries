@@ -80,7 +80,7 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
             val binding = genericBinding as AdapterDeliveryInTransitBinding
             binding.deliveryItemName.text = delivery.title
 
-            val originString = "${itemView.context.getString(R.string.delivering_package_from)} ${delivery.origin}"
+            val originString = "${itemView.context.getString(R.string.delivering_package_from)} ${delivery.pickUpAddress}"
             binding.deliveryOrigin.text = originString
 
             binding.deliveryEta.text = "${delivery.estimatedTimeOfArrival}"
@@ -94,7 +94,7 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
             val binding = genericBinding as AdapterDeliveryPlacedBinding
             binding.deliveryItemName.text = delivery.title
 
-            val originString = "${itemView.context.getString(R.string.delivering_package_from)} ${delivery.origin}"
+            val originString = "${itemView.context.getString(R.string.delivering_package_from)} ${delivery.pickUpAddress}"
             binding.deliveryOrigin.text = originString
 
             binding.pickUpDate.text = "${delivery.pickUpTime}"
@@ -108,7 +108,7 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
             val binding = genericBinding as AdapterCompletedBinding
             binding.deliveryItemName.text = delivery.title
 
-            val originString = "${itemView.context.getString(R.string.delivering_package_from)} ${delivery.origin}"
+            val originString = "${itemView.context.getString(R.string.delivering_package_from)} ${delivery.pickUpAddress}"
             binding.deliveryOrigin.text = originString
 
             val dateDeliveredString = "${itemView.context.getString(R.string.delivered_on)} ${delivery.estimatedTimeOfArrival}"
@@ -129,7 +129,7 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
             val binding = genericBinding as AdapterCompletedBinding
             binding.deliveryItemName.text = delivery.title
 
-            val originString = "${itemView.context.getString(R.string.delivering_package_from)} ${delivery.origin}"
+            val originString = "${itemView.context.getString(R.string.delivering_package_from)} ${delivery.pickUpAddress}"
             binding.deliveryOrigin.text = originString
 
             val dateDeliveredString = "${itemView.context.getString(R.string.delivered_on)} ${delivery.estimatedTimeOfArrival}"

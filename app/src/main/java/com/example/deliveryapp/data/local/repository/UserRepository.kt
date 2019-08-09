@@ -14,10 +14,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class UserRepository(private val apiService:ApiService, private val userDao: UserDao){
+open class UserRepository(private val apiService:ApiService, private val userDao: UserDao){
 
     private var networkState:MutableLiveData<NetworkState> = MutableLiveData()
-    private var currentUser:User? = null
 
     fun getNetworkState():LiveData<NetworkState>{
         return networkState

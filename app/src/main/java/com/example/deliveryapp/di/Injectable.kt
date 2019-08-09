@@ -1,3 +1,3 @@
-package io.acsint.heritageGhana.MtnHeritageGhanaApp.di
+package com.example.deliveryapp.di
 
 interface Injectable

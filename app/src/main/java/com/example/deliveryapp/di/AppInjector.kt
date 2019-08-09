@@ -13,16 +13,14 @@ import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import com.example.deliveryapp.di.modules.MainModule
 import com.example.deliveryapp.di.modules.RoomModule
-import io.acsint.heritageGhana.MtnHeritageGhanaApp.di.DaggerAppComponent
-import io.acsint.heritageGhana.MtnHeritageGhanaApp.di.Injectable
 
 object AppInjector {
 
     fun init(sonic: Sonic) {
+
         DaggerAppComponent.builder().application(sonic)
-                .roomModule(RoomModule())
-                .mainModule(MainModule())
-                .build().inject(sonic)
+            .roomModule(RoomModule())
+            .mainModule(MainModule()).build().inject(sonic)
 
         sonic
                 .registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {

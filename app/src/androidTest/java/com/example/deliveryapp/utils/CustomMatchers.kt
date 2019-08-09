@@ -1,6 +1,7 @@
 package com.example.deliveryapp.utils
 
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
@@ -21,6 +22,19 @@ object CustomMatchers{
 
             override fun matchesSafely(foundView: TextInputLayout): Boolean {
                 return foundView.error == expectedError
+            }
+        }
+    }
+    fun withTitle(expectedError: String?): Matcher<View> {
+        return object : BoundedMatcher<View, Toolbar>(Toolbar::class.java) {
+
+            override fun describeTo(description: Description) {
+                description.appendText("Checking the matcher on received view: ")
+                description.appendText("with expectedError= $expectedError")
+            }
+
+            override fun matchesSafely(foundView: Toolbar): Boolean {
+                return foundView.title == expectedError
             }
         }
     }

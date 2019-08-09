@@ -1,11 +1,15 @@
 package com.example.deliveryapp.ui.login
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.utils.DispatcherProvider
+import com.nhaarman.mockito_kotlin.whenever
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -49,6 +53,8 @@ class LoginViewModelTest {
         runBlocking {
             loginViewModel = LoginViewModel(userRepository,testProvider)
         }
+
+        loginViewModel.EMAIL_ADDRESS_PATTERN = EMAIL_ADDRESS_PATTERN
     }
 
     @After
@@ -57,7 +63,7 @@ class LoginViewModelTest {
 
     @Test
     fun `set initial validation map on init view model`() {
-        assertNotNull(loginViewModel.validationMap.value)
+        assertNotNull(loginViewModel.validationMap)
     }
 
     @Test
@@ -70,8 +76,8 @@ class LoginViewModelTest {
     fun `set validation results for all fields after validate login details`() {
         loginViewModel.validateLoginDetails("","")
         var validationResultsSet = true
-        for(result in loginViewModel.validationMap.value!!.values){
-            validationResultsSet = result.isNotEmpty()
+        for(result in loginViewModel.validationMap.values){
+            validationResultsSet = result != LoginViewModel.VAL_DEFAULT
         }
         assertTrue(validationResultsSet)
     }
@@ -79,37 +85,37 @@ class LoginViewModelTest {
     @Test
     fun `set email validation message`() {
         loginViewModel.validateEmail("")
-        assertTrue(loginViewModel.validationMap.value!![LoginViewModel.VAL_MAP_EMAIL_KEY]!!.isNotEmpty())
+        assertTrue(loginViewModel.validationMap[LoginViewModel.VAL_MAP_EMAIL_KEY]!! != LoginViewModel.VAL_DEFAULT)
     }
 
     @Test
     fun `set password validation message`() {
         loginViewModel.validatePassword("")
-        assertTrue(loginViewModel.validationMap.value!![LoginViewModel.VAL_MAP_PASSWORD_KEY]!!.isNotEmpty())
+        assertTrue(loginViewModel.validationMap[LoginViewModel.VAL_MAP_PASSWORD_KEY]!! != LoginViewModel.VAL_DEFAULT)
     }
 
     @Test
     fun `set empty email if email is empty`() {
         loginViewModel.validateEmail("")
-        assertEquals(loginViewModel.validationMap.value!![LoginViewModel.VAL_MAP_EMAIL_KEY]!!,LoginViewModel.EMPTY_EMAIL_ADDRESS)
+        assertEquals(loginViewModel.validationMap[LoginViewModel.VAL_MAP_EMAIL_KEY]!!,LoginViewModel.EMPTY_EMAIL_ADDRESS)
     }
 
     @Test
     fun `set invalid email if email does not match regex`() {
         loginViewModel.validateEmail("akljfalkjdad")
-        assertEquals(loginViewModel.validationMap.value!![LoginViewModel.VAL_MAP_EMAIL_KEY]!!,LoginViewModel.INVALID_EMAIL_ADDRESS)
+        assertEquals(loginViewModel.validationMap[LoginViewModel.VAL_MAP_EMAIL_KEY]!!,LoginViewModel.INVALID_EMAIL_ADDRESS)
     }
 
     @Test
     fun `set empty password if password is empty`() {
         loginViewModel.validatePassword("")
-        assertEquals(loginViewModel.validationMap.value!![LoginViewModel.VAL_MAP_PASSWORD_KEY]!!,LoginViewModel.EMPTY_PASSWORD)
+        assertEquals(loginViewModel.validationMap[LoginViewModel.VAL_MAP_PASSWORD_KEY]!!,LoginViewModel.EMPTY_PASSWORD)
     }
 
     @Test
     fun `set invalid password if password does not meet minimum length`() {
         loginViewModel.validatePassword("akljf")
-        assertEquals(loginViewModel.validationMap.value!![LoginViewModel.VAL_MAP_PASSWORD_KEY]!!,LoginViewModel.INVALID_PASSWORD)
+        assertEquals(loginViewModel.validationMap[LoginViewModel.VAL_MAP_PASSWORD_KEY]!!,LoginViewModel.INVALID_PASSWORD)
     }
 
     @Test
@@ -117,13 +123,22 @@ class LoginViewModelTest {
         val testEmail = "narteyephraim@gamil.com"
 
         loginViewModel.validateEmail(testEmail)
-        assertEquals(loginViewModel.validationMap.value!![LoginViewModel.VAL_MAP_EMAIL_KEY]!!,LoginViewModel.VAL_VALID)
+        assertEquals(loginViewModel.validationMap[LoginViewModel.VAL_MAP_EMAIL_KEY]!!,LoginViewModel.VAL_VALID)
     }
 
     @Test
     fun `set valid password if password is valid`() {
         loginViewModel.validatePassword("akljfkl")
-        assertEquals(loginViewModel.validationMap.value!![LoginViewModel.VAL_MAP_PASSWORD_KEY]!!,LoginViewModel.VAL_VALID)
+        assertEquals(loginViewModel.validationMap[LoginViewModel.VAL_MAP_PASSWORD_KEY]!!,LoginViewModel.VAL_VALID)
+    }
+
+
+    @Test
+    fun `set network state on get network state`(){
+        val networkState = MutableLiveData<NetworkState>()
+        every { userRepository.getNetworkState() }.returns(networkState)
+        loginViewModel.loginUser("narteyephraim@gmail.com", "asdfghjkl")
+        assertNotNull(loginViewModel.getNetworkState())
     }
 
 
