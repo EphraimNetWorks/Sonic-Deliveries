@@ -1,4 +1,4 @@
-package com.example.deliveryapp.login_signup
+package com.example.deliveryapp.ui.user
 
 import android.content.Context
 import androidx.test.espresso.Espresso.onView
@@ -17,8 +17,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.example.deliveryapp.R
 import com.example.deliveryapp.ui.signup.SignUpActivity
-import com.example.deliveryapp.utils.CustomMatchers
-import com.example.deliveryapp.utils.DataBindingIdlingResourceRule
+import com.example.deliveryapp.utils.*
 import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
@@ -36,6 +35,10 @@ class SignUpActivityTest {
     @JvmField
     val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityRule)
 
+    @Rule
+    @JvmField
+    val espressoTestingIdlingResourceRule = EspressoTestingIdlingResourceRule()
+
     private lateinit var testName:String
     private lateinit var testPhone:String
     private lateinit var testEmail:String
@@ -43,14 +46,10 @@ class SignUpActivityTest {
     private lateinit var testConfirmPassword:String
 
     private lateinit var testContext: Context
-    private lateinit var observerIdlingResource:CountingIdlingResource
 
     @Before
     fun setUp(){
         activityRule.launchActivity(null)
-        observerIdlingResource = CountingIdlingResource("Sign Up Observer")
-        IdlingRegistry.getInstance().register(observerIdlingResource)
-        activityRule.activity.idlingResource = observerIdlingResource
 
         testContext = getInstrumentation().context
     }
@@ -252,16 +251,11 @@ class SignUpActivityTest {
 
         Intents.intended(
             Matchers.allOf(
-                IntentMatchers.hasComponent(ComponentNameMatchers.hasShortClassName(".MainActivity")),
-                IntentMatchers.toPackage(MAIN_PACKAGE_NAME)
+                IntentMatchers.hasComponent(ComponentNameMatchers.hasShortClassName(Constants.MAIN_ACTIVITY_SHORT_CLASS_NAME)),
+                IntentMatchers.toPackage(Constants.PACKAGE_NAME)
             )
         )
 
     }
 
-
-    companion object{
-
-        private const val MAIN_PACKAGE_NAME = "com.example.deliveryapp.ui.main"
-    }
 }

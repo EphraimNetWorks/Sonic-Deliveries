@@ -38,17 +38,17 @@ class MainViewModelTest{
 
     private val inTransitList = listOf(
         Delivery().apply {
-            title = "1"
+            id = "1"
             pickUpAddress = "Accra"
             destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_IN_TRANSIT
         },Delivery().apply {
-            title = "2"
+            id = "2"
             pickUpAddress = "Kumasi"
             destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_IN_TRANSIT
         },Delivery().apply {
-            title = "3"
+            id = "3"
             pickUpAddress = "Accra"
             destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_IN_TRANSIT
@@ -56,17 +56,17 @@ class MainViewModelTest{
     )
     private val placedList = listOf(
         Delivery().apply {
-            title = "1"
+            id = "1"
             pickUpAddress = "Accra"
             destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_PLACED
         },Delivery().apply {
-            title = "2"
+            id = "2"
             pickUpAddress = "Kumasi"
             destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_PLACED
         },Delivery().apply {
-            title = "3"
+            id = "3"
             pickUpAddress = "Accra"
             destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_PLACED
@@ -74,17 +74,17 @@ class MainViewModelTest{
     )
     private val completedList = listOf(
         Delivery().apply {
-            title = "1"
+            id = "1"
             pickUpAddress = "Accra"
             destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_CANCELLED
         },Delivery().apply {
-            title = "2"
+            id = "2"
             pickUpAddress = "Kumasi"
             destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_COMPLETED
         },Delivery().apply {
-            title = "3"
+            id = "3"
             pickUpAddress = "Accra"
             destinationAddress = "Tema"
             deliveryStatus = Delivery.STATUS_COMPLETED
@@ -143,9 +143,9 @@ class MainViewModelTest{
         mainViewModel.deliveriesPlaced = dummyLD
 
         assertNotNull(mainViewModel.deliveriesPlaced)
-        assertEquals("1", mainViewModel.deliveriesPlaced!!.value?.get(0)!!.title)
-        assertEquals("2", mainViewModel.deliveriesPlaced!!.value?.get(1)!!.title)
-        assertEquals("3", mainViewModel.deliveriesPlaced!!.value?.get(2)!!.title)
+        assertEquals("1", mainViewModel.deliveriesPlaced!!.value?.get(0)!!.id)
+        assertEquals("2", mainViewModel.deliveriesPlaced!!.value?.get(1)!!.id)
+        assertEquals("3", mainViewModel.deliveriesPlaced!!.value?.get(2)!!.id)
     }
 
     @Test
@@ -157,9 +157,9 @@ class MainViewModelTest{
         mainViewModel.deliveriesInTransit = dummyLD
 
         assertNotNull(mainViewModel.deliveriesInTransit)
-        assertEquals("4", mainViewModel.deliveriesInTransit!!.value?.get(0)!!.title)
-        assertEquals("5", mainViewModel.deliveriesInTransit!!.value?.get(1)!!.title)
-        assertEquals("6", mainViewModel.deliveriesInTransit!!.value?.get(2)!!.title)
+        assertEquals("4", mainViewModel.deliveriesInTransit!!.value?.get(0)!!.id)
+        assertEquals("5", mainViewModel.deliveriesInTransit!!.value?.get(1)!!.id)
+        assertEquals("6", mainViewModel.deliveriesInTransit!!.value?.get(2)!!.id)
     }
 
     @Test
@@ -171,9 +171,16 @@ class MainViewModelTest{
         mainViewModel.completedDeliveries = dummyLD
 
         assertNotNull(mainViewModel.completedDeliveries)
-        assertEquals("7", mainViewModel.completedDeliveries!!.value?.get(0)!!.title)
-        assertEquals("8", mainViewModel.completedDeliveries!!.value?.get(1)!!.title)
-        assertEquals("9", mainViewModel.completedDeliveries!!.value?.get(2)!!.title)
+        assertEquals("7", mainViewModel.completedDeliveries!!.value?.get(0)!!.id)
+        assertEquals("8", mainViewModel.completedDeliveries!!.value?.get(1)!!.id)
+        assertEquals("9", mainViewModel.completedDeliveries!!.value?.get(2)!!.id)
+    }
+
+    @Test
+    fun `get random item from list`(){
+        val list = listOf("1","2","3")
+        val contains = list.contains(mainViewModel.getRandomItemFromList(list))
+        assertTrue(contains)
     }
 
     @Test

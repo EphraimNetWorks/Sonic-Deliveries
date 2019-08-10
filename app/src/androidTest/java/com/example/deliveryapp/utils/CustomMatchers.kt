@@ -1,6 +1,7 @@
 package com.example.deliveryapp.utils
 
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -25,16 +26,35 @@ object CustomMatchers{
             }
         }
     }
-    fun withTitle(expectedError: String?): Matcher<View> {
+    fun withTitle(title: String?): Matcher<View> {
         return object : BoundedMatcher<View, Toolbar>(Toolbar::class.java) {
 
             override fun describeTo(description: Description) {
                 description.appendText("Checking the matcher on received view: ")
-                description.appendText("with expectedError= $expectedError")
+                description.appendText("with title= $title")
             }
 
             override fun matchesSafely(foundView: Toolbar): Boolean {
-                return foundView.title == expectedError
+                return foundView.title == title
+            }
+        }
+    }
+    fun withTextInList(strings: List<String>): Matcher<View> {
+        return object : BoundedMatcher<View, TextView>(TextView::class.java) {
+
+            override fun describeTo(description: Description) {
+                description.appendText("Checking the matcher on received view: ")
+                description.appendText("with expectedError= $strings")
+            }
+
+            override fun matchesSafely(foundView: TextView): Boolean {
+                var isTextInList = false
+                for(string in strings){
+                    if(string == foundView.text){
+                        isTextInList = true
+                    }
+                }
+                return isTextInList
             }
         }
     }

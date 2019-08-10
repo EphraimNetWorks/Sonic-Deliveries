@@ -1,4 +1,4 @@
-package com.example.deliveryapp
+package com.example.deliveryapp.utils
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable

@@ -59,4 +59,18 @@
     <string name="next">Next</string>
     <string name="submit">Submit</string>
     <string name="track_delivery">Track Delivery</string>
+
+    <string name="new_user_salutation">Welcome,</string>
+
+    <string name="new_login_salutation">Welcome back,</string>
+    <string name="estimated_time_of_arrival">Estimated Time of Arrival</string>
+    <string name="pick_up_date_title">Pick Up Date</string>
+
+    <string-array name="old_user_salutations">
+        <item>Hi there,</item>
+        <item>What\'s up?</item>
+        <item>Good day,</item>
+        <item>Hello,</item>
+    </string-array>
+
 </resources>

@@ -286,7 +286,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        shimmer:duration="200"
+                        shimmer:duration="2000"
                         networkStatus="@{viewModel.networkState.status}">
 
 
@@ -353,7 +353,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        shimmer:duration="200"
+                        shimmer:duration="2000"
                         networkStatus="@{viewModel.networkState.status}">
 
 
@@ -421,7 +421,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        shimmer:duration="200"
+                        shimmer:duration="2000"
                         networkStatus="@{viewModel.networkState.status}">
 
 

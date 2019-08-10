@@ -12,6 +12,7 @@ import com.example.deliveryapp.R
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivitySignUpBinding
 import com.example.deliveryapp.ui.main.MainActivity
+import com.example.deliveryapp.utils.EspressoTestingIdlingResource
 import com.example.deliveryapp.utils.ViewModelFactory
 import dagger.android.AndroidInjection
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
@@ -58,19 +59,19 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun handleNetworkState(networkState: NetworkState) {
         if(networkState.status == Status.SUCCESS){
-            idlingResource?.decrement()
+            EspressoTestingIdlingResource.decrement()
             goToNextActivity()
         }else if(networkState.status == Status.FAILED){
-            idlingResource?.decrement()
+            EspressoTestingIdlingResource.decrement()
             binding.signupButton.visibility = View.VISIBLE
         }
     }
 
     private fun goToNextActivity(){
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(MainActivity.newInstance(this,MainActivity.SALUTATION_TYPE_SIGN_UP))
     }
 
-    fun processValidationMap(valMap: HashMap<String, Int>){
+    private fun processValidationMap(valMap: HashMap<String, Int>){
         resetTextInputLayoutErrors()
 
         if(valMap[SignUpViewModel.VAL_MAP_NAME_KEY]!= SignUpViewModel.VAL_VALID){
@@ -101,7 +102,7 @@ class SignUpActivity : AppCompatActivity() {
                 binding.signupEmailEditext.text.toString(),
                 binding.signupPasswordEditext.text.toString())
 
-            idlingResource?.increment()
+            EspressoTestingIdlingResource.increment()
             viewModel.getNetworkState().observe(this, Observer { networkState->
                 binding.networkState = networkState
                 handleNetworkState(networkState)
@@ -125,6 +126,4 @@ class SignUpActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    //idling resource for expresso tests
-    var idlingResource: CountingIdlingResource? = null
 }

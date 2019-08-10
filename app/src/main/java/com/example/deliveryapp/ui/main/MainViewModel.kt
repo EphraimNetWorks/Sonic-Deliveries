@@ -17,6 +17,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.random.Random
 
 class MainViewModel @Inject constructor(
     private val deliveryRepo: DeliveryRepository,
@@ -91,6 +92,11 @@ class MainViewModel @Inject constructor(
 
         this.networkState = deliveryRepo.getNetworkState()
         return networkState!!
+    }
+
+    fun getRandomItemFromList(list: List<String>):String{
+        val randomNo = Random.nextInt(0,list.size)
+        return list[randomNo]
     }
 
     override fun onCleared() {

@@ -14,9 +14,9 @@ class Delivery : Serializable{
     @NonNull
     var id:String = ""
 
-    var createdAt:String? = null
+    var createdAt:Long? = null
 
-    var updatedAt:String? = null
+    var updatedAt:Long? = null
 
     var title: String? = null
 

@@ -1,4 +1,4 @@
-package com.example.deliveryapp
+package com.example.deliveryapp.utils
 
 import android.view.View
 import androidx.test.espresso.util.HumanReadables

@@ -102,7 +102,7 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
         apiService.cancelDelivery(deliveryId, object : ApiCallback<Boolean>{
             override fun onSuccess(result: Boolean) {
                 Thread{
-                    deliveryDao.updateDeliveryStatus(deliveryId,Delivery.STATUS_CANCELLED)
+                    deliveryDao.cancelDelivery(deliveryId)
                 }.start()
                 networkState.postValue(NetworkState.LOADED)
             }

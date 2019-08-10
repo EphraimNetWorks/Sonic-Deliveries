@@ -21,3 +21,18 @@ class DataBindingIdlingResourceRule(
     }
 
 }
+
+class EspressoTestingIdlingResourceRule(
+) : TestWatcher() {
+
+    override fun finished(description: Description) {
+        IdlingRegistry.getInstance().unregister(EspressoTestingIdlingResource.idlingResource)
+        super.finished(description)
+    }
+
+    override fun starting(description: Description) {
+        IdlingRegistry.getInstance().register(EspressoTestingIdlingResource.idlingResource)
+        super.starting(description)
+    }
+
+}

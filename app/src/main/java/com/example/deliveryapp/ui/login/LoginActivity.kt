@@ -18,6 +18,7 @@ import com.example.deliveryapp.utils.ViewModelFactory
 import com.google.gson.Gson
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import com.example.deliveryapp.di.Injectable
+import com.example.deliveryapp.utils.EspressoTestingIdlingResource
 import dagger.android.AndroidInjection
 import timber.log.Timber
 import java.util.*
@@ -40,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
 
         Timber.e(Gson().toJson(viewModel.currentUser))
         if(viewModel.currentUser!=null){
-            goToNextActivity()
+            goToNextActivity(true)
         }
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login)
@@ -49,9 +50,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun validateAndLoginUser(view: View){
-
-        idlingResource?.increment()
-        idlingResource?.increment()
 
         val valMap = viewModel.validateLoginDetails(binding.loginEmailEditext.text.toString(),
             binding.loginEmailEditext.text.toString())
@@ -63,17 +61,21 @@ class LoginActivity : AppCompatActivity() {
 
     private fun handleNetworkState(networkState: NetworkState) {
         if(networkState.status == Status.SUCCESS){
-            idlingResource?.decrement()
-            goToNextActivity()
+            EspressoTestingIdlingResource.decrement()
+            goToNextActivity(false)
         }else if(networkState.status == Status.FAILED){
-            idlingResource?.decrement()
+            EspressoTestingIdlingResource.decrement()
             binding.loginButton.visibility = View.VISIBLE
         }
     }
 
-    private fun goToNextActivity(){
+    private fun goToNextActivity(isAlreadyLoggedIn:Boolean){
 
-        startActivity(Intent(this,MainActivity::class.java))
+        startActivity(MainActivity.newInstance(this,if(isAlreadyLoggedIn)
+            MainActivity.SALUTATION_TYPE_ALREADY_LOGGED_IN
+        else
+            MainActivity.SALUTATION_TYPE_NEW_LOGIN)
+        )
     }
 
     private fun processValidationMap(valMap: HashMap<String,Int>, email:String, password:String){
@@ -96,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
                 Timber.e("email: $email, password:$password")
                 viewModel.loginUser(email,password)
 
-                idlingResource?.increment()
+                EspressoTestingIdlingResource.increment()
                 viewModel.getNetworkState().observe(this, Observer { networkState->
                     binding.networkState = networkState
                     handleNetworkState(networkState)})
@@ -124,6 +126,4 @@ class LoginActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    // idling resource for espresso tests
-    var idlingResource: CountingIdlingResource? = null
 }

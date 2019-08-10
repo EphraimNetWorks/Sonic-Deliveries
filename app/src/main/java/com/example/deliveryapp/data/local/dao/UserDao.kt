@@ -9,7 +9,7 @@ import com.example.deliveryapp.data.local.entities.User
 interface UserDao {
 
     @Delete
-    fun deleteCurrentUser(user: User)
+    fun deleteUser(user: User)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveUser(user: User)

@@ -77,5 +77,4 @@ class TrackDeliveryActivity : AppCompatActivity() {
         }
     }
 
-    var idlingResource:CountingIdlingResource? = null
 }

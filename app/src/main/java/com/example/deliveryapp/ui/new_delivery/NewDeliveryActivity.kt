@@ -102,7 +102,7 @@ class NewDeliveryActivity : AppCompatActivity() {
         formFragment = NewDeliveryFormFragment.newInstance()
     }
 
-    private fun setUpFormFragment(){
+    fun setUpFormFragment(){
         val mPendingRunnable = Runnable {
             // update the main content by replacing fragments
             val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
@@ -118,7 +118,7 @@ class NewDeliveryActivity : AppCompatActivity() {
         Handler().post(mPendingRunnable)
     }
 
-    private fun setUpSummaryFragment(delivery: Delivery){
+    fun setUpSummaryFragment(delivery: Delivery){
         val summaryFragment = NewDeliverySummaryFragment.newInstance(delivery)
         val mPendingRunnable = Runnable {
             // update the main content by replacing fragments

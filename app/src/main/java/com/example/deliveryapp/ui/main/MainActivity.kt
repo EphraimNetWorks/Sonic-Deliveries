@@ -1,5 +1,7 @@
 package com.example.deliveryapp.ui.main
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
@@ -12,7 +14,9 @@ import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
 import com.example.deliveryapp.utils.ViewModelFactory
 import dagger.android.AndroidInjection
 import java.lang.IllegalArgumentException
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,8 +33,9 @@ class MainActivity : AppCompatActivity() {
         AndroidInjection.inject(this)
         viewModel = ViewModelProviders.of(this,viewModelFactory).get(MainViewModel::class.java)
 
-        viewModel.initMyDeliveries()
+        setUpSalutation()
 
+        viewModel.initMyDeliveries()
 
         binding.placedDeliveriesRecyclerView.adapter = DeliveryPagingAdapter(this)
         binding.inTransitDeliveriesRecyclerView.adapter = DeliveryPagingAdapter(this)
@@ -53,6 +58,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun removeObservers(){
         viewModel.mostRecentDelivery.removeObservers(this)
+    }
+
+    private fun setUpSalutation(){
+        val salutationType = intent.getIntExtra(EXTRA_SALUTATION_TYPE,1)
+        binding.salutationTextview.text = getSalutationMessage(salutationType)
+    }
+
+    private fun getSalutationMessage(salutationType: Int):String{
+        return when(salutationType){
+            SALUTATION_TYPE_SIGN_UP -> getString(R.string.new_user_salutation)
+            SALUTATION_TYPE_NEW_LOGIN -> getString(R.string.new_user_salutation)
+            SALUTATION_TYPE_ALREADY_LOGGED_IN -> viewModel.getRandomItemFromList(
+                ArrayList<String>().apply {
+                    addAll(resources.getStringArray(R.array.old_user_salutations))
+                })
+            else-> throw IllegalArgumentException("Unknown salution type")
+        }
     }
 
     private fun getSummaryMessage(recentDelivery: Delivery):String{
@@ -78,6 +100,23 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         removeObservers()
         super.onStop()
+    }
+
+    companion object {
+
+        private const val EXTRA_SALUTATION_TYPE = "salutationType"
+
+        const val SALUTATION_TYPE_SIGN_UP = 0
+
+        const val SALUTATION_TYPE_NEW_LOGIN = 1
+
+        const val SALUTATION_TYPE_ALREADY_LOGGED_IN = 2
+
+        fun newInstance(context: Context, salutationType:Int): Intent {
+            return Intent(context,MainActivity::class.java).apply {
+                putExtra(EXTRA_SALUTATION_TYPE, salutationType)
+            }
+        }
     }
 
 }

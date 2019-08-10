@@ -59,7 +59,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pick Up Date"
+                    android:text="@string/pick_up_date_title"
                     android:layout_alignParentStart="true"
                     android:textSize="@dimen/textsize_normal"
                 />
