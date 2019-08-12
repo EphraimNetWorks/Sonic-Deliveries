@@ -12,6 +12,7 @@ import androidx.test.espresso.idling.CountingIdlingResource
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivitySignUpBinding
+import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.ui.main.MainActivity
 import com.example.deliveryapp.utils.EspressoTestingIdlingResource
@@ -23,7 +24,7 @@ import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
 
-class SignUpActivity : AppCompatActivity() {
+class SignUpActivity : AppCompatActivity(),Injectable {
 
     private lateinit var binding: ActivitySignUpBinding
 
@@ -35,8 +36,6 @@ class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this,R.layout.activity_sign_up)
-
-        AndroidInjection.inject(this)
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
 

@@ -10,26 +10,26 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-open class MainModule{
+class MainModule{
 
 
     @Provides
-    internal open fun providesApiService(): ApiService {
+    fun providesApiService(): ApiService {
         return ApiService()
     }
 
     @Provides
-    internal open fun providesDeliveryRepository(apiService: ApiService, orderDao: DeliveryDao): DeliveryRepository {
+    fun providesDeliveryRepository(apiService: ApiService, orderDao: DeliveryDao): DeliveryRepository {
         return DeliveryRepository(apiService, orderDao)
     }
 
     @Provides
-    internal open fun providesUserRepository(apiService: ApiService, userDao: UserDao): UserRepository {
+    fun providesUserRepository(apiService: ApiService, userDao: UserDao): UserRepository {
         return UserRepository(apiService,userDao)
     }
 
     @Provides
-    internal open fun providesDispactcherProvider(): DispatcherProvider {
+    fun providesDispactcherProvider(): DispatcherProvider {
         return DispatcherProvider()
     }
 

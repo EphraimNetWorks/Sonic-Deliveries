@@ -8,6 +8,7 @@ import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.utils.DispatcherProvider
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.capture
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.*
 import org.mockito.Mockito.verify
+import javax.sql.DataSource
 
 class DeliveryRepositoryTest {
 
@@ -32,7 +34,15 @@ class DeliveryRepositoryTest {
     @Captor
     lateinit var callbackCaptor: ArgumentCaptor<ApiCallback<List<Delivery>>>
 
+    @Captor
+    lateinit var submitDeliveryCallbackCaptor: ArgumentCaptor<ApiCallback<Boolean>>
+
+    @Captor
+    lateinit var cancelDeliveryCallbackCaptor: ArgumentCaptor<ApiCallback<Boolean>>
+
     private lateinit var deliveryRepository: DeliveryRepository
+
+    val testdelivery = Delivery().apply { title = "Box" }
 
     private val testDispatcherProvider = DispatcherProvider(Dispatchers.Unconfined,Dispatchers.Unconfined)
 
@@ -60,6 +70,11 @@ class DeliveryRepositoryTest {
 
         MockitoAnnotations.initMocks(this)
         deliveryRepository =  DeliveryRepository(apiService,deliveryDao)
+        val dataSourceMock = Mockito.mock(androidx.paging.DataSource.Factory::class.java) as androidx.paging.DataSource.Factory<Int,Delivery>
+
+        Mockito.`when`(deliveryDao.getDeliveriesPlaced()).thenReturn(dataSourceMock)
+        Mockito.`when`(deliveryDao.getDeliveriesInTransit()).thenReturn(dataSourceMock)
+        Mockito.`when`(deliveryDao.getCompletedDeliveries()).thenReturn(dataSourceMock)
 
     }
 
@@ -130,6 +145,11 @@ class DeliveryRepositoryTest {
             deliveryRepository.getNetworkState().value!!.message,
             errorMessage
         )
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.FAILED
+        )
     }
 
     @Test
@@ -163,6 +183,11 @@ class DeliveryRepositoryTest {
             deliveryRepository.getNetworkState().value!!.message,
             errorMessage
         )
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.FAILED
+        )
     }
 
     @Test
@@ -195,6 +220,115 @@ class DeliveryRepositoryTest {
         assertEquals(
             deliveryRepository.getNetworkState().value!!.message,
             errorMessage
+        )
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.FAILED
+        )
+    }
+
+    @Test
+    fun `set network state to loading on cancel delivery`(){
+
+        deliveryRepository.cancelDelivery("fdjha")
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.RUNNING
+        )
+
+    }
+
+    @Test
+    fun `process cancelDelivery result when negative callback called`(){
+        val testDeliveryId = "kjafd"
+        val errorMessage = " This is an error"
+        deliveryRepository.cancelDelivery(testDeliveryId)
+
+        verify(apiService).cancelDelivery(any(),capture(cancelDeliveryCallbackCaptor))
+
+        val callback = cancelDeliveryCallbackCaptor.value
+
+        callback.onFailed(errorMessage)
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.message,
+            errorMessage
+        )
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.FAILED
+        )
+    }
+
+    @Test
+    fun `process cancelDelivery result when positive callback called`(){
+        val testDeliveryId = "kjafd"
+        deliveryRepository.cancelDelivery(testDeliveryId)
+
+        verify(apiService).cancelDelivery(any(),capture(cancelDeliveryCallbackCaptor))
+
+        val callback = cancelDeliveryCallbackCaptor.value
+
+        callback.onSuccess(true)
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.SUCCESS
+        )
+    }
+
+    @Test
+    fun `set network state to loading on submit new delivery`(){
+
+        deliveryRepository.submitNewDelivery(testdelivery)
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.RUNNING
+        )
+
+    }
+
+    @Test
+    fun `process submitDelivery result when negative callback called`(){
+
+        val errorMessage = " This is an error"
+        deliveryRepository.submitNewDelivery(testdelivery)
+
+        verify(apiService).sendNewDelivery(any(),capture(submitDeliveryCallbackCaptor))
+
+        val callback = submitDeliveryCallbackCaptor.value
+
+        callback.onFailed(errorMessage)
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.message,
+            errorMessage
+        )
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.FAILED
+        )
+    }
+
+    @Test
+    fun `process submitDelivery result when positivie callback called`(){
+
+        deliveryRepository.submitNewDelivery(testdelivery)
+
+        verify(apiService).sendNewDelivery(any(),capture(submitDeliveryCallbackCaptor))
+
+        val callback = submitDeliveryCallbackCaptor.value
+
+        callback.onSuccess(true)
+
+        assertEquals(
+            deliveryRepository.getNetworkState().value!!.status,
+            Status.SUCCESS
         )
     }
 }

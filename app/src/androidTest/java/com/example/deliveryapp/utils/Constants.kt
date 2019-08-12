@@ -15,7 +15,7 @@ object Constants {
 
     const val LOGIN_ACTIVITY_SHORT_CLASS_NAME = ".ui.login.LoginActivity"
 
-    const val GMAPS_AUTOCOMPLETE_SHORT_CLASS_NAME = ".libraries.places.widget.AutocompleteActivity"
+    const val AUTOCOMPLETE_SHORT_CLASS_NAME = ".LocationPickerActivity"
 
-    const val GOOGLE_MAPS_PACKAGE_NAME = "com.google.android"
+    const val AUTOCOMPLETE_PACKAGE_NAME = "com.schibstedspain.leku"
 }

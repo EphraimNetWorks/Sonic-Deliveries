@@ -16,11 +16,12 @@ import androidx.test.espresso.idling.CountingIdlingResource
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.ActivityTrackDeliveryBinding
+import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.utils.ViewModelFactory
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
-class TrackDeliveryActivity : AppCompatActivity() {
+class TrackDeliveryActivity : AppCompatActivity(),Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -41,7 +42,6 @@ class TrackDeliveryActivity : AppCompatActivity() {
         binding.toolbar.setTitleTextColor(Color.WHITE)
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        AndroidInjection.inject(this)
 
         trackDeliveryViewModel = ViewModelProviders.of(this,viewModelFactory).get(TrackDeliveryViewModel::class.java)
 

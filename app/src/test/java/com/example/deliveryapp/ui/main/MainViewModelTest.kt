@@ -32,7 +32,7 @@ class MainViewModelTest{
     @Mock
     lateinit var userRepository: UserRepository
 
-    @MockK
+    @Mock
     lateinit var deliveryRepository: DeliveryRepository
 
     private lateinit var mainViewModel: MainViewModel
@@ -111,9 +111,7 @@ class MainViewModelTest{
 
         Mockito.`when` { userRepository.getCurrentUser() }.thenReturn { MutableLiveData(user) }
 
-        runBlocking {
-            mainViewModel = MainViewModel(deliveryRepository, userRepository, testProvider)
-        }
+        mainViewModel = MainViewModel(deliveryRepository, userRepository, testProvider)
 
     }
 

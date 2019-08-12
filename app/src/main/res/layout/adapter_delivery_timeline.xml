@@ -12,7 +12,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/margin_normal"
             app:markerSize="@dimen/timeline_marker_size"
-            android:visibility="gone"
+            android:visibility="visible"
             app:lineWidth="@dimen/timeline_line_width"
             app:startLineColor="@color/blue"
             app:endLineColor="@color/blue"/>
@@ -20,8 +20,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_normal"
-            android:layout_marginBottom="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/margin_mlarge"
+            android:layout_marginBottom="@dimen/margin_mlarge"
             android:layout_marginStart="@dimen/margin_large">
             
             <ImageView

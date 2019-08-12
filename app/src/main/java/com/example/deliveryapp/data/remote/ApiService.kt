@@ -100,7 +100,8 @@ class ApiService {
     }
 
     fun sendNewDelivery(newDelivery: Delivery, callback: ApiCallback<Boolean>) {
-        val deliveryId = db.collection("$COLLECTION_DELIVERIES/$userId").document().id
+        val deliveryId = db.collection("$COLLECTION_DELIVERIES").document(userId!!)
+            .collection("deliveries").document().id
         newDelivery.id = deliveryId
 
         db.collection("$COLLECTION_DELIVERIES/$userId").document(deliveryId).set(newDelivery).addOnCompleteListener {task->

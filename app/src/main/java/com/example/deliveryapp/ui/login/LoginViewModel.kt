@@ -25,7 +25,6 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
 
     private var networkState:LiveData<NetworkState>?=null
     var validationMap: HashMap<String,Int> = HashMap()
-    var currentUser :LiveData<User>? = null
     private val viewModelJob  = Job()
 
     var EMAIL_ADDRESS_PATTERN:Pattern? = null
@@ -41,11 +40,6 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
         validationMap = hashMapOf(Pair(VAL_MAP_EMAIL_KEY, VAL_DEFAULT),
             Pair(VAL_MAP_PASSWORD_KEY, VAL_DEFAULT))
 
-    }
-
-    fun initializeCurrentUser() :LiveData<User>?{
-        currentUser = userRepo.getCurrentUser()
-        return currentUser
     }
 
     fun validateLoginDetails(email:String, password:String):HashMap<String,Int>{

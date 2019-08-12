@@ -1,6 +1,7 @@
 package com.example.deliveryapp.ui.track_delivery
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,14 +71,22 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
                 }
             }
 
-            if(position <= delivery.deliveryStatus){
+            if(position < delivery.deliveryStatus){
                 setMarker(R.drawable.ic_marker_complete,R.color.colorPrimary)
-                val color = itemView.context.resources.getColor(R.color.blue)
+                val color = ContextCompat.getColor(itemView.context,R.color.blue)
+                binding.deliveryStatusText.setTextColor(Color.BLACK)
+                binding.timeline.setEndLineColor(color,viewType)
+                binding.timeline.setStartLineColor(color,viewType)
+            }else if(position == delivery.deliveryStatus){
+                setMarker(R.drawable.ic_marker_complete,R.color.colorAccent)
+                val color = ContextCompat.getColor(itemView.context,R.color.colorAccent)
+                binding.deliveryStatusText.setTextColor(ContextCompat.getColor(itemView.context,R.color.blue))
                 binding.timeline.setEndLineColor(color,viewType)
                 binding.timeline.setStartLineColor(color,viewType)
             }else{
                 setMarker(R.drawable.ic_marker_incomplete,R.color.grey)
-                val color = itemView.context.resources.getColor(R.color.grey)
+                val color = ContextCompat.getColor(itemView.context,R.color.grey)
+                binding.deliveryStatusText.setTextColor(color)
                 binding.timeline.setEndLineColor(color,viewType)
                 binding.timeline.setStartLineColor(color,viewType)
             }

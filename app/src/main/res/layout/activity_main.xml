@@ -132,7 +132,7 @@
                             android:id="@+id/delivery_summary_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Delivery Summary"
+                            android:text="@string/delivery_summary"
                             android:textColor="@android:color/black"
                             android:textStyle="bold"
                             android:textSize="@dimen/textsize_large"
@@ -291,6 +291,18 @@
                             app:data="@{viewModel.deliveriesPlaced}"
                             android:orientation="horizontal"/>
 
+                    <TextView
+                            android:id="@+id/no_deliveries_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            listCount="@{viewModel.deliveriesPlacedNo}"
+                        android:layout_marginStart="@dimen/margin_large"
+                            android:layout_marginBottom="@dimen/margin_normal"
+                        android:textSize="@dimen/textsize_large"
+                        android:layout_marginEnd="@dimen/margin_large"
+                        android:text="@string/no_placed_delivery_error"/>
+
                     <com.facebook.shimmer.ShimmerFrameLayout
                         android:id="@+id/placed_shimmer_view_container"
                         android:layout_width="match_parent"
@@ -358,6 +370,17 @@
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             app:data="@{viewModel.deliveriesInTransit}"
                             android:orientation="horizontal"/>
+                    <TextView
+                        android:id="@+id/no_deliveries_in_transit_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        listCount="@{viewModel.deliveriesInTransitNo}"
+                        android:layout_marginStart="@dimen/margin_large"
+                        android:layout_marginBottom="@dimen/margin_normal"
+                        android:textSize="@dimen/textsize_large"
+                        android:layout_marginEnd="@dimen/margin_large"
+                        android:text="@string/no_deliveries_in_transit_message"/>
 
                     <com.facebook.shimmer.ShimmerFrameLayout
                         android:id="@+id/in_transit_shimmer_view_container"
@@ -427,6 +450,18 @@
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             app:data="@{viewModel.completedDeliveries}"
                             android:orientation="horizontal"/>
+                    <TextView
+                            android:id="@+id/no_deliveries_completed_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            listCount="@{viewModel.completedDeliveriesNo}"
+                            android:layout_marginStart="@dimen/margin_large"
+                            android:layout_marginBottom="@dimen/margin_normal"
+                            android:textSize="@dimen/textsize_large"
+                            android:layout_marginEnd="@dimen/margin_large"
+                            android:text="@string/no_complete_deliveries_error"/>
+
                     <com.facebook.shimmer.ShimmerFrameLayout
                         android:id="@+id/completed_shimmer_view_container"
                         android:layout_width="match_parent"

@@ -73,6 +73,16 @@
     <string name="no">No</string>
 
     <string name="new_delivery_success">Your delivery has been successfully placed</string>
+    <string name="no_placed_delivery_error">You have no deliveries placed. Click on the round orange button to add a new
+        delivery
+    </string>
+    <string name="no_complete_deliveries_error">You have no deliveries completed or cancelled. Click on the round orange
+        button to add a new delivery
+    </string>
+    <string name="no_deliveries_in_transit_message">You have no deliveries in transit. Click on the round orange button
+        to add a new delivery
+    </string>
+    <string name="delivery_summary">Delivery Summary</string>
 
     <string-array name="old_user_salutations">
         <item>Hi there,</item>

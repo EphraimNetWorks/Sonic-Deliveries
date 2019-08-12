@@ -29,11 +29,13 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.google.android.libraries.places.compat.Places
 import com.google.maps.android.PolyUtil
 import com.google.maps.model.DirectionsResult
+import com.schibstedspain.leku.LATITUDE
+import com.schibstedspain.leku.LOCATION_ADDRESS
+import com.schibstedspain.leku.LONGITUDE
+import com.schibstedspain.leku.LocationPickerActivity
 import timber.log.Timber
 import java.util.*
 import kotlin.collections.HashMap
@@ -90,10 +92,22 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
     }
 
     private fun showDatePicker(){
+        val calendar = Calendar.getInstance()
         DatePickerDialog(context!!,
-            viewModel.dateListener,
-            Calendar.YEAR,Calendar.MONTH,Calendar.DAY_OF_MONTH).show()
+            dateListener,
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)).show()
     }
+
+
+    val dateListener: DatePickerDialog.OnDateSetListener =
+        DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+
+            viewModel.mPickUpDate = MyDate(year,monthOfYear+1,dayOfMonth)
+            binding.deliveryDateSelectButton.text = viewModel.mPickUpDate!!.getDateFormat1()
+
+        }
 
     private fun setUpMaps() {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -110,29 +124,33 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
     }
 
     private fun searchPlace(PLACE_AUTOCOMPLETE_REQUEST_CODE: Int) {
-        // Set the fields to specify which types of place data to return.
-        val fields = listOf(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG,Place.Field.ADDRESS)
 
-        // Start the autocomplete intent.
-        val intent = Autocomplete.IntentBuilder(
-            AutocompleteActivityMode.FULLSCREEN, fields)
-            .build(context!!)
+        val locationPickerIntent = LocationPickerActivity.Builder()
+            .withGeolocApiKey(getString(R.string.google_maps_key))
+            .withGooglePlacesEnabled()
+            .build(context!!.applicationContext)
 
-        startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE)
+        startActivityForResult(locationPickerIntent, PLACE_AUTOCOMPLETE_REQUEST_CODE)
 
     }
 
     private fun setPickUpPoint(data: Intent) {
-        val place = Autocomplete.getPlaceFromIntent(data)
 
-        val placeAddress = " ${place.name}, ${place.address}"
-        //binding.pickUpAddressProgress.visibility = View.VISIBLE
-        binding.pickUpPointEditext.setText(placeAddress)
+        val latitude = data.getDoubleExtra(LATITUDE, 0.0)
+        Timber.d("LATITUDE: $latitude")
+        val longitude = data.getDoubleExtra(LONGITUDE, 0.0)
+        Timber.d("LONGITUDE: $longitude")
+        val address = data.getStringExtra(LOCATION_ADDRESS)
+        Timber.d("ADDRESS: $address")
+
+
+        binding.pickUpPointEditext.setText(address)
 
         startPoint?.remove()
 
-        this.startPoint = mMap.addMarker(MarkerOptions().position(place.latLng!!).title("PickUp Point"))
-        viewModel.mPickUpLocation = place.latLng
+        viewModel.mPickUpLocation = LatLng(latitude,longitude)
+        adjustMapCamera(viewModel.mPickUpLocation,viewModel.mDestinationLocation)
+        this.startPoint = mMap.addMarker(MarkerOptions().position(viewModel.mPickUpLocation!!).title("PickUp Point"))
 
         if(viewModel.mPickUpLocation!= null && viewModel.mDestinationLocation!=null) {
             queryDirections(viewModel.mPickUpLocation!!,viewModel.mDestinationLocation!!)
@@ -141,17 +159,21 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
     }
 
     private fun setDestinationPoint(data: Intent) {
-        val place = Autocomplete.getPlaceFromIntent(data)
 
-        val placeAddress = " ${place.name}, ${place.address}"
-        //binding.destinationAddressProgress.visibility = View.VISIBLE
-        binding.destinationEditext.setText(placeAddress)
+        val latitude = data.getDoubleExtra(LATITUDE, 0.0)
+        Timber.d("LATITUDE: $latitude")
+        val longitude = data.getDoubleExtra(LONGITUDE, 0.0)
+        Timber.d("LONGITUDE: $longitude")
+        val address = data.getStringExtra(LOCATION_ADDRESS)
+        Timber.d("ADDRESS: $address")
+        binding.destinationEditext.setText(address)
 
         endPoint?.remove()
 
-        this.endPoint = mMap.addMarker(MarkerOptions().position(place.latLng!!).title("Destination"))
-        viewModel.mDestinationLocation = place.latLng
+        viewModel.mDestinationLocation = LatLng(latitude,longitude)
+        this.endPoint = mMap.addMarker(MarkerOptions().position(viewModel.mDestinationLocation!!).title("Destination"))
 
+        adjustMapCamera(viewModel.mPickUpLocation,viewModel.mDestinationLocation)
         if(viewModel.mPickUpLocation!= null && viewModel.mDestinationLocation!=null) {
             queryDirections(viewModel.mPickUpLocation!!,viewModel.mDestinationLocation!!)
         }
@@ -175,13 +197,13 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
 
     }
 
-    private fun adjustMapCamera(pickUpLocation:LatLng, destinationLocation:LatLng){
+    private fun adjustMapCamera(pickUpLocation:LatLng?, destinationLocation:LatLng?){
         val builder = LatLngBounds.Builder()
-        builder.include(pickUpLocation)
-        builder.include(destinationLocation)
+        if(pickUpLocation!=null) builder.include(pickUpLocation)
+        if(destinationLocation!=null) builder.include(destinationLocation)
         val bounds = builder.build()
 
-        val padding = 32 // offset from edges of the map in pixels
+        val padding = 64 // offset from edges of the map in pixels
         val cu = CameraUpdateFactory.newLatLngBounds(bounds, padding)
         mMap.animateCamera(cu)
     }

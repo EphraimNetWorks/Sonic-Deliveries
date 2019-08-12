@@ -86,4 +86,12 @@ object BindingUtils {
         editText.isClickable = if(networkStatus == null) true
         else networkStatus == Status.RUNNING
     }
+
+
+
+    @JvmStatic
+    @BindingAdapter("listCount")
+    fun listCount(noItemsTextview: TextView, size: String) {
+        noItemsTextview.visibility = if(size.toInt()>0) View.GONE else View.VISIBLE
+    }
 }

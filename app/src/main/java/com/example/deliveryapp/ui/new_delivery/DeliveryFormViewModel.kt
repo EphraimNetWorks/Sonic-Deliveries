@@ -68,12 +68,6 @@ class DeliveryFormViewModel :ViewModel(){
         return validationMap
     }
 
-    val dateListener: DatePickerDialog.OnDateSetListener =
-        DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-
-            mPickUpDate = MyDate(year,monthOfYear,dayOfMonth)
-        }
-
     fun validateItemName(itemName:String){
         var validationMessage = VAL_VALID
         if(itemName.isEmpty()){
@@ -115,12 +109,13 @@ class DeliveryFormViewModel :ViewModel(){
     }
 
     fun getDirections(origin: com.google.maps.model.LatLng, destination: com.google.maps.model.LatLng, apiKey: String) {
-        val geoApiContext = GeoApiContext()
-        geoApiContext.setQueryRateLimit(3)
-            .setApiKey(apiKey)
-            .setConnectTimeout(1, TimeUnit.SECONDS)
-            .setReadTimeout(1, TimeUnit.SECONDS)
-            .setWriteTimeout(1, TimeUnit.SECONDS)
+        val geoApiContext = GeoApiContext.Builder()
+            .queryRateLimit(3)
+            .apiKey(apiKey)
+            .connectTimeout(1, TimeUnit.SECONDS)
+            .readTimeout(1, TimeUnit.SECONDS)
+            .writeTimeout(1, TimeUnit.SECONDS)
+            .build()
 
         DirectionsApi.newRequest(geoApiContext)
             .mode(TravelMode.DRIVING).origin(origin)

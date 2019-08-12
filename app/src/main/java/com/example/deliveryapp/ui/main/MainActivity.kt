@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.ActivityMainBinding
+import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
 import com.example.deliveryapp.utils.ViewModelFactory
 import com.google.gson.Gson
@@ -20,7 +21,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),Injectable {
 
     lateinit var binding: ActivityMainBinding
 
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
-        AndroidInjection.inject(this)
+
         viewModel = ViewModelProviders.of(this,viewModelFactory).get(MainViewModel::class.java)
 
         setUpSalutation()

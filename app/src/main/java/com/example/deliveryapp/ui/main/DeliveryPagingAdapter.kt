@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.paging.PagedList
@@ -119,7 +120,7 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
 
             binding.deliveryStatusText.text = itemView.context.getString(R.string.delivered)
 
-            binding.deliveryStatusText.setTextColor(itemView.context.resources.getColor(R.color.green))
+            binding.deliveryStatusText.setTextColor(ContextCompat.getColor(itemView.context,R.color.green))
 
             binding.deliveryStatusIcon.setImageResource(R.drawable.ic_check)
 
@@ -141,7 +142,7 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
 
             binding.deliveryStatusText.text = itemView.context.getString(R.string.cancelled)
 
-            binding.deliveryStatusText.setTextColor(itemView.context.resources.getColor(R.color.grey))
+            binding.deliveryStatusText.setTextColor(ContextCompat.getColor(itemView.context,R.color.grey))
 
             binding.deliveryStatusIcon.setImageResource(R.drawable.ic_cancelled)
 

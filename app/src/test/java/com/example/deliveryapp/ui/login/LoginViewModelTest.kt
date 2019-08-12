@@ -20,6 +20,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Rule
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import java.util.regex.Pattern
 
@@ -28,7 +29,7 @@ class LoginViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @MockK
+    @Mock
     lateinit var userRepository: UserRepository
 
     private lateinit var loginViewModel:LoginViewModel
@@ -47,12 +48,9 @@ class LoginViewModelTest {
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
+        MockitoAnnotations.initMocks(this)
 
-        coEvery { userRepository.getCurrentUser() }.returns (user)
-        runBlocking {
-            loginViewModel = LoginViewModel(userRepository,testProvider)
-        }
+        loginViewModel = LoginViewModel(userRepository,testProvider)
 
         loginViewModel.EMAIL_ADDRESS_PATTERN = EMAIL_ADDRESS_PATTERN
     }
@@ -64,12 +62,6 @@ class LoginViewModelTest {
     @Test
     fun `set initial validation map on init view model`() {
         assertNotNull(loginViewModel.validationMap)
-    }
-
-    @Test
-    fun `validate current user`(){
-        assertNotNull(loginViewModel.currentUser)
-        assertEquals("Ephraim Nartey", loginViewModel.currentUser!!.name)
     }
 
     @Test
@@ -136,7 +128,8 @@ class LoginViewModelTest {
     @Test
     fun `set network state on get network state`(){
         val networkState = MutableLiveData<NetworkState>()
-        every { userRepository.getNetworkState() }.returns(networkState)
+
+        Mockito.`when`(userRepository.getNetworkState()).thenReturn(networkState)
         loginViewModel.loginUser("narteyephraim@gmail.com", "asdfghjkl")
         assertNotNull(loginViewModel.getNetworkState())
     }

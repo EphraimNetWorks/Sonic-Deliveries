@@ -29,7 +29,8 @@ import com.example.deliveryapp.di.TestMainModule
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
 import com.example.deliveryapp.utils.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.compat.Place
+import com.schibstedspain.leku.LocationPickerActivity
 import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
@@ -307,16 +308,11 @@ class NewDeliveryActivityTest {
         val latLng = LatLng((0).toDouble(),(0).toDouble())
 
         val resultData = Intent()
-        val testPlaceResult = Place.builder()
-            .setAddress(testAddress)
-            .setName("Sakumono")
-            .setLatLng(latLng)
 
-        resultData.putExtra("selected_place",testPlaceResult as Parcelable)
         Intents.intending(
             Matchers.allOf(
-                IntentMatchers.hasComponent(ComponentNameMatchers.hasShortClassName(Constants.GMAPS_AUTOCOMPLETE_SHORT_CLASS_NAME)),
-                IntentMatchers.toPackage(Constants.GOOGLE_MAPS_PACKAGE_NAME)
+                IntentMatchers.hasComponent(ComponentNameMatchers.hasShortClassName(Constants.AUTOCOMPLETE_SHORT_CLASS_NAME)),
+                IntentMatchers.toPackage(Constants.AUTOCOMPLETE_PACKAGE_NAME)
             )
         ).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK,resultData))
 
@@ -336,16 +332,11 @@ class NewDeliveryActivityTest {
         val latLng = LatLng((0).toDouble(),(0).toDouble())
 
         val resultData = Intent()
-        val testPlaceResult = Place.builder()
-            .setAddress(testAddress)
-            .setName(testName)
-            .setLatLng(latLng)
 
-        resultData.putExtra("selected_place",testPlaceResult.build())
         Intents.intending(
             Matchers.allOf(
-                IntentMatchers.hasComponent(ComponentNameMatchers.hasShortClassName(Constants.GMAPS_AUTOCOMPLETE_SHORT_CLASS_NAME)),
-                IntentMatchers.toPackage(Constants.GOOGLE_MAPS_PACKAGE_NAME)
+                IntentMatchers.hasComponent(ComponentNameMatchers.hasShortClassName(Constants.AUTOCOMPLETE_SHORT_CLASS_NAME)),
+                IntentMatchers.toPackage(Constants.AUTOCOMPLETE_PACKAGE_NAME)
             )
         ).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK,resultData))
 

@@ -26,7 +26,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(),Injectable {
 
     private lateinit var binding: ActivityLoginBinding
 
@@ -37,17 +37,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AndroidInjection.inject(this)
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
 
         viewModel = ViewModelProviders.of(this,viewModelFactory).get(LoginViewModel::class.java)
-
-        viewModel.initializeCurrentUser()?.observe(this, Observer {
-            if(it!=null){
-                goToNextActivity(true)
-            }
-        })
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login)
         binding.lifecycleOwner = this

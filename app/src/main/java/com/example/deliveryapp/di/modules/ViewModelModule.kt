@@ -1,4 +1,4 @@
-package io.acsint.heritageGhana.MtnHeritageGhanaApp.di.modules
+package com.example.deliveryapp.di.modules
 
 import androidx.lifecycle.ViewModel
 import com.example.deliveryapp.di.ViewModelKey
@@ -6,6 +6,7 @@ import com.example.deliveryapp.ui.login.LoginViewModel
 import com.example.deliveryapp.ui.main.MainViewModel
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryViewModel
 import com.example.deliveryapp.ui.signup.SignUpViewModel
+import com.example.deliveryapp.ui.splash.SplashViewModel
 import com.example.deliveryapp.ui.track_delivery.TrackDeliveryViewModel
 import dagger.Binds
 import dagger.Module
@@ -38,5 +39,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TrackDeliveryViewModel::class)
     internal abstract fun trackDeliveryViewModel(trackDeliveryViewModel: TrackDeliveryViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SplashViewModel::class)
+    internal abstract fun splashViewModel(splashViewModel: SplashViewModel): ViewModel
     //Others ViewModels
 }

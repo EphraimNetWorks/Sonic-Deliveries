@@ -9,10 +9,10 @@ import javax.inject.Singleton
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
-import io.acsint.heritageGhana.MtnHeritageGhanaApp.di.modules.ActivityBuilder
+import com.example.deliveryapp.di.modules.ActivityBuilder
 import com.example.deliveryapp.di.modules.MainModule
 import com.example.deliveryapp.di.modules.RoomModule
-import io.acsint.heritageGhana.MtnHeritageGhanaApp.di.modules.ViewModelModule
+import com.example.deliveryapp.di.modules.ViewModelModule
 
 @Singleton
 @Component(modules = [AndroidSupportInjectionModule::class,

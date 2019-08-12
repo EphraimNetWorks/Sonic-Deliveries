@@ -16,14 +16,14 @@ import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivityNewDeliveryBinding
+import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import com.example.deliveryapp.utils.ViewModelFactory
-import com.google.android.libraries.places.api.Places
 import dagger.android.AndroidInjection
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import javax.inject.Inject
 
-class NewDeliveryActivity : AppCompatActivity(),DeliveryFormValidation{
+class NewDeliveryActivity : AppCompatActivity(),Injectable,DeliveryFormValidation{
 
     private lateinit var binding : ActivityNewDeliveryBinding
     private lateinit var formFragment: NewDeliveryFormFragment
@@ -39,8 +39,6 @@ class NewDeliveryActivity : AppCompatActivity(),DeliveryFormValidation{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AndroidInjection.inject(this)
-        Places.initialize(this.applicationContext, getString(R.string.google_maps_key))
 
         if (savedInstanceState != null) {
             //Restore the fragment's instance
