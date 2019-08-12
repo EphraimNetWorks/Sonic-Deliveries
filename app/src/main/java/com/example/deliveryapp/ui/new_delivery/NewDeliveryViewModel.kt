@@ -13,11 +13,12 @@ import javax.inject.Inject
 
 class NewDeliveryViewModel @Inject constructor(private val deliveryRepo:DeliveryRepository) :ViewModel(){
 
-    var networkState: LiveData<NetworkState>? = null
+    private var networkState: LiveData<NetworkState>? = null
 
-    init {
-        val nState = deliveryRepo.getNetworkState()
-        networkState = Transformations.map(nState){state-> state}
+
+    fun getNetworkState():LiveData<NetworkState>{
+        networkState = deliveryRepo.getNetworkState()
+        return networkState!!
     }
 
     fun submitNewDelivery(newDelivery: Delivery){

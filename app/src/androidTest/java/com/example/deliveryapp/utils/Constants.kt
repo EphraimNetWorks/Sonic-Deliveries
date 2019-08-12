@@ -12,4 +12,10 @@ object Constants {
     const val MAIN_ACTIVITY_SHORT_CLASS_NAME = ".ui.main.MainActivity"
 
     const val SIGNUP_ACTIVITY_SHORT_CLASS_NAME = ".ui.signup.SignUpActivity"
+
+    const val LOGIN_ACTIVITY_SHORT_CLASS_NAME = ".ui.login.LoginActivity"
+
+    const val GMAPS_AUTOCOMPLETE_SHORT_CLASS_NAME = ".libraries.places.widget.AutocompleteActivity"
+
+    const val GOOGLE_MAPS_PACKAGE_NAME = "com.google.android"
 }

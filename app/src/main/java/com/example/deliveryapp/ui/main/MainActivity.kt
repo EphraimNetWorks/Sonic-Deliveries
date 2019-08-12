@@ -12,7 +12,9 @@ import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.ActivityMainBinding
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
 import com.example.deliveryapp.utils.ViewModelFactory
+import com.google.gson.Gson
 import dagger.android.AndroidInjection
+import timber.log.Timber
 import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
@@ -50,8 +52,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startObservers(){
-        viewModel.mostRecentDelivery.observe(this, Observer { recentDelivery->
-            binding.summaryTextview.text = getSummaryMessage(recentDelivery)
+        viewModel.mostRecentDelivery.observe(this, Observer {
+            if(it!=null) binding.summaryTextview.text = getSummaryMessage(it)
         })
 
     }
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
     private fun getSalutationMessage(salutationType: Int):String{
         return when(salutationType){
             SALUTATION_TYPE_SIGN_UP -> getString(R.string.new_user_salutation)
-            SALUTATION_TYPE_NEW_LOGIN -> getString(R.string.new_user_salutation)
+            SALUTATION_TYPE_NEW_LOGIN -> getString(R.string.new_login_salutation)
             SALUTATION_TYPE_ALREADY_LOGGED_IN -> viewModel.getRandomItemFromList(
                 ArrayList<String>().apply {
                     addAll(resources.getStringArray(R.array.old_user_salutations))
@@ -79,6 +81,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getSummaryMessage(recentDelivery: Delivery):String{
 
+        Timber.d("recent delivery: ${Gson().toJson(recentDelivery)} comp: ${viewModel.completedDeliveries?.value?.size}")
         return when(recentDelivery.deliveryStatus){
             Delivery.STATUS_PLACED -> "${getString(R.string.placed_summary_message_prefix)} ${recentDelivery.title}" +
                     " ${getString(R.string.placed_summary_message_suffix)} ${recentDelivery.deliveryTimeDate!!.getDateFormat1()}"
@@ -104,7 +107,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
 
-        private const val EXTRA_SALUTATION_TYPE = "salutationType"
+        const val EXTRA_SALUTATION_TYPE = "salutationType"
 
         const val SALUTATION_TYPE_SIGN_UP = 0
 

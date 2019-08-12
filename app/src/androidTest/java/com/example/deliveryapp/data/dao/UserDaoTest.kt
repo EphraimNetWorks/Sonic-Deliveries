@@ -43,11 +43,11 @@ class UserDaoTest {
         }
         userDao.saveUser(user)
         var result = userDao.getCurrentUser()
-        assertThat(user, equalTo(result))
+        assertThat(user, equalTo(result!!.value))
 
         userDao.deleteUser(user)
         result = userDao.getCurrentUser()
-        assertThat(null, equalTo(result))
+        assertThat(null, equalTo(result!!.value))
     }
 
 }

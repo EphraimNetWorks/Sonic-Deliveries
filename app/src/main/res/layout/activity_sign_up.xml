@@ -78,7 +78,7 @@
                             android:id="@+id/signup_error_textview"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=""
+                            android:text="@{networkState.message}"
                             android:layout_marginTop="@dimen/margin_large"
                             android:textColor="@android:color/holo_red_light"
                             android:textSize="@dimen/textsize_normal"

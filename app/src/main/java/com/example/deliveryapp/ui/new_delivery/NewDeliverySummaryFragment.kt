@@ -26,18 +26,19 @@ class NewDeliverySummaryFragment :Fragment(){
 
         }
 
-        binding.delivery = mDelivery
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = DataBindingUtil.inflate<FragmentNewDeliverySummaryBinding>(inflater,
-            R.layout.fragment_new_delivery_summary, container, false)
+        binding = FragmentNewDeliverySummaryBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.delivery = mDelivery
+
     }
 
     companion object{

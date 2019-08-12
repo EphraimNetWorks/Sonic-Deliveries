@@ -16,7 +16,7 @@ import javax.inject.Inject
 import kotlin.collections.HashMap
 
 class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) :ViewModel(){
-    private lateinit var networkState: LiveData<NetworkState>
+    private var networkState: LiveData<NetworkState>? = null
     var validationMap: HashMap<String, Int> = HashMap()
 
 
@@ -104,7 +104,7 @@ class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) 
         ))
     }
 
-    fun getNetworkState(): LiveData<NetworkState> {
+    fun getNetworkState(): LiveData<NetworkState>? {
         this.networkState = userRepo.getNetworkState()
         return networkState
     }
@@ -125,7 +125,7 @@ class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) 
         const val EMPTY_PHONE_NUMBER = R.string.empty_phone_error_message
 
         @StringRes
-        const val INVALID_PASSWORD = R.string.invalid_password
+        const val INVALID_PASSWORD = R.string.invalid_password_error_message
         @StringRes
         const val PASSWORDS_DONT_MATCH = R.string.password_dont_match_error_message
         @StringRes

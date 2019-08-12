@@ -4,7 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="viewModel" type="com.example.deliveryapp.ui.new_delivery.NewDeliveryViewModel"/>
+        <variable name="networkState" type="com.example.deliveryapp.data.remote.NetworkState"/>
     </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,8 +42,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toolbar"
-                app:layout_constraintBottom_toTopOf="@id/next_button"
-                android:visibility="gone"/>
+                app:layout_constraintBottom_toTopOf="@id/next_button"/>
     
         <Button
             android:id="@+id/back_button"
@@ -55,11 +54,12 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginEnd="@dimen/margin_large"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:padding="@dimen/margin_normal"
+            android:padding="@dimen/padding_large"
             android:layout_marginBottom="@dimen/margin_large"
             android:background="@drawable/cancel_button_background"
             android:clickable="false"
             android:text="@string/back"
+            android:textStyle="bold"
             android:textColor="@color/grey"
             android:textSize="@dimen/textsize_large" />
     
@@ -73,10 +73,11 @@
             android:layout_marginStart="@dimen/margin_large"
             android:layout_marginEnd="@dimen/margin_large"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:padding="@dimen/margin_normal"
+            android:padding="@dimen/margin_large"
             android:layout_marginBottom="@dimen/margin_large"
             android:background="@drawable/color_button_background"
             android:clickable="false"
+            android:textStyle="bold"
             android:text="@string/next"
             android:textColor="@color/white"
             android:textSize="@dimen/textsize_large" />
@@ -84,7 +85,7 @@
         <include
             android:id="@+id/loading_layout"
             layout="@layout/loading_screen"
-            app:networkState="@{viewModel.networkState}"
+            app:networkState="@{networkState}"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

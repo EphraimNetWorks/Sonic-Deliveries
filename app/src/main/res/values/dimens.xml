@@ -39,4 +39,7 @@
     <dimen name="new_hr_location_button_size">30dp</dimen>
     <dimen name="retry_button_size">50dp</dimen>
     <dimen name="button_padding">10dp</dimen>
+    <dimen name="delivery_status_icon_size">70dp</dimen>
+    <dimen name="timeline_marker_size">20dp</dimen>
+    <dimen name="timeline_line_width">2dp</dimen>
 </resources>

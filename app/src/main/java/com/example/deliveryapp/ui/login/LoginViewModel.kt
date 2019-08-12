@@ -23,9 +23,9 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
                                          private val dispatcherProvider: DispatcherProvider = DispatcherProvider()
 ) :ViewModel(){
 
-    private lateinit var networkState:LiveData<NetworkState>
+    private var networkState:LiveData<NetworkState>?=null
     var validationMap: HashMap<String,Int> = HashMap()
-    var currentUser :User? = null
+    var currentUser :LiveData<User>? = null
     private val viewModelJob  = Job()
 
     var EMAIL_ADDRESS_PATTERN:Pattern? = null
@@ -33,7 +33,7 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
     init {
         EMAIL_ADDRESS_PATTERN = Patterns.EMAIL_ADDRESS
 
-        initializeCurrentUser()
+        //initializeCurrentUser()
         initializeValidationMap()
     }
 
@@ -43,9 +43,9 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
 
     }
 
-    private fun initializeCurrentUser() = runBlocking{
+    fun initializeCurrentUser() :LiveData<User>?{
         currentUser = userRepo.getCurrentUser()
-        Timber.e(Gson().toJson(currentUser))
+        return currentUser
     }
 
     fun validateLoginDetails(email:String, password:String):HashMap<String,Int>{
@@ -74,7 +74,7 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
         }else if(password.length<6){
             validationMessage = INVALID_PASSWORD
         }
-
+        Timber.d("Password:$password valmsg:$validationMessage")
         validationMap[VAL_MAP_PASSWORD_KEY] = validationMessage
 
     }
@@ -83,8 +83,9 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
         userRepo.login(email, password)
     }
 
-    fun getNetworkState(): LiveData<NetworkState>{
+    fun getNetworkState(): LiveData<NetworkState>?{
         this.networkState = userRepo.getNetworkState()
+
         return networkState
     }
 
@@ -101,7 +102,7 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
         @StringRes
         const val EMPTY_EMAIL_ADDRESS = R.string.empty_email_field_error
         @StringRes
-        const val INVALID_PASSWORD = R.string.invalid_password
+        const val INVALID_PASSWORD = R.string.invalid_password_error_message
         @StringRes
         const val EMPTY_PASSWORD = R.string.empty_password_field_error_message
 

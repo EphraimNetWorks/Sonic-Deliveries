@@ -76,7 +76,7 @@ class ApiService {
                 val deliveries = gson.fromJson<List<Delivery>>(gson.toJson(task.result?.data),
                     object :TypeToken<List<Delivery>>(){}.type)
                 callback.onSuccess(deliveries?: listOf())
-                Timber.w("load my deliveries success with size: ${deliveries.size}")
+                Timber.w("load my deliveries success with size: ${deliveries?.size}")
             }else{
                 callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
                 Timber.w("load my delivery failed with error:${task.exception?.message}")

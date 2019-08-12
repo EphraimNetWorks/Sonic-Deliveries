@@ -1,6 +1,7 @@
 package com.example.deliveryapp.utils
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.test.espresso.UiController
@@ -10,6 +11,9 @@ import com.google.android.material.textfield.TextInputLayout
 import org.hamcrest.Matcher
 import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
+import androidx.core.content.ContextCompat
+
+
 
 
 object CustomMatchers{
@@ -39,6 +43,7 @@ object CustomMatchers{
             }
         }
     }
+
     fun withTextInList(strings: List<String>): Matcher<View> {
         return object : BoundedMatcher<View, TextView>(TextView::class.java) {
 
@@ -55,6 +60,36 @@ object CustomMatchers{
                     }
                 }
                 return isTextInList
+            }
+        }
+    }
+
+    fun withTextColor(expectedId: Int): Matcher<View> {
+        return object : BoundedMatcher<View, TextView>(TextView::class.java) {
+
+            override fun matchesSafely(textView: TextView): Boolean {
+                val colorId = ContextCompat.getColor(textView.context, expectedId)
+                return textView.currentTextColor == colorId
+            }
+
+            override fun describeTo(description: Description) {
+                description.appendText("with text color: ")
+                description.appendValue(expectedId)
+            }
+        }
+    }
+
+    fun withImageResource(expectedId: Int): Matcher<View> {
+        return object : BoundedMatcher<View, ImageView>(ImageView::class.java) {
+
+            override fun matchesSafely(imageView: ImageView): Boolean {
+                val colorId = ContextCompat.getColor(imageView.context, expectedId)
+                return true//imageView.setImageResource() == colorId
+            }
+
+            override fun describeTo(description: Description) {
+                description.appendText("with image resource: ")
+                description.appendValue(expectedId)
             }
         }
     }

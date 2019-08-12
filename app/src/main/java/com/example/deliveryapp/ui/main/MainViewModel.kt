@@ -30,10 +30,16 @@ class MainViewModel @Inject constructor(
 
     var completedDeliveries: LiveData<PagedList<Delivery>>? = null
 
+    var deliveriesPlacedNo: LiveData<String>? = null
+
+    var deliveriesInTransitNo: LiveData<String>? = null
+
+    var completedDeliveriesNo: LiveData<String>? = null
+
     var mostRecentDelivery: LiveData<Delivery> = MutableLiveData()
 
     private var networkState:LiveData<NetworkState>? = null
-    var currentUser : User? = null
+    var currentUser : LiveData<User>? = null
     private val viewModelJob  = Job()
 
     init {
@@ -46,21 +52,28 @@ class MainViewModel @Inject constructor(
         initDeliveriesInTransit()
         initCompletedDeliveries()
 
+        deliveriesPlacedNo = Transformations.map(deliveriesPlaced!!) { it.size.toString()}
+        deliveriesInTransitNo = Transformations.map(deliveriesInTransit!!) { it.size.toString()}
+        completedDeliveriesNo = Transformations.map(completedDeliveries!!) { it.size.toString()}
+
         mostRecentDelivery = Transformations.map(deliveriesPlaced!!) { getMostRecentDelivery()}
         mostRecentDelivery = Transformations.map(deliveriesInTransit!!) { getMostRecentDelivery()}
         mostRecentDelivery = Transformations.map(completedDeliveries!!) { getMostRecentDelivery()}
     }
 
-    fun getMostRecentDelivery():Delivery{
+    fun getMostRecentDelivery():Delivery?{
 
         val mostRecentList: ArrayList<Delivery> = ArrayList()
+
+        Timber.d("completed deliveries: ${Gson().toJson(completedDeliveries?.value)}")
+        //take only first objects since room already sorts delivery
         if(!deliveriesPlaced!!.value.isNullOrEmpty()) mostRecentList.add(deliveriesPlaced!!.value!![0]!!)
         if(!deliveriesInTransit!!.value.isNullOrEmpty()) mostRecentList.add(deliveriesInTransit!!.value!![0]!!)
         if(!completedDeliveries!!.value.isNullOrEmpty()) mostRecentList.add(completedDeliveries!!.value!![0]!!)
 
         val sortedList = mostRecentList.sortedWith(compareBy { it.updatedAt })
 
-        return sortedList[sortedList.size -1]
+        return if(sortedList.isNotEmpty()) sortedList[sortedList.size -1] else null
     }
 
     fun initDeliveriesPlaced() {
@@ -84,7 +97,7 @@ class MainViewModel @Inject constructor(
 
     }
 
-    private fun initializeCurrentUser() = runBlocking{
+    private fun initializeCurrentUser() {
         currentUser = userRepo.getCurrentUser()
     }
 

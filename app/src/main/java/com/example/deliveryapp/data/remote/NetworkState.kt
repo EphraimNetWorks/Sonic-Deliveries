@@ -26,6 +26,8 @@ class NetworkState {
 
         var LOADING = NetworkState(Status.RUNNING)
 
+        var IDLE = NetworkState(Status.IDLE)
+
         fun error(message: String?): NetworkState {
             return NetworkState(Status.FAILED, message ?: "unknown error")
         }

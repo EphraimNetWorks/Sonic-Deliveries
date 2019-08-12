@@ -14,7 +14,7 @@ open class MainModule{
 
 
     @Provides
-    fun providesApiService(): ApiService {
+    internal open fun providesApiService(): ApiService {
         return ApiService()
     }
 

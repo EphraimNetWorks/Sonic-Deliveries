@@ -9,20 +9,24 @@ import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.di.FakeDeliveryRepository
 import com.example.deliveryapp.di.FakeUserRepository
 import com.example.deliveryapp.di.modules.MainModule
+import com.example.deliveryapp.utils.DispatcherProvider
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.Dispatchers
+import org.mockito.Mockito
+import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
-class TestMainModule(
-    private val userRepository: UserRepository = FakeUserRepository(),
-    private val detailsRepository: DeliveryRepository = FakeDeliveryRepository()): MainModule() {
+@Module
+class TestMainModule{
 
-
-    override fun providesUserRepository(apiService: ApiService, userDao: UserDao): UserRepository {
-        return userRepository
+    @Provides fun providesApiService(): ApiService {
+        return Mockito.mock(ApiService::class.java)
     }
 
-    override fun providesDeliveryRepository(apiService: ApiService, orderDao: DeliveryDao): DeliveryRepository {
-        return detailsRepository
+
+    @Provides fun providesDispactcherProvider(): DispatcherProvider {
+        return DispatcherProvider(Dispatchers.Unconfined,Dispatchers.Unconfined,Dispatchers.Unconfined)
     }
 }

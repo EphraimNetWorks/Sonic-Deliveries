@@ -1,8 +1,10 @@
 package com.example.deliveryapp.ui.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -37,12 +39,15 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
 
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+
         viewModel = ViewModelProviders.of(this,viewModelFactory).get(LoginViewModel::class.java)
 
-        Timber.e(Gson().toJson(viewModel.currentUser))
-        if(viewModel.currentUser!=null){
-            goToNextActivity(true)
-        }
+        viewModel.initializeCurrentUser()?.observe(this, Observer {
+            if(it!=null){
+                goToNextActivity(true)
+            }
+        })
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login)
         binding.lifecycleOwner = this
@@ -52,7 +57,7 @@ class LoginActivity : AppCompatActivity() {
     fun validateAndLoginUser(view: View){
 
         val valMap = viewModel.validateLoginDetails(binding.loginEmailEditext.text.toString(),
-            binding.loginEmailEditext.text.toString())
+            binding.loginPasswordEditext.text.toString())
 
         processValidationMap(valMap, binding.loginEmailEditext.text.toString(),
             binding.loginPasswordEditext.text.toString())
@@ -60,22 +65,39 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun handleNetworkState(networkState: NetworkState) {
-        if(networkState.status == Status.SUCCESS){
-            EspressoTestingIdlingResource.decrement()
-            goToNextActivity(false)
-        }else if(networkState.status == Status.FAILED){
-            EspressoTestingIdlingResource.decrement()
-            binding.loginButton.visibility = View.VISIBLE
+        when {
+            networkState.status == Status.SUCCESS -> {
+                Timber.d("log in success")
+                goToNextActivity(false)
+                EspressoTestingIdlingResource.decrement()
+            }
+            networkState.status == Status.RUNNING -> {
+                binding.loginButton.visibility = View.GONE
+                Timber.d("logging in")
+            }
+            networkState.status == Status.FAILED -> {
+                Timber.d("log in failed")
+                binding.loginButton.visibility = View.VISIBLE
+                EspressoTestingIdlingResource.decrement()
+            }
         }
     }
 
     private fun goToNextActivity(isAlreadyLoggedIn:Boolean){
 
-        startActivity(MainActivity.newInstance(this,if(isAlreadyLoggedIn)
-            MainActivity.SALUTATION_TYPE_ALREADY_LOGGED_IN
-        else
-            MainActivity.SALUTATION_TYPE_NEW_LOGIN)
-        )
+        if(intent.hasExtra(MainActivity.EXTRA_SALUTATION_TYPE)){
+            startActivity(MainActivity.newInstance(this,intent.getIntExtra(MainActivity.EXTRA_SALUTATION_TYPE,
+                MainActivity.SALUTATION_TYPE_NEW_LOGIN)))
+        }else {
+            startActivity(
+                MainActivity.newInstance(
+                    this, if (isAlreadyLoggedIn)
+                        MainActivity.SALUTATION_TYPE_ALREADY_LOGGED_IN
+                    else
+                        MainActivity.SALUTATION_TYPE_NEW_LOGIN
+                )
+            )
+        }
     }
 
     private fun processValidationMap(valMap: HashMap<String,Int>, email:String, password:String){
@@ -89,17 +111,15 @@ class LoginActivity : AppCompatActivity() {
             }
             valMap[LoginViewModel.VAL_MAP_PASSWORD_KEY] != LoginViewModel.VAL_VALID -> {
 
-                binding.loginEmailTextLayout.error = getString(valMap[LoginViewModel.VAL_MAP_PASSWORD_KEY]!!)
+                binding.loginPasswordTextLayout.error = getString(valMap[LoginViewModel.VAL_MAP_PASSWORD_KEY]!!)
 
             }
             else -> {
 
-                binding.loginButton.visibility = View.GONE
-                Timber.e("email: $email, password:$password")
                 viewModel.loginUser(email,password)
 
                 EspressoTestingIdlingResource.increment()
-                viewModel.getNetworkState().observe(this, Observer { networkState->
+                viewModel.getNetworkState()!!.observe(this, Observer { networkState->
                     binding.networkState = networkState
                     handleNetworkState(networkState)})
             }
@@ -122,8 +142,16 @@ class LoginActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        viewModel.getNetworkState().removeObservers(this)
+        viewModel.getNetworkState()?.removeObservers(this)
         super.onDestroy()
+    }
+
+    companion object{
+        fun newInstance(context: Context, salutationType:Int): Intent {
+            return Intent(context,LoginActivity::class.java).apply {
+                putExtra(MainActivity.EXTRA_SALUTATION_TYPE, salutationType)
+            }
+        }
     }
 
 }

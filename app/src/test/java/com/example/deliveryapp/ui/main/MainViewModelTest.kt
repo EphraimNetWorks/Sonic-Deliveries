@@ -20,6 +20,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers
+import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
@@ -28,7 +29,7 @@ class MainViewModelTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @MockK
+    @Mock
     lateinit var userRepository: UserRepository
 
     @MockK
@@ -106,9 +107,9 @@ class MainViewModelTest{
 
     @Before
     fun setUp(){
-        MockKAnnotations.init(this)
+        MockitoAnnotations.initMocks(this)
 
-        coEvery { userRepository.getCurrentUser() }.returns (user)
+        Mockito.`when` { userRepository.getCurrentUser() }.thenReturn { MutableLiveData(user) }
 
         runBlocking {
             mainViewModel = MainViewModel(deliveryRepository, userRepository, testProvider)
@@ -128,10 +129,8 @@ class MainViewModelTest{
 
     @Test
     fun `validate set current user`(){
-        runBlocking {
-            assertNotNull(mainViewModel.currentUser)
-            assertEquals("Ephraim Nartey", mainViewModel.currentUser!!.name)
-        }
+        assertNotNull(mainViewModel.currentUser)
+        assertEquals("Ephraim Nartey", mainViewModel.currentUser!!.value!!.name)
     }
 
     @Test

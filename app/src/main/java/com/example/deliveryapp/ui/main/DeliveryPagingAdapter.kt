@@ -76,6 +76,7 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
 
         fun bindInTransitDelivery(delivery: Delivery){
             this.delivery = delivery
+            itemView.setOnClickListener(this)
 
             val binding = genericBinding as AdapterDeliveryInTransitBinding
             binding.deliveryItemName.text = delivery.title
@@ -83,13 +84,14 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
             val originString = "${itemView.context.getString(R.string.delivering_package_from)} ${delivery.pickUpAddress}"
             binding.deliveryOrigin.text = originString
 
-            binding.deliveryEta.text = "${delivery.estimatedTimeOfArrival}"
+            binding.deliveryEta.text = "${delivery.estimatedTimeOfArrivalDate!!.getDateFormat1()}"
 
             binding.executePendingBindings()
         }
 
         fun bindPlacedDelivery(delivery: Delivery){
             this.delivery = delivery
+            itemView.setOnClickListener(this)
 
             val binding = genericBinding as AdapterDeliveryPlacedBinding
             binding.deliveryItemName.text = delivery.title
@@ -97,13 +99,14 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
             val originString = "${itemView.context.getString(R.string.delivering_package_from)} ${delivery.pickUpAddress}"
             binding.deliveryOrigin.text = originString
 
-            binding.pickUpDate.text = "${delivery.pickUpTime}"
+            binding.pickUpDate.text = "${delivery.pickUpTimeDate!!.getDateFormat1()}"
 
             binding.executePendingBindings()
         }
 
         fun bindCompletedDelivery(delivery: Delivery){
             this.delivery = delivery
+            itemView.setOnClickListener(this)
 
             val binding = genericBinding as AdapterCompletedBinding
             binding.deliveryItemName.text = delivery.title
@@ -111,7 +114,7 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
             val originString = "${itemView.context.getString(R.string.delivering_package_from)} ${delivery.pickUpAddress}"
             binding.deliveryOrigin.text = originString
 
-            val dateDeliveredString = "${itemView.context.getString(R.string.delivered_on)} ${delivery.estimatedTimeOfArrival}"
+            val dateDeliveredString = "${itemView.context.getString(R.string.delivered_on)} ${delivery.deliveryTimeDate!!.getDateFormat1()}"
             binding.dateDelivered.text = dateDeliveredString
 
             binding.deliveryStatusText.text = itemView.context.getString(R.string.delivered)
@@ -125,6 +128,7 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
 
         fun bindCancelledDelivery(delivery: Delivery){
             this.delivery = delivery
+            itemView.setOnClickListener(this)
 
             val binding = genericBinding as AdapterCompletedBinding
             binding.deliveryItemName.text = delivery.title

@@ -11,9 +11,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/margin_normal"
-            app:markerSize="20dp"
+            app:markerSize="@dimen/timeline_marker_size"
             android:visibility="gone"
-            app:lineWidth="2dp"
+            app:lineWidth="@dimen/timeline_line_width"
             app:startLineColor="@color/blue"
             app:endLineColor="@color/blue"/>
         
@@ -26,8 +26,8 @@
             
             <ImageView
                 android:id="@+id/delivery_status_icon"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="@dimen/delivery_status_icon_size"
+                android:layout_height="@dimen/delivery_status_icon_size"
                 android:src="@drawable/ic_check"/>
             
             <TextView

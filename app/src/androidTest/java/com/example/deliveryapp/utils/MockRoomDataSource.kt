@@ -35,6 +35,7 @@ class MockRoomDataSource<Value>(private val list: List<Value>): PageKeyedDataSou
             val dataSourceFactory = Mockito.mock(DataSource.Factory::class.java) as DataSource.Factory<Int,Value>
             val dataSource = MockRoomDataSource(list)
 
+            //Mockito.doAnswer{dataSource}.`when`(dataSourceFactory.create())
             Mockito.`when`(dataSourceFactory.create()).thenReturn(dataSource)
 
             return dataSourceFactory

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -11,6 +12,7 @@ import androidx.test.espresso.idling.CountingIdlingResource
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivitySignUpBinding
+import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.ui.main.MainActivity
 import com.example.deliveryapp.utils.EspressoTestingIdlingResource
 import com.example.deliveryapp.utils.ViewModelFactory
@@ -35,6 +37,9 @@ class SignUpActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_sign_up)
 
         AndroidInjection.inject(this)
+
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+
         viewModel = ViewModelProviders.of(this,viewModelFactory).get(SignUpViewModel::class.java)
 
         binding.signupButton.setOnClickListener {
@@ -59,16 +64,16 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun handleNetworkState(networkState: NetworkState) {
         if(networkState.status == Status.SUCCESS){
-            EspressoTestingIdlingResource.decrement()
             goToNextActivity()
-        }else if(networkState.status == Status.FAILED){
             EspressoTestingIdlingResource.decrement()
+        }else if(networkState.status == Status.FAILED){
             binding.signupButton.visibility = View.VISIBLE
+            EspressoTestingIdlingResource.decrement()
         }
     }
 
     private fun goToNextActivity(){
-        startActivity(MainActivity.newInstance(this,MainActivity.SALUTATION_TYPE_SIGN_UP))
+        startActivity(LoginActivity.newInstance(this,MainActivity.SALUTATION_TYPE_SIGN_UP))
     }
 
     private fun processValidationMap(valMap: HashMap<String, Int>){
@@ -103,7 +108,7 @@ class SignUpActivity : AppCompatActivity() {
                 binding.signupPasswordEditext.text.toString())
 
             EspressoTestingIdlingResource.increment()
-            viewModel.getNetworkState().observe(this, Observer { networkState->
+            viewModel.getNetworkState()!!.observe(this, Observer { networkState->
                 binding.networkState = networkState
                 handleNetworkState(networkState)
             })
@@ -122,7 +127,7 @@ class SignUpActivity : AppCompatActivity() {
 
     override fun onDestroy() {
 
-        viewModel.getNetworkState().removeObservers(this)
+        viewModel.getNetworkState()?.removeObservers(this)
         super.onDestroy()
     }
 

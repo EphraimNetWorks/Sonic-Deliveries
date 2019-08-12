@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <ScrollView
+            android:id="@+id/form_fragment_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
@@ -102,16 +103,7 @@
                     app:layout_constraintTop_toTopOf="@id/pick_up_point_text_layout"
                     app:layout_constraintBottom_toBottomOf="@id/pick_up_point_text_layout"
                     app:layout_constraintEnd_toEndOf="@id/pick_up_point_text_layout"/>
-                
-                <ImageView
-                    android:id="@+id/pick_up_select_location_from_map"
-                    android:layout_width="@dimen/new_hr_location_button_size"
-                    android:layout_height="@dimen/new_hr_location_button_size"
-                    android:background="@drawable/ic_location"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginEnd="@dimen/margin_normal"
-                    app:layout_constraintEnd_toStartOf="@id/pick_up_search_location"
-                />
+
                 
                 <ImageView
                     android:id="@+id/pick_up_search_location"
@@ -177,16 +169,6 @@
                     app:layout_constraintEnd_toEndOf="@id/destination_text_layout"/>
                 
                 <ImageView
-                    android:id="@+id/destination_select_location_from_map"
-                    android:layout_width="@dimen/new_hr_location_button_size"
-                    android:layout_height="@dimen/new_hr_location_button_size"
-                    android:background="@drawable/ic_location"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginEnd="@dimen/margin_normal"
-                    app:layout_constraintEnd_toStartOf="@id/destination_search_location"
-                />
-                
-                <ImageView
                     android:id="@+id/destination_search_location"
                     android:layout_width="@dimen/new_hr_location_button_size"
                     android:layout_height="@dimen/new_hr_location_button_size"
@@ -214,6 +196,7 @@
                                  xmlns:map="http://schemas.android.com/apk/res-auto"
                                  xmlns:tools="http://schemas.android.com/tools"
                                  android:id="@+id/map"
+                                 android:visibility="visible"
                                  android:name="com.google.android.gms.maps.SupportMapFragment"
                                  android:layout_width="match_parent"
                                  android:layout_height="match_parent"

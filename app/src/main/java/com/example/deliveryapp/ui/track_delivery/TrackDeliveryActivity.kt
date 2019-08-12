@@ -1,11 +1,14 @@
 package com.example.deliveryapp.ui.track_delivery
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,9 +63,26 @@ class TrackDeliveryActivity : AppCompatActivity() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menuInflater.inflate(R.menu.track_delivery_menu, menu)
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             android.R.id.home -> finish()
+            R.menu.track_delivery_menu -> {
+                AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.cancel_delivery))
+                    .setMessage(getString(R.string.confirm_cancel_delivery))
+                    .setNegativeButton(getString(R.string.yes)){ dialog, _->
+                        trackDeliveryViewModel.cancelDelivery(mDelivery)
+                        dialog.dismiss()
+                    }.setPositiveButton(getString(R.string.no)){ dialog, _->
+                        dialog.dismiss()
+                    }.show()
+            }
         }
         return super.onOptionsItemSelected(item)
     }

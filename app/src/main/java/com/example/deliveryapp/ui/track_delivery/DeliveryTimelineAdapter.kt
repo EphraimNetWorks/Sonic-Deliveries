@@ -53,19 +53,19 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
             when(position){
                 0-> {
                     binding.deliveryStatusText.text = itemView.context.getString(R.string.delivery_order_placed)
-                    binding.deliveryStatusIcon.setImageResource(R.drawable.ic_check)
+                    binding.deliveryStatusIcon.setImageResource(R.drawable.delivery_placed)
                 }
                 1-> {
                     binding.deliveryStatusText.text = itemView.context.getString(R.string.package_in_transit)
-                    binding.deliveryStatusIcon.setImageResource(R.drawable.ic_check)
+                    binding.deliveryStatusIcon.setImageResource(R.drawable.delivery_in_transit)
                 }
                 2-> {
                     if(delivery.deliveryStatus == Delivery.STATUS_CANCELLED){
                         binding.deliveryStatusText.text = itemView.context.getString(R.string.delivery_cancelled)
-                        binding.deliveryStatusIcon.setImageResource(R.drawable.ic_check)
+                        binding.deliveryStatusIcon.setImageResource(R.drawable.delivery_cancelled)
                     }else {
                         binding.deliveryStatusText.text = itemView.context.getString(R.string.delivery_complete)
-                        binding.deliveryStatusIcon.setImageResource(R.drawable.ic_cancelled)
+                        binding.deliveryStatusIcon.setImageResource(R.drawable.idelivery_completed)
                     }
                 }
             }

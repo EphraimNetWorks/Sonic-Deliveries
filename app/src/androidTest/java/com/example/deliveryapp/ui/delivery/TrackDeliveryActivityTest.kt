@@ -89,12 +89,11 @@ class TrackDeliveryActivityTest {
 
         MockitoAnnotations.initMocks(this)
 
-        TestAppInjector(TestMainModule(FakeUserRepository(),deliveryRepo)).inject()
+        //TestAppInjector(TestMainModule(FakeUserRepository(),deliveryRepo)).inject()
+
+        TestAppInjector(FakeUserRepository(),deliveryRepo).newInject()
 
         testContext = InstrumentationRegistry.getInstrumentation().targetContext
-
-        testNormalDelivery.title
-
 
     }
 

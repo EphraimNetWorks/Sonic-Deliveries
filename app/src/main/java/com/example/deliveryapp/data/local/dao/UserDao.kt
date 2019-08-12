@@ -1,5 +1,6 @@
 package com.example.deliveryapp.data.local.dao
 
+import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.*
 import com.example.deliveryapp.data.local.entities.Delivery
@@ -15,6 +16,6 @@ interface UserDao {
     fun saveUser(user: User)
 
     @Query("SELECT * FROM user LIMIT 1")
-    fun getCurrentUser(): User?
+    fun getCurrentUser(): LiveData<User>?
 
 }

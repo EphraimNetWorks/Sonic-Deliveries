@@ -7,23 +7,25 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.PersistableBundle
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.adapters.AutoCompleteTextViewBindingAdapter
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
-import com.example.deliveryapp.databinding.ActivityNewOrderBinding
+import com.example.deliveryapp.data.remote.NetworkState
+import com.example.deliveryapp.databinding.ActivityNewDeliveryBinding
 import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import com.example.deliveryapp.utils.ViewModelFactory
+import com.google.android.libraries.places.api.Places
 import dagger.android.AndroidInjection
+import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import javax.inject.Inject
 
-class NewDeliveryActivity : AppCompatActivity() {
+class NewDeliveryActivity : AppCompatActivity(),DeliveryFormValidation{
 
-    private lateinit var binding : ActivityNewOrderBinding
+    private lateinit var binding : ActivityNewDeliveryBinding
     private lateinit var formFragment: NewDeliveryFormFragment
 
     @Inject
@@ -38,57 +40,57 @@ class NewDeliveryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
+        Places.initialize(this.applicationContext, getString(R.string.google_maps_key))
+
         if (savedInstanceState != null) {
             //Restore the fragment's instance
             formFragment = supportFragmentManager.getFragment(savedInstanceState, FORM_FRAGMENT_TAG) as NewDeliveryFormFragment
         }else{
             initNewDeliveryForms()
         }
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_new_order)
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_new_delivery)
+
+        setUpActionBar()
 
         viewModel = ViewModelProviders.of(this,viewModelFactory).get(NewDeliveryViewModel::class.java)
         binding.lifecycleOwner = this
-        binding.viewModel = viewModel
 
         setUpFormFragment()
 
-        startObservers()
+        binding.nextButton.setOnClickListener { onNextClicked() }
 
-        binding.nextButton.setOnClickListener {
-            onNextClicked()
-        }
+        binding.backButton.setOnClickListener { onBackClicked() }
+    }
 
-        binding.backButton.setOnClickListener {
-            onBackClicked()
-        }
+    private fun setUpActionBar(){
+        binding.toolbar.title = getString(R.string.new_delivery)
+        binding.toolbar.setTitleTextColor(Color.WHITE)
+        setSupportActionBar(binding.toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun onNextClicked(){
         if(currentFragment == FORM_FRAGMENT_TAG){
             formFragment.validateNewDelivery()
         }else if(currentFragment == SUMMARY_FRAGMENT_TAG){
+            viewModel.submitNewDelivery(mDelivery)
+            viewModel.getNetworkState().observe(this, Observer {
+                binding.networkState = it
+                handleNetworkState(it)})
+        }
+    }
 
+    private fun handleNetworkState(networkState: NetworkState){
+
+        if(networkState.status == Status.SUCCESS){
+            finish()
+            Toast.makeText(this,getString(R.string.new_delivery_success),Toast.LENGTH_LONG).show()
         }
     }
 
     private fun onBackClicked(){
         if(currentFragment == SUMMARY_FRAGMENT_TAG){
             setUpFormFragment()
-        }
-    }
-
-    private fun startObservers(){
-        formFragment.getNewDeliveryValidity().observe(this, Observer { isValid -> handleNewDeliveryValidity(isValid) })
-    }
-
-    private fun stopObservers(){
-        formFragment.getNewDeliveryValidity().removeObservers(this)
-    }
-
-    private fun handleNewDeliveryValidity(isValid: Boolean){
-        if(isValid){
-            mDelivery = formFragment.getNewDelivery()
-            setUpSummaryFragment(mDelivery)
         }
     }
 
@@ -103,36 +105,29 @@ class NewDeliveryActivity : AppCompatActivity() {
     }
 
     fun setUpFormFragment(){
-        val mPendingRunnable = Runnable {
-            // update the main content by replacing fragments
-            val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left,
-                android.R.anim.slide_out_right)
-            fragmentTransaction.replace(binding.formFrame.id, formFragment, FORM_FRAGMENT_TAG)
-            fragmentTransaction.commitAllowingStateLoss()
+        // update the main content by replacing fragments
+        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left,
+            android.R.anim.slide_out_right)
+        fragmentTransaction.replace(binding.formFrame.id, formFragment, FORM_FRAGMENT_TAG)
+        fragmentTransaction.commitAllowingStateLoss()
 
-            currentFragment = FORM_FRAGMENT_TAG
-            updateButtons()
-        }
 
-        Handler().post(mPendingRunnable)
+        currentFragment = FORM_FRAGMENT_TAG
+        updateButtons()
     }
 
     fun setUpSummaryFragment(delivery: Delivery){
         val summaryFragment = NewDeliverySummaryFragment.newInstance(delivery)
-        val mPendingRunnable = Runnable {
-            // update the main content by replacing fragments
-            val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left,
-                android.R.anim.slide_out_right)
-            fragmentTransaction.replace(binding.formFrame.id, summaryFragment, SUMMARY_FRAGMENT_TAG)
-            fragmentTransaction.commitAllowingStateLoss()
+        // update the main content by replacing fragments
+        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left,
+            android.R.anim.slide_out_right)
+        fragmentTransaction.replace(binding.formFrame.id, summaryFragment, SUMMARY_FRAGMENT_TAG)
+        fragmentTransaction.commitAllowingStateLoss()
 
-            currentFragment = SUMMARY_FRAGMENT_TAG
-            updateButtons()
-        }
-
-        Handler().post(mPendingRunnable)
+        currentFragment = SUMMARY_FRAGMENT_TAG
+        updateButtons()
     }
 
     private fun updateButtons(){
@@ -147,8 +142,13 @@ class NewDeliveryActivity : AppCompatActivity() {
         }
     }
 
+    override fun onValidationSuccess() {
+
+        mDelivery = formFragment.getNewDelivery()
+        setUpSummaryFragment(mDelivery)
+    }
+
     override fun onDestroy() {
-        stopObservers()
         super.onDestroy()
     }
 
@@ -158,7 +158,7 @@ class NewDeliveryActivity : AppCompatActivity() {
         const val SUMMARY_FRAGMENT_TAG = "summaryFragment"
 
         fun newInstance(context: Context): Intent {
-            return Intent(context, TrackDeliveryActivity::class.java)
+            return Intent(context, NewDeliveryActivity::class.java)
         }
     }
 }

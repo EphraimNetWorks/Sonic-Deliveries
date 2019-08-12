@@ -44,9 +44,6 @@ open class UserRepository(private val apiService:ApiService, private val userDao
         networkState.postValue(NetworkState.LOADING)
         apiService.signUpUser(signUpRequest,object : ApiCallback<User?>{
             override fun onSuccess(result: User?) {
-                GlobalScope.launch(Dispatchers.IO) {
-                    userDao.saveUser(result!!)
-                }
                 networkState.postValue(NetworkState.LOADED)
                 Timber.d("sign up user success")
             }
@@ -58,9 +55,7 @@ open class UserRepository(private val apiService:ApiService, private val userDao
         })
     }
 
-    suspend fun getCurrentUser(): User? {
-        return withContext(Dispatchers.IO) {
-            userDao.getCurrentUser()
-        }
+    fun getCurrentUser(): LiveData<User>? {
+        return userDao.getCurrentUser()
     }
 }

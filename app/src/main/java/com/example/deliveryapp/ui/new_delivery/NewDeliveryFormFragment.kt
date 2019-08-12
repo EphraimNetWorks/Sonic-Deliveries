@@ -1,7 +1,9 @@
 package com.example.deliveryapp.ui.new_delivery
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
@@ -9,6 +11,7 @@ import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -21,16 +24,19 @@ import com.example.deliveryapp.databinding.FragmentNewDeliveryFormBinding
 import com.example.deliveryapp.services.FetchAddressIntentService
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
-import com.google.android.gms.location.places.ui.PlaceAutocomplete
-import com.google.android.gms.location.places.ui.PlacePicker
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.maps.android.PolyUtil
 import com.google.maps.model.DirectionsResult
 import timber.log.Timber
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
@@ -38,10 +44,6 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
     lateinit var binding: FragmentNewDeliveryFormBinding
 
     private lateinit var viewModel:DeliveryFormViewModel
-
-    private var mPickUpLocation :LatLng? = null
-    private var mDestinationLocation :LatLng? = null
-    private lateinit var mPickUpDate :MyDate
     private lateinit var mMap: GoogleMap
 
     private var startPoint: Marker? = null
@@ -65,106 +67,93 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
 
         binding.pickUpSearchLocation.setOnClickListener { searchPlace(PICK_UP_PLACE_AUTOCOMPLETE_REQUEST_CODE) }
 
-        binding.pickUpSelectLocationFromMap.setOnClickListener { pickPointFromMap(PICK_UP_PLACE_PICKER_REQUEST) }
-
         binding.destinationSearchLocation.setOnClickListener { searchPlace(DESTINATION_PLACE_AUTOCOMPLETE_REQUEST_CODE) }
 
-        binding.destinationSelectLocationFromMap.setOnClickListener { pickPointFromMap(DESTINATION_PLACE_PICKER_REQUEST) }
+        binding.deliveryDateSelectButton.setOnClickListener { showDatePicker() }
 
         setUpMaps()
     }
 
     private fun startObservers(){
-        viewModel.validationMap.observe(this, Observer { validationMap-> handleDeliveryValMap(validationMap) })
+
         viewModel.directionsResult.observe(this, Observer { directionResult-> updatePolyline(directionResult) })
     }
 
     private fun stopObservers(){
-        viewModel.validationMap.removeObservers(this)
+        viewModel.directionsResult.removeObservers(this)
     }
 
     override fun onMapReady(map: GoogleMap) {
         mMap = map
+        binding.mapsProgressBar.visibility = View.GONE
 
+    }
+
+    private fun showDatePicker(){
+        DatePickerDialog(context!!,
+            viewModel.dateListener,
+            Calendar.YEAR,Calendar.MONTH,Calendar.DAY_OF_MONTH).show()
     }
 
     private fun setUpMaps() {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment: SupportMapFragment? = activity!!.supportFragmentManager
+        var mapFragment: SupportMapFragment? = activity!!.supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment?
         if (mapFragment == null) {
             val fragmentTransaction = childFragmentManager.beginTransaction()
-            val mapFragment = SupportMapFragment.newInstance()
+            mapFragment = SupportMapFragment.newInstance()
             fragmentTransaction.replace(R.id.map, mapFragment!!)
             fragmentTransaction.commit()
         }
-        mapFragment!!.getMapAsync(this)
+        mapFragment.getMapAsync(this)
 
     }
 
     private fun searchPlace(PLACE_AUTOCOMPLETE_REQUEST_CODE: Int) {
-        try {
-            val intent = PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
-                .build(activity)
-            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE)
-        } catch (e: GooglePlayServicesRepairableException) {
-            Timber.e(e)
-        } catch (e: GooglePlayServicesNotAvailableException) {
-            Timber.e(e)
-        }
+        // Set the fields to specify which types of place data to return.
+        val fields = listOf(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG,Place.Field.ADDRESS)
+
+        // Start the autocomplete intent.
+        val intent = Autocomplete.IntentBuilder(
+            AutocompleteActivityMode.FULLSCREEN, fields)
+            .build(context!!)
+
+        startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE)
 
     }
 
-    private fun pickPointFromMap(PLACE_PICKER_REQUEST: Int) {
-        try {
+    private fun setPickUpPoint(data: Intent) {
+        val place = Autocomplete.getPlaceFromIntent(data)
 
-            val builder = PlacePicker.IntentBuilder()
-
-            startActivityForResult(builder.build(activity), PLACE_PICKER_REQUEST)
-        } catch (e: GooglePlayServicesRepairableException) {
-            Timber.e(e)
-        } catch (e: GooglePlayServicesNotAvailableException) {
-            Timber.e(e)
-        }
-
-    }
-
-    private fun setPickUpPoint(data: Intent?) {
-        val place = PlacePicker.getPlace(context, data)
-        if(place.name.isNullOrEmpty()){
-            binding.pickUpAddressProgress.visibility = View.VISIBLE
-            startFetchAddressService(place.latLng, PICK_UP_ADDRESS_REQUEST)
-        }else {
-            binding.destinationAddressProgress.visibility = View.VISIBLE
-            binding.pickUpPointEditext.setText(place.name)
-        }
+        val placeAddress = " ${place.name}, ${place.address}"
+        //binding.pickUpAddressProgress.visibility = View.VISIBLE
+        binding.pickUpPointEditext.setText(placeAddress)
 
         startPoint?.remove()
 
-        this.startPoint = mMap.addMarker(MarkerOptions().position(place.latLng).title("PickUp Point"))
-        mPickUpLocation = place.latLng
+        this.startPoint = mMap.addMarker(MarkerOptions().position(place.latLng!!).title("PickUp Point"))
+        viewModel.mPickUpLocation = place.latLng
 
-        if(mPickUpLocation!= null && mDestinationLocation!=null) {
-            queryDirections(mPickUpLocation!!,mDestinationLocation!!)
+        if(viewModel.mPickUpLocation!= null && viewModel.mDestinationLocation!=null) {
+            queryDirections(viewModel.mPickUpLocation!!,viewModel.mDestinationLocation!!)
         }
 
     }
 
-    private fun setDestinationPoint(data: Intent?) {
-        val place = PlacePicker.getPlace(context, data)
-        if(place.name.isNullOrEmpty()){
-            startFetchAddressService(place.latLng, DESTINATION_ADDRESS_REQUEST)
-        }else {
-            binding.destinationEditext.setText(place.name)
-        }
+    private fun setDestinationPoint(data: Intent) {
+        val place = Autocomplete.getPlaceFromIntent(data)
+
+        val placeAddress = " ${place.name}, ${place.address}"
+        //binding.destinationAddressProgress.visibility = View.VISIBLE
+        binding.destinationEditext.setText(placeAddress)
 
         endPoint?.remove()
 
-        this.endPoint = mMap.addMarker(MarkerOptions().position(place.latLng).title("Destination"))
-        mDestinationLocation = place.latLng
+        this.endPoint = mMap.addMarker(MarkerOptions().position(place.latLng!!).title("Destination"))
+        viewModel.mDestinationLocation = place.latLng
 
-        if(mPickUpLocation!= null && mDestinationLocation!=null) {
-            queryDirections(mPickUpLocation!!,mDestinationLocation!!)
+        if(viewModel.mPickUpLocation!= null && viewModel.mDestinationLocation!=null) {
+            queryDirections(viewModel.mPickUpLocation!!,viewModel.mDestinationLocation!!)
         }
     }
 
@@ -202,14 +191,21 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
             validationMap[DeliveryFormViewModel.VAL_MAP_ITEM_NAME]!= DeliveryFormViewModel.VAL_VALID ->
                 binding.itemNameTextLayout.error = getString(validationMap[DeliveryFormViewModel.VAL_MAP_ITEM_NAME]!!)
 
-            validationMap[DeliveryFormViewModel.VAL_MAP_ITEM_NAME]!= DeliveryFormViewModel.VAL_VALID ->
-                binding.itemNameTextLayout.error = getString(validationMap[DeliveryFormViewModel.VAL_MAP_ITEM_NAME]!!)
+            validationMap[DeliveryFormViewModel.VAL_MAP_PICK_UP_ADDRESS]!= DeliveryFormViewModel.VAL_VALID ->
+                binding.pickUpPointTextLayout.error = getString(validationMap[DeliveryFormViewModel.VAL_MAP_PICK_UP_ADDRESS]!!)
 
-            validationMap[DeliveryFormViewModel.VAL_MAP_ITEM_NAME]!= DeliveryFormViewModel.VAL_VALID ->
-                binding.itemNameTextLayout.error = getString(validationMap[DeliveryFormViewModel.VAL_MAP_ITEM_NAME]!!)
+            validationMap[DeliveryFormViewModel.VAL_MAP_DESTINATION_ADDRESS]!= DeliveryFormViewModel.VAL_VALID ->
+                binding.destinationTextLayout.error = getString(validationMap[DeliveryFormViewModel.VAL_MAP_DESTINATION_ADDRESS]!!)
 
-            validationMap[DeliveryFormViewModel.VAL_MAP_ITEM_NAME]!= DeliveryFormViewModel.VAL_VALID ->
-                binding.itemNameTextLayout.error = getString(validationMap[DeliveryFormViewModel.VAL_MAP_ITEM_NAME]!!)
+            validationMap[DeliveryFormViewModel.VAL_MAP_PICK_UP_DATE]!= DeliveryFormViewModel.VAL_VALID -> {
+                binding.deliveryDateSelectButton.setBackgroundColor(Color.RED)
+                Toast.makeText(context!!, getString(validationMap[DeliveryFormViewModel.VAL_MAP_PICK_UP_DATE]!!)
+                    , Toast.LENGTH_LONG).show()
+            }
+        }
+
+        if(viewModel.isNewDeliveryValid()){
+            (activity as DeliveryFormValidation).onValidationSuccess()
         }
     }
 
@@ -236,8 +232,7 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = DataBindingUtil.inflate<FragmentNewDeliveryFormBinding>(inflater,
-            R.layout.fragment_new_delivery_form, container, false)
+        binding = FragmentNewDeliveryFormBinding.inflate(inflater,container,false)
         return binding.root
     }
 
@@ -246,23 +241,21 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
             title = binding.itemNameEditext.text.toString()
             pickUpAddress = binding.pickUpPointEditext.text.toString()
             destinationAddress = binding.destinationEditext.text.toString()
-            pickUpLocation = mPickUpLocation
-            destinationLocation = mDestinationLocation
-            pickUpTime = mPickUpDate.timeStamp
-            pickUpTimeDate = mPickUpDate
+            pickUpLocation = viewModel.mPickUpLocation
+            destinationLocation = viewModel.mDestinationLocation
+            pickUpTime = viewModel.mPickUpDate!!.timeStamp
+            pickUpTimeDate = viewModel.mPickUpDate
             additionalInfo = binding.additionalInfoEdittext.text.toString()
         }
     }
 
-    fun getNewDeliveryValidity():LiveData<Boolean>{
-        return viewModel.newDeliveryIsValid
-    }
-
     fun validateNewDelivery(){
-        viewModel.validateNewDelivery(binding.itemNameEditext.text.toString(),
+        val valMap = viewModel.validateNewDelivery(binding.itemNameEditext.text.toString(),
             binding.pickUpPointEditext.text.toString(),
             binding.destinationEditext.text.toString(),
-            mPickUpDate.getDateFormat1())
+            viewModel.mPickUpDate?.getDateFormat1())
+
+        handleDeliveryValMap(valMap)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -271,16 +264,16 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
 
         when (requestCode) {
             PICK_UP_PLACE_AUTOCOMPLETE_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                setPickUpPoint(data)
+                setPickUpPoint(data!!)
             }
             PICK_UP_PLACE_PICKER_REQUEST -> if (resultCode == Activity.RESULT_OK) {
-                setPickUpPoint(data)
+                setPickUpPoint(data!!)
             }
             DESTINATION_PLACE_AUTOCOMPLETE_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                setDestinationPoint(data)
+                setDestinationPoint(data!!)
             }
             DESTINATION_PLACE_PICKER_REQUEST -> if (resultCode == Activity.RESULT_OK) {
-                setDestinationPoint(data)
+                setDestinationPoint(data!!)
             }
         }
     }
@@ -292,68 +285,15 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
         const val PICK_UP_DATE_STATE = "pick_up_date"
         const val ADDITIONAL_INFO_STATE = "additional info"
 
-        const val PICK_UP_ADDRESS_RESULT_DATA_KEY = "pickUpAddressResult"
-        const val DESTINATION_ADDRESS_RESULT_DATA_KEY = "destinationAddressResult"
-
 
         private const val PICK_UP_PLACE_PICKER_REQUEST = 10
         private const val PICK_UP_PLACE_AUTOCOMPLETE_REQUEST_CODE = 11
         private const val DESTINATION_PLACE_PICKER_REQUEST = 20
         private const val DESTINATION_PLACE_AUTOCOMPLETE_REQUEST_CODE = 21
-        private const val PICK_UP_ADDRESS_REQUEST = 30
-        private const val DESTINATION_ADDRESS_REQUEST = 31
 
         fun newInstance():NewDeliveryFormFragment{
 
             return NewDeliveryFormFragment()
-        }
-    }
-
-
-    private fun startFetchAddressService(location:LatLng, requestCode: Int) {
-
-        val resultReceiver = AddressResultReceiver(Handler(),requestCode)
-
-        val intent = Intent(context, FetchAddressIntentService::class.java)
-        intent.putExtra(FetchAddressIntentService.RECEIVER, resultReceiver)
-        intent.putExtra(FetchAddressIntentService.LOCATION_DATA_EXTRA, location)
-        context?.startService(intent)
-    }
-
-    inner class AddressResultReceiver(handler: Handler, private val requestCode: Int) : ResultReceiver(handler) {
-
-        override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
-
-            if (resultData == null) {
-                return
-            }
-
-            // Display the address string
-            // or an error message sent from the intent service.
-
-            if(requestCode == PICK_UP_ADDRESS_REQUEST) {
-                val address = resultData.getString(PICK_UP_ADDRESS_RESULT_DATA_KEY)
-                if (address != null) {
-                    Timber.d("pick up location address: $address")
-                    binding.pickUpPointEditext.setText(address)
-                } else {
-                    Timber.d("pick up location address: address null")
-                }
-
-                binding.pickUpAddressProgress.visibility = View.GONE
-            }else if(requestCode == DESTINATION_ADDRESS_REQUEST){
-                val address = resultData.getString(DESTINATION_ADDRESS_RESULT_DATA_KEY)
-
-                if (address != null) {
-                    Timber.d("destination location address: $address")
-                    binding.destinationEditext.setText(address)
-                } else {
-                    Timber.d("destination location address: address null")
-                }
-
-                binding.pickUpAddressProgress.visibility = View.VISIBLE
-            }
-
         }
     }
 }

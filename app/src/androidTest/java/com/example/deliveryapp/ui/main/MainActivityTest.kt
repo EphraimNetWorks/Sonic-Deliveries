@@ -1,6 +1,7 @@
 package com.example.deliveryapp.ui.main
 
 import android.view.View
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PositionalDataSource
@@ -14,6 +15,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -24,12 +26,14 @@ import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.di.TestAppInjector
 import com.example.deliveryapp.di.TestMainModule
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
 import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import com.example.deliveryapp.utils.*
 import io.mockk.coEvery
+import io.mockk.mockkStatic
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -47,7 +51,7 @@ import kotlin.collections.ArrayList
 class MainActivityTest {
 
     @get:Rule
-    val activityRule = ActivityTestRule<MainActivity>(MainActivity::class.java, true, false)
+    val activityRule = IntentsTestRule<MainActivity>(MainActivity::class.java, true, false)
 
     @Rule
     @JvmField
@@ -58,58 +62,65 @@ class MainActivityTest {
     val espressoTestingIdlingResourceRule = EspressoTestingIdlingResourceRule()
 
     @Mock
-    lateinit var userRepo: UserRepository
+    lateinit var deliveryRepo: DeliveryRepository
 
     @Mock
-    lateinit var deliveryRepo: DeliveryRepository
+    lateinit var userRepo: UserRepository
 
     private lateinit var app:AndroidTestApplication
 
     private val placedDeliveries = listOf(
         Delivery().apply {
-            id = "1"
-            title = "One"
-            createdAt = 1565434531000
-            updatedAt = 1565434531000
-            deliveryStatus = Delivery.STATUS_PLACED},
-        Delivery().apply {
             id = "2"
             title = "Two"
             createdAt = 1565435531000
             updatedAt = 1565435531000
+            pickUpTime = 1565437531000
+            deliveryStatus = Delivery.STATUS_PLACED},
+        Delivery().apply {
+            id = "1"
+            title = "One"
+            createdAt = 1565434531000
+            updatedAt = 1565434531000
+            pickUpTime = 1565437531000
             deliveryStatus = Delivery.STATUS_PLACED})
     private val inTransitDeliveries = listOf(
+        Delivery().apply {
+            id = "3.5"
+            title = "Three And Half"
+            createdAt = 1565436531000
+            updatedAt = 1565437531000
+            estimatedTimeOfArrival = 1565437531000
+            deliveryStatus = Delivery.STATUS_IN_TRANSIT},
         Delivery().apply {
             id = "3"
             title = "Three"
             createdAt = 1565435531000
             updatedAt = 1565436531000
-            deliveryStatus = Delivery.STATUS_IN_TRANSIT},
-        Delivery().apply {
-            id = "3.5"
-            title = "Three And Half"
-            createdAt = 1565435531000
-            updatedAt = 1565436531000
+            estimatedTimeOfArrival = 1565436531000
             deliveryStatus = Delivery.STATUS_IN_TRANSIT})
     private val completedDeliveries = listOf(
-        Delivery().apply {
-            id = "4"
-            title = "Four"
-            createdAt = 1565435531000
-            updatedAt = 1565437531000
-            deliveryStatus = Delivery.STATUS_COMPLETED},
-        Delivery().apply {
-            id = "5"
-            title = "Five"
-            createdAt = 1565435531000
-            updatedAt = 1565438531000
-            deliveryStatus = Delivery.STATUS_COMPLETED},
         Delivery().apply {
             id = "6"
             title = "Six"
             createdAt = 1565435531000
             updatedAt = 1565439531000
-            deliveryStatus = Delivery.STATUS_CANCELLED})
+            deliveryTime = 1565439531000
+            deliveryStatus = Delivery.STATUS_CANCELLED},
+        Delivery().apply {
+            id = "5"
+            title = "Five"
+            createdAt = 1565435531000
+            updatedAt = 1565438531000
+            deliveryTime = 1565438531000
+            deliveryStatus = Delivery.STATUS_COMPLETED},
+        Delivery().apply {
+            id = "4"
+            title = "Four"
+            createdAt = 1565435531000
+            updatedAt = 1565437531000
+            deliveryTime = 1565437531000
+            deliveryStatus = Delivery.STATUS_COMPLETED})
 
     private val testUser = User().apply {
         id = "252"
@@ -121,24 +132,31 @@ class MainActivityTest {
 
         MockitoAnnotations.initMocks(this)
 
-        TestAppInjector(TestMainModule(userRepo,deliveryRepo)).inject()
+        TestAppInjector(userRepo,deliveryRepo).newInject()
 
-        coEvery { userRepo.getCurrentUser() }.returns (testUser)
+        val testUserLD = MutableLiveData(testUser)
 
         app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as AndroidTestApplication
 
-        Mockito.doAnswer{MockRoomDataSource.mockDataSourceFactory(placedDeliveries)}
-            .`when`(deliveryRepo.getDeliveriesPlaced())
-        Mockito.doAnswer{MockRoomDataSource.mockDataSourceFactory(inTransitDeliveries)}
-            .`when`(deliveryRepo.getDeliveriesInTransit())
-        Mockito.doAnswer{MockRoomDataSource.mockDataSourceFactory(completedDeliveries)}
-            .`when`(deliveryRepo.getCompletedDeliveries())
+        val placedDS= MockRoomDataSource.mockDataSourceFactory(placedDeliveries)
+        val inTransitDS= MockRoomDataSource.mockDataSourceFactory(inTransitDeliveries)
+        val completedDS= MockRoomDataSource.mockDataSourceFactory(completedDeliveries)
+
+        Mockito.`when`(deliveryRepo.getDeliveriesPlaced())
+            .thenReturn(placedDS)
+        Mockito.`when`(deliveryRepo.getDeliveriesInTransit())
+            .thenReturn(inTransitDS)
+        Mockito.`when`(deliveryRepo.getCompletedDeliveries())
+            .thenReturn(completedDS)
+        Mockito.`when`(userRepo.getCurrentUser()).thenReturn (testUserLD)
 
     }
 
     @Test
     fun showNewUserSalutation(){
 
+        Mockito.`when`(deliveryRepo.getNetworkState())
+            .thenReturn(MutableLiveData(NetworkState.LOADED))
         activityRule.launchActivity(MainActivity.newInstance(app,MainActivity.SALUTATION_TYPE_SIGN_UP))
 
         EspressoTestUtil.disableProgressBarAnimations(activityRule)
@@ -151,6 +169,8 @@ class MainActivityTest {
     @Test
     fun showNewLoginSalutation(){
 
+        Mockito.`when`(deliveryRepo.getNetworkState())
+            .thenReturn(MutableLiveData(NetworkState.LOADED))
         activityRule.launchActivity(MainActivity.newInstance(app,MainActivity.SALUTATION_TYPE_NEW_LOGIN))
 
         EspressoTestUtil.disableProgressBarAnimations(activityRule)
@@ -163,6 +183,8 @@ class MainActivityTest {
     @Test
     fun showAlreadyLoggedInUserSalutation(){
 
+        Mockito.`when`(deliveryRepo.getNetworkState())
+            .thenReturn(MutableLiveData(NetworkState.LOADED))
         activityRule.launchActivity(MainActivity.newInstance(app,MainActivity.SALUTATION_TYPE_ALREADY_LOGGED_IN))
 
         EspressoTestUtil.disableProgressBarAnimations(activityRule)
@@ -200,6 +222,10 @@ class MainActivityTest {
 
         normalMainActivityLaunch()
 
+        Espresso.onView(ViewMatchers.withId(R.id.placed_deliveries_recycler_view))
+            .perform(ViewActions.scrollTo())
+
+        Thread.sleep(3000)
         RecyclerViewInteraction<Delivery>(ViewMatchers.withId(R.id.placed_deliveries_recycler_view))
             .withItems(placedDeliveries)
             .customCheck(object :RecyclerViewInteraction.ItemViewAssertion<Delivery>{
@@ -212,6 +238,9 @@ class MainActivityTest {
                 }
             })
 
+        Espresso.onView(ViewMatchers.withId(R.id.in_transit_deliveries_recycler_view))
+            .perform(ViewActions.scrollTo())
+
         RecyclerViewInteraction<Delivery>(ViewMatchers.withId(R.id.in_transit_deliveries_recycler_view))
             .withItems(inTransitDeliveries)
             .customCheck(object :RecyclerViewInteraction.ItemViewAssertion<Delivery>{
@@ -223,6 +252,10 @@ class MainActivityTest {
                         .check(view, e)
                 }
             })
+
+
+        Espresso.onView(ViewMatchers.withId(R.id.completed_deliveries_recycler_view))
+            .perform(ViewActions.scrollTo())
 
         RecyclerViewInteraction<Delivery>(ViewMatchers.withId(R.id.completed_deliveries_recycler_view))
             .withItems(completedDeliveries)
@@ -260,6 +293,9 @@ class MainActivityTest {
 
         val positionToClick = 0
 
+        Espresso.onView(ViewMatchers.withId(R.id.placed_deliveries_no))
+            .perform(ViewActions.scrollTo())
+
         Espresso.onView(ViewMatchers.withId(R.id.placed_deliveries_recycler_view))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DeliveryPagingAdapter.DeliveryViewHolder>(positionToClick, ViewActions.click()))
@@ -281,6 +317,10 @@ class MainActivityTest {
         normalMainActivityLaunch()
 
         val positionToClick = 0
+
+
+        Espresso.onView(ViewMatchers.withId(R.id.in_transit_deliveries_recycler_view))
+            .perform(ViewActions.scrollTo())
 
         Espresso.onView(ViewMatchers.withId(R.id.in_transit_deliveries_recycler_view))
             .perform(
@@ -305,6 +345,9 @@ class MainActivityTest {
         val positionToClick = 0
 
         Espresso.onView(ViewMatchers.withId(R.id.completed_deliveries_recycler_view))
+            .perform(ViewActions.scrollTo())
+
+        Espresso.onView(ViewMatchers.withId(R.id.completed_deliveries_recycler_view))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<DeliveryPagingAdapter.DeliveryViewHolder>(0, ViewActions.click()))
 
@@ -321,6 +364,8 @@ class MainActivityTest {
 
     private fun normalMainActivityLaunch(){
 
+        Mockito.`when`(deliveryRepo.getNetworkState())
+            .thenReturn(MutableLiveData(NetworkState.LOADED))
         activityRule.launchActivity(MainActivity.newInstance(app,MainActivity.SALUTATION_TYPE_ALREADY_LOGGED_IN))
 
         EspressoTestUtil.disableProgressBarAnimations(activityRule)

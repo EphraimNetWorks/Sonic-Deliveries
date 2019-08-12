@@ -65,6 +65,14 @@
     <string name="new_login_salutation">Welcome back,</string>
     <string name="estimated_time_of_arrival">Estimated Time of Arrival</string>
     <string name="pick_up_date_title">Pick Up Date</string>
+    <string name="new_delivery">New Delivery</string>
+    <string name="cancel">Cancel</string>
+    <string name="cancel_delivery">Cancel Delivery</string>
+    <string name="confirm_cancel_delivery">Are you sure you want to cancel your delivery?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="new_delivery_success">Your delivery has been successfully placed</string>
 
     <string-array name="old_user_salutations">
         <item>Hi there,</item>

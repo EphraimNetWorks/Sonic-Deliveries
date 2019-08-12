@@ -20,24 +20,28 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
+import android.widget.DatePicker
+import android.app.DatePickerDialog
+import com.example.deliveryapp.data.local.models.MyDate
+
 
 class DeliveryFormViewModel :ViewModel(){
 
 
-    var validationMap: MutableLiveData<HashMap<String, Int>> = MutableLiveData()
+    lateinit var validationMap: HashMap<String, Int>
+
+    var mPickUpLocation :LatLng? = null
+    var mDestinationLocation :LatLng? = null
+    var mPickUpDate : MyDate? = null
 
     var directionsResult:MutableLiveData<DirectionsResult> = MutableLiveData()
 
-    var newDeliveryIsValid: LiveData<Boolean> = MutableLiveData()
-
     init {
         initializeValidationMap()
-
-        newDeliveryIsValid = Transformations.map(validationMap){ checkIfDeliveryIsValid() }
     }
 
-    private fun checkIfDeliveryIsValid():Boolean{
-        for(obj in validationMap.value!!.values ){
+    fun isNewDeliveryValid():Boolean{
+        for(obj in validationMap.values){
             if(obj != VAL_VALID) return false
         }
         return true
@@ -49,28 +53,34 @@ class DeliveryFormViewModel :ViewModel(){
         initialMap[VAL_MAP_PICK_UP_ADDRESS] = VAL_DEFAULT
         initialMap[VAL_MAP_DESTINATION_ADDRESS] = VAL_DEFAULT
         initialMap[VAL_MAP_PICK_UP_DATE] = VAL_DEFAULT
-        validationMap.value = initialMap
+        validationMap = initialMap
     }
 
     fun validateNewDelivery(itemName: String,
                             pickUpAddress: String,
                             destinationAddress: String,
-                            pickUpDate: String){
+                            pickUpDate: String?):HashMap<String,Int>{
         validateItemName(itemName)
         validatePickUpAddress(pickUpAddress)
         validateDestinationAddress(destinationAddress)
         validatePickUpDate(pickUpDate)
 
+        return validationMap
     }
+
+    val dateListener: DatePickerDialog.OnDateSetListener =
+        DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+
+            mPickUpDate = MyDate(year,monthOfYear,dayOfMonth)
+        }
 
     fun validateItemName(itemName:String){
         var validationMessage = VAL_VALID
         if(itemName.isEmpty()){
             validationMessage = EMPTY_ITEM_NAME
         }
-        val map = validationMap.value!!
-        map[VAL_MAP_ITEM_NAME] = validationMessage
-        validationMap.value = map
+
+        validationMap[VAL_MAP_ITEM_NAME] = validationMessage
 
     }
 
@@ -79,9 +89,8 @@ class DeliveryFormViewModel :ViewModel(){
         if(pickUpAddress.isEmpty()){
             validationMessage = EMPTY_PICK_UP_ADDRESS
         }
-        val map = validationMap.value!!
-        map[VAL_MAP_ITEM_NAME] = validationMessage
-        validationMap.value = map
+
+        validationMap[VAL_MAP_PICK_UP_ADDRESS] = validationMessage
 
     }
 
@@ -90,20 +99,18 @@ class DeliveryFormViewModel :ViewModel(){
         if(destinationAddress.isEmpty()){
             validationMessage = EMPTY_DESTINATION_ADDRESS
         }
-        val map = validationMap.value!!
-        map[VAL_MAP_ITEM_NAME] = validationMessage
-        validationMap.value = map
+
+        validationMap[VAL_MAP_DESTINATION_ADDRESS] = validationMessage
 
     }
 
-    fun validatePickUpDate(pickUpDate:String){
+    fun validatePickUpDate(pickUpDate:String?){
         var validationMessage = VAL_VALID
-        if(pickUpDate.isEmpty()){
+        if(pickUpDate.isNullOrEmpty()){
             validationMessage = EMPTY_PICK_UP_DATE
         }
-        val map = validationMap.value!!
-        map[VAL_MAP_ITEM_NAME] = validationMessage
-        validationMap.value = map
+
+        validationMap[VAL_MAP_PICK_UP_DATE] = validationMessage
 
     }
 
