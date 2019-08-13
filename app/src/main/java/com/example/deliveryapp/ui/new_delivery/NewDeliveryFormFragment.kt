@@ -78,11 +78,11 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
 
     private fun startObservers(){
 
-        viewModel.directionsResult.observe(this, Observer { directionResult-> updatePolyline(directionResult) })
+        viewModel.directionsResult!!.observe(this, Observer { directionResult-> updatePolyline(directionResult) })
     }
 
     private fun stopObservers(){
-        viewModel.directionsResult.removeObservers(this)
+        viewModel.directionsResult?.removeObservers(this)
     }
 
     override fun onMapReady(map: GoogleMap) {

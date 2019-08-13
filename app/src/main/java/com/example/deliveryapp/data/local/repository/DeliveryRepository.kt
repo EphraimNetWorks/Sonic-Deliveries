@@ -1,5 +1,6 @@
 package com.example.deliveryapp.data.local.repository
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import com.example.deliveryapp.data.local.dao.DeliveryDao
@@ -8,6 +9,8 @@ import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.utils.DispatcherProvider
+import com.google.maps.model.DirectionsResult
+import com.google.maps.model.LatLng
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -128,5 +131,24 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
                 networkState.postValue(NetworkState.error(errMsg))
             }
         })
+    }
+
+    val directionResults = MutableLiveData<DirectionsResult>()
+
+    fun getDirectionResults(origin: LatLng, destination: LatLng, apiKey: String): LiveData<DirectionsResult> {
+        networkState.postValue(NetworkState.LOADING)
+
+        apiService.getDirections(origin,destination,apiKey, object : ApiCallback<DirectionsResult>{
+            override fun onSuccess(result: DirectionsResult) {
+
+                directionResults.postValue(result)
+                Timber.d("get direction result success")
+            }
+
+            override fun onFailed(errMsg: String) {
+                Timber.d("get direction result failed with error: $errMsg")
+            }
+        })
+        return directionResults
     }
 }

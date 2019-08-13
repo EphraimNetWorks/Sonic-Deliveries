@@ -7,7 +7,7 @@ import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.ui.splash.SplashViewModel
 import com.example.deliveryapp.utils.DispatcherProvider
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.whenever
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every

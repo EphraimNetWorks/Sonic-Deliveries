@@ -8,7 +8,7 @@ import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.utils.DispatcherProvider
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.whenever
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every

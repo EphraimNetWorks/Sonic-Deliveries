@@ -1,31 +1,20 @@
 package com.example.deliveryapp.ui.new_delivery
 
-import android.hardware.SensorAdditionalInfo
+
 import androidx.annotation.StringRes
-import androidx.arch.core.util.Function
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.deliveryapp.R
-import com.example.deliveryapp.data.local.entities.Delivery
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.DirectionsApi
-import com.google.maps.GeoApiContext
-import com.google.maps.PendingResult
 import com.google.maps.model.DirectionsResult
-import com.google.maps.model.TravelMode
-import org.joda.time.DateTime
-import timber.log.Timber
-import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
-import android.widget.DatePicker
-import android.app.DatePickerDialog
 import com.example.deliveryapp.data.local.models.MyDate
+import com.example.deliveryapp.data.local.repository.DeliveryRepository
+import javax.inject.Inject
 
 
-class DeliveryFormViewModel :ViewModel(){
+class DeliveryFormViewModel @Inject constructor(private val deliveryRepo:DeliveryRepository) :ViewModel(){
 
 
     lateinit var validationMap: HashMap<String, Int>
@@ -34,10 +23,14 @@ class DeliveryFormViewModel :ViewModel(){
     var mDestinationLocation :LatLng? = null
     var mPickUpDate : MyDate? = null
 
-    var directionsResult:MutableLiveData<DirectionsResult> = MutableLiveData()
+    var directionsResult:LiveData<DirectionsResult>? = null
 
     init {
         initializeValidationMap()
+
+        val direcRes = deliveryRepo.directionResults
+
+        this.directionsResult = Transformations.map(direcRes) { it }
     }
 
     fun isNewDeliveryValid():Boolean{
@@ -109,27 +102,8 @@ class DeliveryFormViewModel :ViewModel(){
     }
 
     fun getDirections(origin: com.google.maps.model.LatLng, destination: com.google.maps.model.LatLng, apiKey: String) {
-        val geoApiContext = GeoApiContext.Builder()
-            .queryRateLimit(3)
-            .apiKey(apiKey)
-            .connectTimeout(1, TimeUnit.SECONDS)
-            .readTimeout(1, TimeUnit.SECONDS)
-            .writeTimeout(1, TimeUnit.SECONDS)
-            .build()
 
-        DirectionsApi.newRequest(geoApiContext)
-            .mode(TravelMode.DRIVING).origin(origin)
-            .destination(destination).departureTime(DateTime())
-            .setCallback(object : PendingResult.Callback<DirectionsResult> {
-                override fun onResult(result: DirectionsResult) {
-                    directionsResult.postValue(result)
-                    Timber.e("Get Directions Result success")
-                }
-
-                override fun onFailure(e: Throwable) {
-                    Timber.e("Get Directions Result failed with error: %s", e.message)
-                }
-            })
+        deliveryRepo.getDirectionResults(origin,destination,apiKey)
     }
 
     companion object{

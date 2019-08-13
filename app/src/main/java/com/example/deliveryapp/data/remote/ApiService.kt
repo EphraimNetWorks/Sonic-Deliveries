@@ -7,7 +7,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.google.maps.DirectionsApi
+import com.google.maps.GeoApiContext
+import com.google.maps.PendingResult
+import com.google.maps.model.DirectionsResult
+import com.google.maps.model.TravelMode
+import org.joda.time.DateTime
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 
 class ApiService {
@@ -113,6 +120,32 @@ class ApiService {
                 Timber.w("send new delivery failed with error:${task.exception?.message}")
             }
         }
+    }
+
+    fun getDirections(origin: com.google.maps.model.LatLng, destination: com.google.maps.model.LatLng, apiKey: String,
+                      apiCallback: ApiCallback<DirectionsResult>) {
+        val geoApiContext = GeoApiContext.Builder()
+            .queryRateLimit(3)
+            .apiKey(apiKey)
+            .connectTimeout(1, TimeUnit.SECONDS)
+            .readTimeout(1, TimeUnit.SECONDS)
+            .writeTimeout(1, TimeUnit.SECONDS)
+            .build()
+
+        DirectionsApi.newRequest(geoApiContext)
+            .mode(TravelMode.DRIVING).origin(origin)
+            .destination(destination).departureTime(DateTime())
+            .setCallback(object : PendingResult.Callback<DirectionsResult> {
+                override fun onResult(result: DirectionsResult) {
+                    apiCallback.onSuccess(result)
+                    Timber.e("Get Directions Result success")
+                }
+
+                override fun onFailure(e: Throwable) {
+                    apiCallback.onFailed(e.localizedMessage)
+                    Timber.e("Get Directions Result failed with error: %s", e.message)
+                }
+            })
     }
 
     companion object{

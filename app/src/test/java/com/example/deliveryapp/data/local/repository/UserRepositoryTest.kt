@@ -6,7 +6,7 @@ import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.request.SignUpRequest
-import com.nhaarman.mockito_kotlin.capture
+import com.nhaarman.mockitokotlin2.capture
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import org.junit.Before
 

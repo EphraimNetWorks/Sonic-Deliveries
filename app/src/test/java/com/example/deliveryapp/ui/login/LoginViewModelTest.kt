@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
+import com.example.deliveryapp.ui.new_delivery.DeliveryFormViewModel
 import com.example.deliveryapp.utils.DispatcherProvider
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.whenever
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -62,6 +63,7 @@ class LoginViewModelTest {
     @Test
     fun `set initial validation map on init view model`() {
         assertNotNull(loginViewModel.validationMap)
+        loginViewModel.validationMap.values.forEach { assertEquals(DeliveryFormViewModel.VAL_DEFAULT,it) }
     }
 
     @Test

@@ -5,7 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
-import com.nhaarman.mockito_kotlin.whenever
+import com.example.deliveryapp.ui.new_delivery.DeliveryFormViewModel
+import com.nhaarman.mockitokotlin2.whenever
 import org.junit.After
 import org.junit.Before
 
@@ -42,13 +43,14 @@ class SignUpViewModelTest {
     @Test
     fun `set initial validation map on init view model`() {
         assertNotNull(signUpViewModel.validationMap)
+        signUpViewModel.validationMap.values.forEach { assertEquals(DeliveryFormViewModel.VAL_DEFAULT,it) }
     }
 
     @Test
     fun `set validation results for all fields after validate login details`() {
         signUpViewModel.validateSignUpDetails("","","","","")
         var validationResultsSet = true
-        for(result in signUpViewModel.validationMap!!.values){
+        for(result in signUpViewModel.validationMap.values){
             validationResultsSet = result != SignUpViewModel.VAL_DEFAULT
         }
         assertTrue(validationResultsSet)

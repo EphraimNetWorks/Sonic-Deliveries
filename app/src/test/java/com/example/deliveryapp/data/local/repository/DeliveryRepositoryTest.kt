@@ -8,8 +8,10 @@ import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.utils.DispatcherProvider
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.capture
+import com.google.maps.model.DirectionsResult
+import com.google.maps.model.LatLng
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.capture
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import kotlinx.coroutines.Dispatchers
 import org.junit.Before
@@ -36,6 +38,9 @@ class DeliveryRepositoryTest {
 
     @Captor
     lateinit var submitDeliveryCallbackCaptor: ArgumentCaptor<ApiCallback<Boolean>>
+
+    @Captor
+    lateinit var directionsCallbackCaptor: ArgumentCaptor<ApiCallback<DirectionsResult>>
 
     @Captor
     lateinit var cancelDeliveryCallbackCaptor: ArgumentCaptor<ApiCallback<Boolean>>
@@ -75,6 +80,7 @@ class DeliveryRepositoryTest {
         Mockito.`when`(deliveryDao.getDeliveriesPlaced()).thenReturn(dataSourceMock)
         Mockito.`when`(deliveryDao.getDeliveriesInTransit()).thenReturn(dataSourceMock)
         Mockito.`when`(deliveryDao.getCompletedDeliveries()).thenReturn(dataSourceMock)
+
 
     }
 
@@ -316,7 +322,7 @@ class DeliveryRepositoryTest {
     }
 
     @Test
-    fun `process submitDelivery result when positivie callback called`(){
+    fun `process submitDelivery result when positive callback called`(){
 
         deliveryRepository.submitNewDelivery(testdelivery)
 
@@ -329,6 +335,29 @@ class DeliveryRepositoryTest {
         assertEquals(
             deliveryRepository.getNetworkState().value!!.status,
             Status.SUCCESS
+        )
+    }
+
+    @Test
+    fun `process direction result result when positive callback called`(){
+
+        val testDirectionResult = DirectionsResult()
+
+        val testOrigin = LatLng()
+        val testDestination = LatLng()
+        val testApiKey = "test"
+
+        deliveryRepository.getDirectionResults(testOrigin,testDestination,testApiKey)
+
+        verify(apiService).getDirections(any(), any(),any(),capture(directionsCallbackCaptor))
+
+        val callback = directionsCallbackCaptor.value
+
+        callback.onSuccess(testDirectionResult)
+
+        assertEquals(
+            testDirectionResult,
+            deliveryRepository.directionResults.value
         )
     }
 }
