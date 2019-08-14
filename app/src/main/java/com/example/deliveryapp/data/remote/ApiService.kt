@@ -11,6 +11,7 @@ import com.google.maps.DirectionsApi
 import com.google.maps.GeoApiContext
 import com.google.maps.PendingResult
 import com.google.maps.model.DirectionsResult
+import com.google.maps.model.LatLng
 import com.google.maps.model.TravelMode
 import org.joda.time.DateTime
 import timber.log.Timber
@@ -36,7 +37,7 @@ class ApiService {
                         .addOnCompleteListener { task1->
                             if(task.isSuccessful){
                                 callback.onSuccess(task1.result!!.toObject(User::class.java))
-                                Timber.w("login and read user success")
+                                Timber.d("login and read user success")
                             }else{
                                 callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
                                 Timber.w("read user failed with error:${task.exception?.message}")
@@ -63,67 +64,75 @@ class ApiService {
                     db.collection(COLLECTION_USERS).document(sonicUser.id).set(sonicUser).addOnCompleteListener { task2 ->
                         if(task2.isSuccessful){
                             callback.onSuccess(sonicUser)
-                            Timber.w("sign up user success")
+                            Timber.d("sign up user success")
                         }else{
                             callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
-                            Timber.w("save signedup user failed with error:${task.exception?.message}")
+                            Timber.e("save signedup user failed with error:${task.exception?.message}")
                         }
                     }
                 }else{
                     callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
-                    Timber.w("sign up user failed with error:${task.exception?.message}")
+                    Timber.e("sign up user failed with error:${task.exception?.message}")
                 }
             }
     }
 
     fun loadMyDeliveries(callback: ApiCallback<List<Delivery>>){
 
-        db.collection(COLLECTION_DELIVERIES).document(userId!!).get().addOnCompleteListener { task ->
+        db.collection(COLLECTION_DELIVERIES).document(userId!!).collection(DOCUMENT_COLLECTION_MY_DELIVERIES).get().addOnCompleteListener { task ->
             if(task.isSuccessful){
-                val deliveries = gson.fromJson<List<Delivery>>(gson.toJson(task.result?.data),
+                val deliveries = gson.fromJson<List<Delivery>>(gson.toJson(task.result?.documents),
                     object :TypeToken<List<Delivery>>(){}.type)
                 callback.onSuccess(deliveries?: listOf())
-                Timber.w("load my deliveries success with size: ${deliveries?.size}")
+                Timber.d("load my deliveries success with size: ${deliveries?.size}")
             }else{
                 callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
-                Timber.w("load my delivery failed with error:${task.exception?.message}")
+                Timber.e("load my delivery failed with error:${task.exception?.message}")
             }
         }
     }
 
     fun cancelDelivery(deliveryId: String, callback: ApiCallback<Boolean>) {
 
-        db.collection(COLLECTION_DELIVERIES).document("${userId!!}/$deliveryId")
-            .update("deliveryStatus",Delivery.STATUS_CANCELLED)
+
+        val deliveryRef = db.collection(COLLECTION_DELIVERIES).document(userId!!)
+            .collection(DOCUMENT_COLLECTION_MY_DELIVERIES).document(deliveryId)
+
+        deliveryRef
+            .update(DELIVERY_STATUS_FIELD_NAME,Delivery.STATUS_CANCELLED)
             .addOnCompleteListener { task ->
                 if(task.isSuccessful){
                     callback.onSuccess(true)
-                    Timber.w("cancel delivery success")
+                    Timber.d("cancel delivery success")
                 }else{
                     callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
-                    Timber.w("cancel delivery failed with error:${task.exception?.message}")
+                    Timber.e("cancel delivery failed with error:${task.exception?.message}")
                 }
             }
     }
 
     fun sendNewDelivery(newDelivery: Delivery, callback: ApiCallback<Boolean>) {
-        val deliveryId = db.collection("$COLLECTION_DELIVERIES").document(userId!!)
-            .collection("deliveries").document().id
+        val deliveryId = db.collection(COLLECTION_DELIVERIES).document(userId!!)
+            .collection(DOCUMENT_COLLECTION_MY_DELIVERIES).document().id
         newDelivery.id = deliveryId
 
-        db.collection("$COLLECTION_DELIVERIES/$userId").document(deliveryId).set(newDelivery).addOnCompleteListener {task->
+        val newDeliveryRef = db.collection(COLLECTION_DELIVERIES).document(userId!!)
+            .collection(DOCUMENT_COLLECTION_MY_DELIVERIES).document(newDelivery.id)
+
+        newDeliveryRef.set(newDelivery).addOnCompleteListener {task->
             if(task.isSuccessful){
                 callback.onSuccess(true)
-                Timber.w("send new delivery success")
+                Timber.d("send new delivery success")
             }else{
                 callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
-                Timber.w("send new delivery failed with error:${task.exception?.message}")
+                Timber.e("send new delivery failed with error:${task.exception?.message}")
             }
         }
     }
 
-    fun getDirections(origin: com.google.maps.model.LatLng, destination: com.google.maps.model.LatLng, apiKey: String,
+    fun getDirections(origin: LatLng, destination: LatLng, apiKey: String,
                       apiCallback: ApiCallback<DirectionsResult>) {
+
         val geoApiContext = GeoApiContext.Builder()
             .queryRateLimit(3)
             .apiKey(apiKey)
@@ -138,7 +147,7 @@ class ApiService {
             .setCallback(object : PendingResult.Callback<DirectionsResult> {
                 override fun onResult(result: DirectionsResult) {
                     apiCallback.onSuccess(result)
-                    Timber.e("Get Directions Result success")
+                    Timber.d("Get Directions Result success")
                 }
 
                 override fun onFailure(e: Throwable) {
@@ -154,6 +163,9 @@ class ApiService {
         const val COLLECTION_DELIVERIES = "deliveries"
 
         const val UNKNOWN_FAILURE_ERROR = "Unknown reason for failure"
+        const val DOCUMENT_COLLECTION_MY_DELIVERIES ="my_deliveries"
+
+        const val DELIVERY_STATUS_FIELD_NAME = "deliveryStatus"
 
     }
 }

@@ -21,7 +21,9 @@ import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.models.MyDate
 import com.example.deliveryapp.databinding.FragmentNewDeliveryFormBinding
+import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.services.FetchAddressIntentService
+import com.example.deliveryapp.utils.ViewModelFactory
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -36,12 +38,17 @@ import com.schibstedspain.leku.LATITUDE
 import com.schibstedspain.leku.LOCATION_ADDRESS
 import com.schibstedspain.leku.LONGITUDE
 import com.schibstedspain.leku.LocationPickerActivity
+import dagger.android.support.AndroidSupportInjection
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.HashMap
 
 
-class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
+class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
 
     lateinit var binding: FragmentNewDeliveryFormBinding
 
@@ -55,13 +62,6 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(savedInstanceState!=null){
-            restoreState(savedInstanceState)
-        }
-
-        viewModel = ViewModelProviders.of(this).get(DeliveryFormViewModel::class.java)
-
-        startObservers()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -254,9 +254,19 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        if(savedInstanceState!=null){
+            restoreState(savedInstanceState)
+        }
+
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DeliveryFormViewModel::class.java)
+
+        startObservers()
+
         binding = FragmentNewDeliveryFormBinding.inflate(inflater,container,false)
         return binding.root
     }
+
 
     fun getNewDelivery():Delivery{
         return Delivery().apply {

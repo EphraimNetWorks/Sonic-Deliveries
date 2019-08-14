@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="28dp"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:ellipsize="end"
                 android:textSize="@dimen/textsize_normal"
                 android:textStyle="bold"
@@ -44,7 +44,7 @@
                 android:id="@+id/delivery_origin"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:ellipsize="end"
                 android:textSize="@dimen/textsize_small"
                 android:text="Delivering from Tema"/>

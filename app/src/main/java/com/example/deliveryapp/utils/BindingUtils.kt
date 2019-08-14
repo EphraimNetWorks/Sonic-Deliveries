@@ -91,7 +91,7 @@ object BindingUtils {
 
     @JvmStatic
     @BindingAdapter("listCount")
-    fun listCount(noItemsTextview: TextView, size: String) {
-        noItemsTextview.visibility = if(size.toInt()>0) View.GONE else View.VISIBLE
+    fun listCount(noItemsTextview: TextView, size: String?) {
+        noItemsTextview.visibility = if(size == null)View.GONE else if (size.toInt()>0) View.GONE else View.VISIBLE
     }
 }

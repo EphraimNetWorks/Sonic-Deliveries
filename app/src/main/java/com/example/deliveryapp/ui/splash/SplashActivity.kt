@@ -33,7 +33,10 @@ class SplashActivity : AppCompatActivity(),Injectable {
         if(currentUserLD == null){
             goToNextActivity(false)
         }else{
-            currentUserLD.observe(this, Observer { if(it!=null) goToNextActivity(true)})
+            currentUserLD.observe(this, Observer {
+                if(it!=null)goToNextActivity(true)
+                else
+                goToNextActivity(false)})
         }
 
     }

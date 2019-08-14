@@ -20,10 +20,11 @@ import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import com.example.deliveryapp.utils.ViewModelFactory
 import dagger.android.AndroidInjection
+import dagger.android.support.DaggerAppCompatActivity
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import javax.inject.Inject
 
-class NewDeliveryActivity : AppCompatActivity(),Injectable,DeliveryFormValidation{
+class NewDeliveryActivity : DaggerAppCompatActivity(),Injectable,DeliveryFormValidation{
 
     private lateinit var binding : ActivityNewDeliveryBinding
     private lateinit var formFragment: NewDeliveryFormFragment

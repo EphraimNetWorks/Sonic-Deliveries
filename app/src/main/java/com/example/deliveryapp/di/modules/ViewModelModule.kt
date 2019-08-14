@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.deliveryapp.di.ViewModelKey
 import com.example.deliveryapp.ui.login.LoginViewModel
 import com.example.deliveryapp.ui.main.MainViewModel
+import com.example.deliveryapp.ui.new_delivery.DeliveryFormViewModel
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryViewModel
 import com.example.deliveryapp.ui.signup.SignUpViewModel
 import com.example.deliveryapp.ui.splash.SplashViewModel
@@ -44,5 +45,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SplashViewModel::class)
     internal abstract fun splashViewModel(splashViewModel: SplashViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DeliveryFormViewModel::class)
+    internal abstract fun deliveryFormViewModel(deliveryFormViewModel: DeliveryFormViewModel): ViewModel
     //Others ViewModels
 }

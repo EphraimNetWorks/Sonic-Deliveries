@@ -13,6 +13,8 @@ import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import com.example.deliveryapp.di.modules.MainModule
 import com.example.deliveryapp.di.modules.RoomModule
+import dagger.android.support.DaggerAppCompatActivity
+import timber.log.Timber
 
 object AppInjector {
 
@@ -55,17 +57,23 @@ object AppInjector {
     }
 
     private fun handleActivity(activity: Activity) {
-        if (activity is HasSupportFragmentInjector || activity is Injectable) {
+        Timber.e("handling activity injections")
+        if ( activity is Injectable) {
             AndroidInjection.inject(activity)
         }
         if (activity is FragmentActivity) {
+            Timber.e("Injecting fragments")
             activity.supportFragmentManager
                     .registerFragmentLifecycleCallbacks(
                             object : FragmentManager.FragmentLifecycleCallbacks() {
                                 override fun onFragmentCreated(fm: FragmentManager, fragment: Fragment,
                                                                savedInstanceState: Bundle?) {
+                                    Timber.e("fragments created")
                                     if (fragment is Injectable) {
+                                        Timber.e("fragments injectable")
                                         AndroidSupportInjection.inject(fragment)
+
+                                        Timber.e("fragments injected")
                                     }
                                 }
                             }, true)

@@ -23,7 +23,7 @@ abstract class ActivityBuilder {
     @ContributesAndroidInjector
     internal abstract fun bindSignUpActivity(): SignUpActivity
 
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = [FragmentBuilder::class])
     internal abstract fun bindNewDeliveryActivity(): NewDeliveryActivity
 
     @ContributesAndroidInjector
