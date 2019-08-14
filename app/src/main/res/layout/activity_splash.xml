@@ -5,13 +5,13 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         tools:context=".ui.splash.SplashActivity">
 
     <ImageView
             android:layout_width="@dimen/splash_logo_size"
             android:layout_height="@dimen/splash_logo_size"
-            android:src="@drawable/sonic_logo"
+            android:src="@drawable/splash_screen_image"
             android:layout_marginBottom="@dimen/margin_normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

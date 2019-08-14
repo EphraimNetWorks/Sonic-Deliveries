@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import com.example.deliveryapp.data.local.dao.DeliveryDao
 import com.example.deliveryapp.data.local.entities.Delivery
+import com.example.deliveryapp.data.local.models.Location
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
@@ -18,7 +19,9 @@ import io.reactivex.functions.Action
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.joda.time.DateTime
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -59,12 +62,14 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
         return deliveryDao.getCompletedDeliveries()!!
     }
 
-    private fun loadMyDeliveries(){
+    private fun loadMyDeliveries(dispatcherProvider: DispatcherProvider = DispatcherProvider()){
         apiService.loadMyDeliveries(object : ApiCallback<List<Delivery>>{
             override fun onSuccess(result: List<Delivery>) {
                 Timber.d("get my deliveries success")
-                for(delivery in result){
-                    deliveryDao.saveMyDelivery(delivery)
+                GlobalScope.launch (dispatcherProvider.IO){
+                    for(delivery in result){
+                        deliveryDao.saveMyDelivery(delivery)
+                    }
                 }
                 networkState.postValue(NetworkState.LOADED)
             }
@@ -105,7 +110,7 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
         apiService.cancelDelivery(deliveryId, object : ApiCallback<Boolean>{
             override fun onSuccess(result: Boolean) {
                 Thread{
-                    deliveryDao.cancelDelivery(deliveryId)
+                    deliveryDao.cancelDelivery(deliveryId,DateTime.now().millis)
                 }.start()
                 networkState.postValue(NetworkState.LOADED)
             }
@@ -135,7 +140,7 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
 
     val directionResults = MutableLiveData<DirectionsResult>()
 
-    fun getDirectionResults(origin: LatLng, destination: LatLng, apiKey: String): LiveData<DirectionsResult> {
+    fun getDirectionResults(origin: Location, destination: Location, apiKey: String): LiveData<DirectionsResult> {
         networkState.postValue(NetworkState.LOADING)
 
         apiService.getDirections(origin,destination,apiKey, object : ApiCallback<DirectionsResult>{

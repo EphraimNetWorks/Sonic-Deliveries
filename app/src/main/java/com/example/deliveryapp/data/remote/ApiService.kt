@@ -2,6 +2,7 @@ package com.example.deliveryapp.data.remote
 
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.entities.User
+import com.example.deliveryapp.data.local.models.Location
 import com.example.deliveryapp.data.remote.request.SignUpRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,7 +23,6 @@ class ApiService {
 
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
-    private val gson = Gson()
 
     private var userId :String? = null
         get() {return if(auth.currentUser == null) null else auth.currentUser!!.uid}
@@ -81,8 +81,7 @@ class ApiService {
 
         db.collection(COLLECTION_DELIVERIES).document(userId!!).collection(DOCUMENT_COLLECTION_MY_DELIVERIES).get().addOnCompleteListener { task ->
             if(task.isSuccessful){
-                val deliveries = gson.fromJson<List<Delivery>>(gson.toJson(task.result?.documents),
-                    object :TypeToken<List<Delivery>>(){}.type)
+                val deliveries = task.result?.documents?.map { it.toObject(Delivery::class.java)!! }
                 callback.onSuccess(deliveries?: listOf())
                 Timber.d("load my deliveries success with size: ${deliveries?.size}")
             }else{
@@ -98,8 +97,14 @@ class ApiService {
         val deliveryRef = db.collection(COLLECTION_DELIVERIES).document(userId!!)
             .collection(DOCUMENT_COLLECTION_MY_DELIVERIES).document(deliveryId)
 
+        val updateMap = mapOf(
+            Pair(DELIVERY_STATUS_FIELD_NAME,Delivery.STATUS_CANCELLED),
+            Pair(DELIVERY_TIME_FIELD_NAME, DateTime.now().millis),
+            Pair(UPDATED_AT_FIELD_NAME, DateTime.now().millis),
+            Pair(DELIVERY_TIME_DATE_FIELD_NAME, mapOf(Pair("timeStamp",DateTime.now().millis)))
+        )
         deliveryRef
-            .update(DELIVERY_STATUS_FIELD_NAME,Delivery.STATUS_CANCELLED)
+            .update(updateMap)
             .addOnCompleteListener { task ->
                 if(task.isSuccessful){
                     callback.onSuccess(true)
@@ -115,6 +120,8 @@ class ApiService {
         val deliveryId = db.collection(COLLECTION_DELIVERIES).document(userId!!)
             .collection(DOCUMENT_COLLECTION_MY_DELIVERIES).document().id
         newDelivery.id = deliveryId
+        newDelivery.createdAt = DateTime.now().millis
+        newDelivery.updatedAt = DateTime.now().millis
 
         val newDeliveryRef = db.collection(COLLECTION_DELIVERIES).document(userId!!)
             .collection(DOCUMENT_COLLECTION_MY_DELIVERIES).document(newDelivery.id)
@@ -130,7 +137,7 @@ class ApiService {
         }
     }
 
-    fun getDirections(origin: LatLng, destination: LatLng, apiKey: String,
+    fun getDirections(origin: Location, destination: Location, apiKey: String,
                       apiCallback: ApiCallback<DirectionsResult>) {
 
         val geoApiContext = GeoApiContext.Builder()
@@ -142,8 +149,8 @@ class ApiService {
             .build()
 
         DirectionsApi.newRequest(geoApiContext)
-            .mode(TravelMode.DRIVING).origin(origin)
-            .destination(destination).departureTime(DateTime())
+            .mode(TravelMode.DRIVING).origin(LatLng(origin.latitude,origin.longitude))
+            .destination(LatLng(destination.latitude,destination.longitude)).departureTime(DateTime())
             .setCallback(object : PendingResult.Callback<DirectionsResult> {
                 override fun onResult(result: DirectionsResult) {
                     apiCallback.onSuccess(result)
@@ -166,6 +173,9 @@ class ApiService {
         const val DOCUMENT_COLLECTION_MY_DELIVERIES ="my_deliveries"
 
         const val DELIVERY_STATUS_FIELD_NAME = "deliveryStatus"
+        const val DELIVERY_TIME_FIELD_NAME = "deliveryTime"
+        const val DELIVERY_TIME_DATE_FIELD_NAME = "deliveryTimeDate"
+        const val UPDATED_AT_FIELD_NAME = "updatedAt"
 
     }
 }

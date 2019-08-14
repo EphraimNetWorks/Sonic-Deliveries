@@ -88,15 +88,6 @@
                                 android:layout_gravity="center_vertical"
                                 networkStatus="@{viewModel.networkState.status}"/>
 
-                            <ProgressBar
-                                android:id="@+id/summary_loading_progress_bar"
-                                android:layout_width="@dimen/progress_size_normal"
-                                android:layout_height="@dimen/progress_size_normal"
-                                android:indeterminate="true"
-                                android:layout_marginStart="@dimen/margin_normal"
-                                android:layout_gravity="center_vertical"
-                                networkStatus="@{viewModel.networkState.status}" />
-
                             <ImageView
                                 android:id="@+id/summary_retry_loading_button"
                                 android:layout_width="@dimen/progress_size_normal"
@@ -139,6 +130,19 @@
                             android:layout_marginTop="@dimen/delivery_summary_margin"
                             android:layout_marginEnd="@dimen/margin_normal"
                             android:layout_marginStart="@dimen/margin_large"/>
+
+
+
+                        <ProgressBar
+                                android:id="@+id/summary_loading_progress_bar"
+                                android:layout_width="@dimen/progress_size_xsmall"
+                                android:layout_height="@dimen/progress_size_xsmall"
+                                android:indeterminate="true"
+                                android:layout_alignTop="@id/delivery_summary_title"
+                                android:layout_toEndOf="@id/delivery_summary_title"
+                                android:layout_marginStart="@dimen/margin_normal"
+                                android:layout_gravity="center_vertical"
+                                networkStatus="@{viewModel.networkState.status}" />
 
                         <FrameLayout
                             android:id="@+id/deliveries_stat_summary"
@@ -296,6 +300,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                             android:visibility="gone"
+                            android:gravity="center"
                             listCount="@{viewModel.deliveriesPlacedNo}"
                         android:layout_marginStart="@dimen/margin_large"
                             android:layout_marginBottom="@dimen/margin_normal"
@@ -307,6 +312,7 @@
                         android:id="@+id/placed_shimmer_view_container"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/transparent_blue"
                         android:visibility="@{viewModel.deliveriesPlaced}"
                         android:layout_marginBottom="@dimen/margin_normal"
                         android:layout_marginEnd="@dimen/margin_normal"

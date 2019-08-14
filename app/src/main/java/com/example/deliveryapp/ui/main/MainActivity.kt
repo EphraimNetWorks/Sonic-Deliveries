@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity(),Injectable {
         Timber.d("recent delivery: ${Gson().toJson(recentDelivery)} comp: ${viewModel.completedDeliveries?.value?.size}")
         return when(recentDelivery.deliveryStatus){
             Delivery.STATUS_PLACED -> "${getString(R.string.placed_summary_message_prefix)} ${recentDelivery.title}" +
-                    " ${getString(R.string.placed_summary_message_suffix)} ${recentDelivery.deliveryTimeDate!!.getDateFormat1()}"
+                    " ${getString(R.string.placed_summary_message_suffix)} ${recentDelivery.pickUpTimeDate!!.getDateFormat1()}"
             Delivery.STATUS_IN_TRANSIT -> getString(R.string.in_transit_summary_message) +
                     " ${recentDelivery.deliveryTimeDate!!.getDateFormat1()}"
             Delivery.STATUS_COMPLETED -> "${recentDelivery.title} ${getString(R.string.delivered_summary_message)}" +
@@ -104,6 +104,11 @@ class MainActivity : AppCompatActivity(),Injectable {
     override fun onStop() {
         removeObservers()
         super.onStop()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAffinity()
     }
 
     companion object {

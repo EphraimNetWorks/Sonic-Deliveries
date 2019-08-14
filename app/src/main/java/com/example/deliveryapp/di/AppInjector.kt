@@ -57,23 +57,23 @@ object AppInjector {
     }
 
     private fun handleActivity(activity: Activity) {
-        Timber.e("handling activity injections")
+        Timber.d("handling activity injections")
         if ( activity is Injectable) {
             AndroidInjection.inject(activity)
         }
         if (activity is FragmentActivity) {
-            Timber.e("Injecting fragments")
+            Timber.d("Injecting fragments")
             activity.supportFragmentManager
                     .registerFragmentLifecycleCallbacks(
                             object : FragmentManager.FragmentLifecycleCallbacks() {
                                 override fun onFragmentCreated(fm: FragmentManager, fragment: Fragment,
                                                                savedInstanceState: Bundle?) {
-                                    Timber.e("fragments created")
+                                    Timber.d("fragments created")
                                     if (fragment is Injectable) {
-                                        Timber.e("fragments injectable")
+                                        Timber.d("fragments injectable")
                                         AndroidSupportInjection.inject(fragment)
 
-                                        Timber.e("fragments injected")
+                                        Timber.d("fragments injected")
                                     }
                                 }
                             }, true)

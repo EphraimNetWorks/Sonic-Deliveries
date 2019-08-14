@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.*
 import com.example.deliveryapp.data.local.entities.Delivery
+import org.joda.time.DateTime
 
 @Dao
 interface DeliveryDao {
@@ -17,8 +18,8 @@ interface DeliveryDao {
     @Query("SELECT * FROM delivery WHERE id=:deliveryId LIMIT 1")
     fun getMyDelivery(deliveryId:String): LiveData<Delivery>
 
-    @Query("UPDATE delivery SET deliveryStatus="+Delivery.STATUS_CANCELLED+" WHERE id=:deliveryId")
-    fun cancelDelivery(deliveryId:String)
+    @Query("UPDATE delivery SET deliveryStatus="+Delivery.STATUS_CANCELLED+", deliveryTime=:cancelledTime, updatedAt=:cancelledTime WHERE id=:deliveryId")
+    fun cancelDelivery(deliveryId:String, cancelledTime:Long)
 
     @Query("SELECT * FROM delivery WHERE deliveryStatus="+Delivery.STATUS_PLACED+" ORDER BY updatedAt DESC")
     fun getDeliveriesPlaced(): DataSource.Factory<Int, Delivery>?

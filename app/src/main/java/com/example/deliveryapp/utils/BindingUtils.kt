@@ -41,7 +41,7 @@ object BindingUtils {
         when (dataList) {
             null -> shimmerFrameLayout.visibility = View.VISIBLE
             else -> shimmerFrameLayout.visibility =
-                if (dataList.isNullOrEmpty()) View.VISIBLE else View.GONE
+                if (dataList.isNullOrEmpty()) shimmerFrameLayout.visibility else View.GONE
         }
     }
 

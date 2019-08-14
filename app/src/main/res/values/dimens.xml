@@ -12,6 +12,7 @@
     <dimen name="margin_normal">8dp</dimen>
     <dimen name="login_banner_height">280dp</dimen>
     <dimen name="progress_size_normal">50dp</dimen>
+    <dimen name="progress_size_xsmall">25dp</dimen>
     <dimen name="button_normal_size">50dp</dimen>
     <dimen name="textsize_normal">14sp</dimen>
     <dimen name="delivery_image_size">100dp</dimen>

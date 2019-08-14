@@ -73,10 +73,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
+                        android:id="@+id/track_date_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="ESTIMATED TIME"
+                    android:text="@string/pickup_date_title"
                     android:textSize="@dimen/textsize_normal"
                 />
                 <TextView
@@ -84,7 +85,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:text="@{delivery.estimatedTimeOfArrivalDate.dateFormat1}"
                     android:textStyle="bold"
                     android:textColor="@android:color/holo_blue_light"
                     android:textSize="@dimen/textsize_large"
@@ -103,7 +103,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="DELIVERY ID"
+                    android:text="@string/delivery_id"
                     android:textStyle="bold"
                     android:textSize="@dimen/textsize_normal"
                 />

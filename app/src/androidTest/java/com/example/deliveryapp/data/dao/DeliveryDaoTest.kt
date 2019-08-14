@@ -22,6 +22,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.example.deliveryapp.ui.main.MainViewModel
 import com.example.deliveryapp.utils.LiveDataTestUtil
+import org.joda.time.DateTime
 import org.junit.Rule
 import javax.sql.DataSource
 
@@ -153,7 +154,7 @@ class DeliveryDaoTest {
     @Test
     @Throws(Exception::class)
     fun cancelDelivery() {
-        deliveryDao.cancelDelivery(testDeliveries[0].id)
+        deliveryDao.cancelDelivery(testDeliveries[0].id,DateTime.now().millis)
         val result= LiveDataTestUtil.getValue(deliveryDao.getMyDelivery(testDeliveries[0].id))
         assertThat(result!!.deliveryStatus, equalTo(Delivery.STATUS_CANCELLED))
     }

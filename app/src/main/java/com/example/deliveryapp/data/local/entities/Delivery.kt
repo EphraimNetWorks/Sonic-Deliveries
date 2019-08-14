@@ -3,6 +3,7 @@ package com.example.deliveryapp.data.local.entities
 import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.deliveryapp.data.local.models.Location
 import com.example.deliveryapp.data.local.models.MyDate
 import com.google.android.gms.maps.model.LatLng
 import java.io.Serializable
@@ -23,18 +24,18 @@ class Delivery : Serializable{
     var pickUpAddress: String? = null
 
     @Transient
-    var pickUpLocation: LatLng? = null
+    var pickUpLocation: Location? = null
 
     var destinationAddress: String?= null
 
     @Transient
-    var destinationLocation: LatLng? = null
+    var destinationLocation: Location? = null
 
     var deliveryStatus: Int = STATUS_PLACED
 
     var estimatedTimeOfArrival:Long? = null
         set(value) {
-            estimatedTimeOfArrivalDate = MyDate(value!!)
+            if(value!=null) estimatedTimeOfArrivalDate = MyDate(value)
             field = value
         }
 
@@ -42,7 +43,7 @@ class Delivery : Serializable{
 
     var pickUpTime:Long? = null
         set(value) {
-            pickUpTimeDate = MyDate(value!!)
+            if(value!=null) pickUpTimeDate = MyDate(value)
             field = value
         }
 
@@ -50,7 +51,7 @@ class Delivery : Serializable{
 
     var deliveryTime:Long? = null
         set(value) {
-            deliveryTimeDate = MyDate(value!!)
+            if(value!=null) deliveryTimeDate = MyDate(value)
             field = value
         }
 
@@ -64,4 +65,5 @@ class Delivery : Serializable{
         const val STATUS_CANCELLED = 3
         const val STATUS_PLACED = 0
     }
+
 }

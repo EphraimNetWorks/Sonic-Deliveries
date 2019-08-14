@@ -9,6 +9,10 @@ import java.util.*
 class MyDate : Serializable{
     var timeStamp:Long
 
+    constructor(){
+        timeStamp = 0
+    }
+
     constructor(timeStamp:Long){
         this.timeStamp = timeStamp
     }

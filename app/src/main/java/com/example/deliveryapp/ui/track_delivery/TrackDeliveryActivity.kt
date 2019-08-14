@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.test.espresso.idling.CountingIdlingResource
@@ -19,6 +20,7 @@ import com.example.deliveryapp.databinding.ActivityTrackDeliveryBinding
 import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.utils.ViewModelFactory
 import dagger.android.AndroidInjection
+import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import javax.inject.Inject
 
 class TrackDeliveryActivity : AppCompatActivity(),Injectable {
@@ -51,6 +53,41 @@ class TrackDeliveryActivity : AppCompatActivity(),Injectable {
 
         setUpDeliveryTimeline()
 
+        setUpTrackDeliveryDate()
+
+        startObservers()
+    }
+
+    private fun setUpTrackDeliveryDate(){
+
+        when(mDelivery.deliveryStatus){
+            Delivery.STATUS_PLACED ->{
+                binding.trackDateTitle.text = getString(R.string.pickup_date_title)
+                binding.itemEtaTextview.text = mDelivery.pickUpTimeDate!!.getDateFormat1()
+            }
+            Delivery.STATUS_IN_TRANSIT ->{
+                binding.trackDateTitle.text = getString(R.string.estimated_time_of_arrival)
+                binding.itemEtaTextview.text = mDelivery.estimatedTimeOfArrivalDate!!.getDateFormat1()
+            }
+            Delivery.STATUS_COMPLETED ->{
+                binding.trackDateTitle.text = getString(R.string.delivered_on_title)
+                binding.itemEtaTextview.text = mDelivery.deliveryTimeDate!!.getDateFormat1()
+            }
+            Delivery.STATUS_CANCELLED ->{
+                binding.trackDateTitle.text = getString(R.string.cancelled_on)
+                binding.itemEtaTextview.text = mDelivery.deliveryTimeDate!!.getDateFormat1()
+            }
+        }
+    }
+
+    private fun startObservers(){
+        trackDeliveryViewModel.getNetWorkState().observe(this, Observer {
+            if(it.status == Status.SUCCESS) finish()
+        })
+    }
+
+    private fun stopObservers(){
+        trackDeliveryViewModel.getNetWorkState().removeObservers(this)
     }
 
     private fun setUpDeliveryTimeline(){
@@ -65,14 +102,17 @@ class TrackDeliveryActivity : AppCompatActivity(),Injectable {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
-        menuInflater.inflate(R.menu.track_delivery_menu, menu)
-        return true
+        if(mDelivery.deliveryStatus == Delivery.STATUS_PLACED ||
+                mDelivery.deliveryStatus == Delivery.STATUS_IN_TRANSIT) {
+            menuInflater.inflate(R.menu.track_delivery_menu, menu)
+            return true
+        }else return false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             android.R.id.home -> finish()
-            R.menu.track_delivery_menu -> {
+            R.id.menu_cancel_delivery -> {
                 AlertDialog.Builder(this)
                     .setTitle(getString(R.string.cancel_delivery))
                     .setMessage(getString(R.string.confirm_cancel_delivery))
@@ -85,6 +125,11 @@ class TrackDeliveryActivity : AppCompatActivity(),Injectable {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        stopObservers()
+        super.onDestroy()
     }
 
     companion object{

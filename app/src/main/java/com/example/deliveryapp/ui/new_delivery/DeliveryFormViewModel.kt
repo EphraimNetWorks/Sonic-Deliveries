@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.deliveryapp.R
+import com.example.deliveryapp.data.local.models.Location
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.model.DirectionsResult
 import kotlin.collections.HashMap
@@ -19,8 +20,8 @@ class DeliveryFormViewModel @Inject constructor(private val deliveryRepo:Deliver
 
     lateinit var validationMap: HashMap<String, Int>
 
-    var mPickUpLocation :LatLng? = null
-    var mDestinationLocation :LatLng? = null
+    var mPickUpLocation :Location? = null
+    var mDestinationLocation :Location? = null
     var mPickUpDate : MyDate? = null
 
     var directionsResult:LiveData<DirectionsResult>? = null
@@ -101,7 +102,7 @@ class DeliveryFormViewModel @Inject constructor(private val deliveryRepo:Deliver
 
     }
 
-    fun getDirections(origin: com.google.maps.model.LatLng, destination: com.google.maps.model.LatLng, apiKey: String) {
+    fun getDirections(origin: Location, destination: Location, apiKey: String) {
 
         deliveryRepo.getDirectionResults(origin,destination,apiKey)
     }

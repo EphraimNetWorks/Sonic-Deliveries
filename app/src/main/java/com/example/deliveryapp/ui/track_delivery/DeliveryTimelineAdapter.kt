@@ -15,6 +15,8 @@ import com.github.vipulasri.timelineview.TimelineView
 import kotlinx.android.synthetic.main.adapter_delivery_timeline.view.*
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.example.deliveryapp.R
 
@@ -71,25 +73,42 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
                 }
             }
 
-            if(position < delivery.deliveryStatus){
-                setMarker(R.drawable.ic_marker_complete,R.color.colorPrimary)
-                val color = ContextCompat.getColor(itemView.context,R.color.blue)
-                binding.deliveryStatusText.setTextColor(Color.BLACK)
-                binding.timeline.setEndLineColor(color,viewType)
-                binding.timeline.setStartLineColor(color,viewType)
+            @DrawableRes val timelineResMarker :Int
+            @ColorRes val markerResColor:Int
+            @ColorRes val textResColor:Int
+            @ColorRes val lineResColor:Int
+
+            if(delivery.deliveryStatus == Delivery.STATUS_CANCELLED){
+                timelineResMarker = R.drawable.ic_marker_complete
+                markerResColor = R.color.grey
+                textResColor = R.color.grey
+                lineResColor = R.color.grey
+
+            } else if(position < delivery.deliveryStatus){
+                timelineResMarker = R.drawable.ic_marker_complete
+                markerResColor = R.color.colorPrimary
+                textResColor = R.color.black
+                lineResColor = R.color.blue
+
             }else if(position == delivery.deliveryStatus){
-                setMarker(R.drawable.ic_marker_complete,R.color.colorAccent)
-                val color = ContextCompat.getColor(itemView.context,R.color.colorAccent)
-                binding.deliveryStatusText.setTextColor(ContextCompat.getColor(itemView.context,R.color.blue))
-                binding.timeline.setEndLineColor(color,viewType)
-                binding.timeline.setStartLineColor(color,viewType)
+                timelineResMarker = R.drawable.ic_marker_complete
+                markerResColor = R.color.colorAccent
+                textResColor = R.color.blue
+                lineResColor = R.color.colorAccent
+
             }else{
-                setMarker(R.drawable.ic_marker_incomplete,R.color.grey)
-                val color = ContextCompat.getColor(itemView.context,R.color.grey)
-                binding.deliveryStatusText.setTextColor(color)
-                binding.timeline.setEndLineColor(color,viewType)
-                binding.timeline.setStartLineColor(color,viewType)
+                timelineResMarker = R.drawable.ic_marker_incomplete
+                markerResColor = R.color.grey
+                textResColor = R.color.grey
+                lineResColor = R.color.grey
             }
+
+            setMarker(timelineResMarker,markerResColor)
+            val textColor = ContextCompat.getColor(itemView.context,textResColor)
+            val lineColor = ContextCompat.getColor(itemView.context,lineResColor)
+            binding.deliveryStatusText.setTextColor(textColor)
+            binding.timeline.setEndLineColor(lineColor,viewType)
+            binding.timeline.setStartLineColor(lineColor,viewType)
 
             binding.executePendingBindings()
         }

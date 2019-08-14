@@ -83,6 +83,10 @@
         to add a new delivery
     </string>
     <string name="delivery_summary">Delivery Summary</string>
+    <string name="pickup_date_title">PICK-UP DATE</string>
+    <string name="delivery_id">DELIVERY ID</string>
+    <string name="delivered_on_title">DELIVERED ON</string>
+    <string name="cancelled_on">CANCELLED ON</string>
 
     <string-array name="old_user_salutations">
         <item>Hi there,</item>

@@ -9,22 +9,22 @@ import com.google.gson.Gson
 class SonicTypeConverter {
 
     @TypeConverter
-    fun myDateToString(myDate: MyDate): String{
+    fun myDateToString(myDate: MyDate?): String?{
         return Gson().toJson(myDate)
     }
 
     @TypeConverter
-    fun stringToMyDate(string: String): MyDate {
+    fun stringToMyDate(string: String?): MyDate? {
         return Gson().fromJson(string, MyDate::class.java)
     }
 
     @TypeConverter
-    fun locationDataToString(locationData: LatLng): String{
+    fun locationDataToString(locationData: LatLng?): String?{
         return Gson().toJson(locationData)
     }
 
     @TypeConverter
-    fun stringToLocationDate(string: String): LatLng {
+    fun stringToLocationDate(string: String?): LatLng? {
         return Gson().fromJson(string, LatLng::class.java)
     }
 }

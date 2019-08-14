@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
+import com.example.deliveryapp.data.local.models.Location
 import com.example.deliveryapp.data.local.models.MyDate
 import com.example.deliveryapp.databinding.FragmentNewDeliveryFormBinding
 import com.example.deliveryapp.di.Injectable
@@ -148,9 +149,10 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
 
         startPoint?.remove()
 
-        viewModel.mPickUpLocation = LatLng(latitude,longitude)
+        viewModel.mPickUpLocation = Location(latitude,longitude)
+        val markerLocation = LatLng(latitude,longitude)
         adjustMapCamera(viewModel.mPickUpLocation,viewModel.mDestinationLocation)
-        this.startPoint = mMap.addMarker(MarkerOptions().position(viewModel.mPickUpLocation!!).title("PickUp Point"))
+        this.startPoint = mMap.addMarker(MarkerOptions().position(markerLocation).title("PickUp Point"))
 
         if(viewModel.mPickUpLocation!= null && viewModel.mDestinationLocation!=null) {
             queryDirections(viewModel.mPickUpLocation!!,viewModel.mDestinationLocation!!)
@@ -170,8 +172,9 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
 
         endPoint?.remove()
 
-        viewModel.mDestinationLocation = LatLng(latitude,longitude)
-        this.endPoint = mMap.addMarker(MarkerOptions().position(viewModel.mDestinationLocation!!).title("Destination"))
+        viewModel.mDestinationLocation = Location(latitude,longitude)
+        val markerLocation = LatLng(latitude,longitude)
+        this.endPoint = mMap.addMarker(MarkerOptions().position(markerLocation).title("Destination"))
 
         adjustMapCamera(viewModel.mPickUpLocation,viewModel.mDestinationLocation)
         if(viewModel.mPickUpLocation!= null && viewModel.mDestinationLocation!=null) {
@@ -187,20 +190,18 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
             mMap.addPolyline(PolylineOptions().addAll(decodedPath).color(resources.getColor(R.color.colorAccent)))
     }
 
-    private fun queryDirections(pickUpLocation:LatLng, destinationLocation:LatLng) {
+    private fun queryDirections(pickUpLocation:Location, destinationLocation:Location) {
 
-        val origin = com.google.maps.model.LatLng(pickUpLocation.latitude, pickUpLocation.longitude)
-        val destination = com.google.maps.model.LatLng(destinationLocation.latitude, destinationLocation.longitude)
-        viewModel.getDirections(origin, destination, getString(R.string.google_maps_key))
+        viewModel.getDirections(pickUpLocation, destinationLocation, getString(R.string.google_maps_key))
 
         adjustMapCamera(pickUpLocation,destinationLocation)
 
     }
 
-    private fun adjustMapCamera(pickUpLocation:LatLng?, destinationLocation:LatLng?){
+    private fun adjustMapCamera(pickUpLocation:Location?, destinationLocation:Location?){
         val builder = LatLngBounds.Builder()
-        if(pickUpLocation!=null) builder.include(pickUpLocation)
-        if(destinationLocation!=null) builder.include(destinationLocation)
+        if(pickUpLocation!=null) builder.include(LatLng(pickUpLocation.latitude,pickUpLocation.longitude))
+        if(destinationLocation!=null) builder.include(LatLng(destinationLocation.latitude,destinationLocation.longitude))
         val bounds = builder.build()
 
         val padding = 64 // offset from edges of the map in pixels
