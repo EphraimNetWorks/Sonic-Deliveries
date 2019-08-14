@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -39,13 +39,7 @@
     <dimen name="timeline_line_width">2dp</dimen>
     <dimen name="splash_logo_size">200dp</dimen>
     <dimen name="search_location_button_size">30dp</dimen>
-    <dimen name="main_salutation_textsize">32sp</dimen>
     <dimen name="summary_image_bg_size">200dp</dimen>
     <dimen name="card_elevation_large">16dp</dimen>
-    <dimen name="corner_radius_normal">8dp</dimen>
-    <dimen name="padding_xlarge">32dp</dimen>
-    <dimen name="delivery_card_layour_width">200dp</dimen>
     <dimen name="delivery_adapter_name_margin_top">28dp</dimen>
-    <dimen name="summary_separator_width">1dp</dimen>
-    <dimen name="design_fab_size_normal" tools:override="true">50dp</dimen>
 </resources>

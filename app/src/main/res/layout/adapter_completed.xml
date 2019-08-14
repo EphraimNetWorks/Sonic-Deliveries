@@ -13,7 +13,7 @@
         >
     
         <LinearLayout
-            android:layout_width="200dp"
+            android:layout_width="@dimen/delivery_card_layour_width"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="@dimen/padding_normal"
@@ -32,7 +32,7 @@
                 android:id="@+id/delivery_item_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="@dimen/delivery_adapter_name_margin_top"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textSize="@dimen/textsize_normal"

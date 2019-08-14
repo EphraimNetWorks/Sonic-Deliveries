@@ -1,0 +1,52 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">52dp</dimen>
+    <dimen name="activity_vertical_margin">52dp</dimen>
+    <dimen name="textsize_small">39dp</dimen>
+    <dimen name="padding_large">52dp</dimen>
+    <dimen name="margin_large">52dp</dimen>
+    <dimen name="form_image_size">48.75dp</dimen>
+    <dimen name="form_padding_top">78dp</dimen>
+    <dimen name="form_margin_start">156dp</dimen>
+    <dimen name="margin_xlarge">208dp</dimen>
+    <dimen name="margin_normal">26dp</dimen>
+    <dimen name="login_banner_height">910dp</dimen>
+    <dimen name="progress_size_normal">162.5dp</dimen>
+    <dimen name="progress_size_small">81.25dp</dimen>
+    <dimen name="button_normal_size">162.5dp</dimen>
+    <dimen name="textsize_normal">45.5dp</dimen>
+    <dimen name="delivery_image_size">325dp</dimen>
+    <dimen name="main_page_delivery_image_size">162.5dp</dimen>
+    <dimen name="delivery_item_title_size">78dp</dimen>
+    <dimen name="delivery_icon_size">81.25dp</dimen>
+    <dimen name="margin_small">13dp</dimen>
+    <dimen name="padding_normal">26dp</dimen>
+    <dimen name="textsize_large">52dp</dimen>
+    <dimen name="card_elevation">26dp</dimen>
+    <dimen name="profile_pic_size">325dp</dimen>
+    <dimen name="textsize_xlarge">65dp</dimen>
+    <dimen name="textsize_xxlarge">78dp</dimen>
+    <dimen name="delivery_summary_margin">104dp</dimen>
+    <dimen name="margin_mlarge">78dp</dimen>
+    <dimen name="padding_small">13dp</dimen>
+    <dimen name="additional_info_edittext_height">552.5dp</dimen>
+    <dimen name="maps_height">975dp</dimen>
+    <dimen name="pickup_name_max_width">487.5dp</dimen>
+    <dimen name="retry_button_size">162.5dp</dimen>
+    <dimen name="button_padding">32.5dp</dimen>
+    <dimen name="delivery_status_icon_size">227.5dp</dimen>
+    <dimen name="timeline_marker_size">65dp</dimen>
+    <dimen name="timeline_line_width">6.5dp</dimen>
+    <dimen name="splash_logo_size">650dp</dimen>
+    <dimen name="search_location_button_size">97.5dp</dimen>
+    <dimen name="main_salutation_textsize">104dp</dimen>
+    <dimen name="summary_image_bg_size">650dp</dimen>
+    <dimen name="card_elevation_large">52dp</dimen>
+    <dimen name="corner_radius_normal">26dp</dimen>
+    <dimen name="padding_xlarge">104dp</dimen>
+    <dimen name="delivery_card_layour_width">650dp</dimen>
+    <dimen name="delivery_adapter_name_margin_top">91dp</dimen>
+    <dimen name="summary_separator_width">3.25dp</dimen>
+    <dimen name="design_fab_size_normal" tools:override="true">162.5dp</dimen>
+
+</resources>

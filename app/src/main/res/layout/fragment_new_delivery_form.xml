@@ -108,8 +108,8 @@
                 
                 <ImageView
                     android:id="@+id/pick_up_search_location"
-                    android:layout_width="@dimen/new_hr_location_button_size"
-                    android:layout_height="@dimen/new_hr_location_button_size"
+                    android:layout_width="@dimen/search_location_button_size"
+                    android:layout_height="@dimen/search_location_button_size"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="@dimen/margin_normal"
@@ -171,8 +171,8 @@
                 
                 <ImageView
                     android:id="@+id/destination_search_location"
-                    android:layout_width="@dimen/new_hr_location_button_size"
-                    android:layout_height="@dimen/new_hr_location_button_size"
+                    android:layout_width="@dimen/search_location_button_size"
+                    android:layout_height="@dimen/search_location_button_size"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="@dimen/margin_normal"
