@@ -2,6 +2,7 @@ package com.example.deliveryapp.ui.new_delivery
 
 import androidx.lifecycle.MutableLiveData
 import com.example.deliveryapp.data.local.entities.Delivery
+import com.example.deliveryapp.data.local.models.Location
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.google.maps.model.DirectionsResult
 import com.google.maps.model.LatLng
@@ -102,8 +103,8 @@ class DeliveryFormViewModelTest {
     @Test
     fun `get directions calls repo get direction results`(){
 
-        val origin = LatLng()
-        val destination = LatLng()
+        val origin = Location()
+        val destination = Location()
         val apiKey = "test"
         viewModel.getDirections(origin,destination,apiKey)
 

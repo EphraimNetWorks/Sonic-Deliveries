@@ -5,6 +5,7 @@ import com.example.deliveryapp.data.local.dao.DeliveryDao
 import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.entities.User
+import com.example.deliveryapp.data.local.models.Location
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.utils.DispatcherProvider
@@ -343,8 +344,8 @@ class DeliveryRepositoryTest {
 
         val testDirectionResult = DirectionsResult()
 
-        val testOrigin = LatLng()
-        val testDestination = LatLng()
+        val testOrigin = Location()
+        val testDestination = Location()
         val testApiKey = "test"
 
         deliveryRepository.getDirectionResults(testOrigin,testDestination,testApiKey)
