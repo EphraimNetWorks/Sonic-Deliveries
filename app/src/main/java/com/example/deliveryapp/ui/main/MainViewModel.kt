@@ -30,6 +30,12 @@ class MainViewModel @Inject constructor(
 
     var completedDeliveries: LiveData<PagedList<Delivery>>? = null
 
+    var deliveriesPlacedPair: LiveData<Pair<PagedList<Delivery>?, NetworkState?>>? = null
+
+    var deliveriesInTransitPair: LiveData<Pair<PagedList<Delivery>?, NetworkState?>>? = null
+
+    var completedDeliveriesPair: LiveData<Pair<PagedList<Delivery>?, NetworkState?>>? = null
+
     var deliveriesPlacedNo: LiveData<String>? = null
 
     var deliveriesInTransitNo: LiveData<String>? = null
@@ -38,13 +44,13 @@ class MainViewModel @Inject constructor(
 
     var mostRecentDelivery: LiveData<Delivery> = MutableLiveData()
 
-    private var networkState:LiveData<NetworkState>? = null
+    var networkState:LiveData<NetworkState>? = null
+
     var currentUser : LiveData<User>? = null
     private val viewModelJob  = Job()
 
     init {
         initializeCurrentUser()
-
     }
 
     fun initMyDeliveries() {
@@ -52,9 +58,25 @@ class MainViewModel @Inject constructor(
         initDeliveriesInTransit()
         initCompletedDeliveries()
 
+        initializeTransformations()
+    }
+
+    private fun initializeTransformations(){
+
+        val repoNetworkState = deliveryRepo.getNetworkState()
+        networkState = Transformations.map(repoNetworkState) { it }
+
         deliveriesPlacedNo = Transformations.map(deliveriesPlaced!!) { it.size.toString()}
         deliveriesInTransitNo = Transformations.map(deliveriesInTransit!!) { it.size.toString()}
         completedDeliveriesNo = Transformations.map(completedDeliveries!!) { it.size.toString()}
+
+        deliveriesPlacedPair = Transformations.map(deliveriesPlaced!!) { Pair(it,networkState!!.value)}
+        deliveriesInTransitPair = Transformations.map(deliveriesInTransit!!) { Pair(it,networkState!!.value)}
+        completedDeliveriesPair = Transformations.map(completedDeliveries!!) { Pair(it,networkState!!.value)}
+
+        deliveriesPlacedPair = Transformations.map(repoNetworkState) { Pair(deliveriesPlaced!!.value,it)}
+        deliveriesInTransitPair = Transformations.map(repoNetworkState) { Pair(deliveriesInTransit!!.value,it)}
+        completedDeliveriesPair = Transformations.map(repoNetworkState) { Pair(completedDeliveries!!.value,it)}
 
         mostRecentDelivery = Transformations.map(deliveriesPlaced!!) { getMostRecentDelivery()}
         mostRecentDelivery = Transformations.map(deliveriesInTransit!!) { getMostRecentDelivery()}
@@ -99,12 +121,6 @@ class MainViewModel @Inject constructor(
 
     private fun initializeCurrentUser() {
         currentUser = userRepo.getCurrentUser()
-    }
-
-    fun getNetworkState():LiveData<NetworkState>{
-
-        this.networkState = deliveryRepo.getNetworkState()
-        return networkState!!
     }
 
     fun getRandomItemFromList(list: List<String>):String{

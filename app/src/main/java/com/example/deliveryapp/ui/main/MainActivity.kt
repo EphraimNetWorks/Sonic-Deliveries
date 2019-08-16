@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity(),Injectable {
                 ArrayList<String>().apply {
                     addAll(resources.getStringArray(R.array.old_user_salutations))
                 })
-            else-> throw IllegalArgumentException("Unknown salution type")
+            else-> throw IllegalArgumentException("Unknown salutation type")
         }
     }
 

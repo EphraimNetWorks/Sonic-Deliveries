@@ -182,6 +182,6 @@ class MainViewModelTest{
 
     @Test
     fun `set network state on get network state`(){
-        assertNotNull(mainViewModel.getNetworkState().value)
+        assertNotNull(mainViewModel.networkState!!.value)
     }
 }

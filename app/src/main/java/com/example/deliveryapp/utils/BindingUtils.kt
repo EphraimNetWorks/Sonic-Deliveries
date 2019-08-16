@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.deliveryapp.R
+import com.example.deliveryapp.data.remote.NetworkState
 import com.facebook.shimmer.ShimmerFrameLayout
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 
@@ -36,22 +37,58 @@ object BindingUtils {
     }
 
     @JvmStatic
-    @BindingAdapter("android:visibility")
-    fun setShimmerVisibility(shimmerFrameLayout: ShimmerFrameLayout, dataList:PagedList<*>?) {
-        when (dataList) {
-            null -> shimmerFrameLayout.visibility = View.VISIBLE
-            else -> shimmerFrameLayout.visibility =
-                if (dataList.isNullOrEmpty()) shimmerFrameLayout.visibility else View.GONE
+    @BindingAdapter("networkState")
+    fun setShimmerNetworkState(shimmerFrameLayout: ShimmerFrameLayout, networkPair:Pair<Any?,NetworkState?>?) {
+        if(networkPair!=null) {
+            when (networkPair.first) {
+                null -> shimmerFrameLayout.visibility = View.VISIBLE
+                is Collection<*> -> {
+                    if((networkPair.first as Collection<*>).size >0){
+                        shimmerFrameLayout.visibility = View.GONE
+                    }else {
+                        if (networkPair.second == null) {
+                            shimmerFrameLayout.visibility = View.VISIBLE
+                        } else {
+                            shimmerFrameLayout.visibility = if(networkPair.second!!.status ==Status.RUNNING){
+                                View.VISIBLE
+                            }else View.GONE
+                        }
+                    }
+                }
+                else -> {
+                    shimmerFrameLayout.visibility = View.GONE
+                }
+            }
         }
     }
 
     @JvmStatic
-    @BindingAdapter("networkStatus")
-    fun setShimmerNetworkVisibility(shimmerFrameLayout: ShimmerFrameLayout, networkStatus: Status?) {
-        when (networkStatus) {
-            null -> shimmerFrameLayout.visibility = View.VISIBLE
-            else -> shimmerFrameLayout.visibility =
-                if (networkStatus == Status.RUNNING) View.VISIBLE else View.GONE
+    @BindingAdapter("networkState")
+    fun setTextviewNetworkState(textView: TextView, networkPair:Pair<Any?,NetworkState?>?) {
+        if(networkPair!=null) {
+            when (networkPair.first) {
+                null -> textView.visibility = View.GONE
+                is Collection<*> -> {
+                    if((networkPair.first as Collection<*>).size >0){
+                        textView.visibility = View.GONE
+                    }else {
+                        if (networkPair.second == null) {
+                            textView.visibility = View.GONE
+                        } else {
+
+                            textView.visibility = if(networkPair.second!!.status !=Status.RUNNING){
+                                View.VISIBLE
+                            }else View.GONE
+
+                            val errMsg = networkPair.second!!.message
+                            if(!errMsg.isNullOrEmpty()) textView.text = errMsg
+                        }
+                    }
+                }
+                else -> {
+                    textView.visibility = View.GONE
+                }
+            }
         }
     }
 
