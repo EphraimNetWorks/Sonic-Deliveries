@@ -23,7 +23,7 @@ import dagger.android.AndroidInjection
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import javax.inject.Inject
 
-class TrackDeliveryActivity : AppCompatActivity(),Injectable {
+class TrackDeliveryActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -38,6 +38,9 @@ class TrackDeliveryActivity : AppCompatActivity(),Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AndroidInjection.inject(this)
+
         binding = DataBindingUtil.setContentView(this,R.layout.activity_track_delivery)
 
         binding.toolbar.title = getString(R.string.track_delivery)

@@ -21,8 +21,7 @@ import kotlin.random.Random
 
 class MainViewModel @Inject constructor(
     private val deliveryRepo: DeliveryRepository,
-    private val userRepo: UserRepository,
-    private val dispatcherProvider: DispatcherProvider = DispatcherProvider()) :ViewModel() {
+    private val userRepo: UserRepository) :ViewModel() {
 
     var deliveriesPlaced: LiveData<PagedList<Delivery>>? = null
 
@@ -87,7 +86,6 @@ class MainViewModel @Inject constructor(
 
         val mostRecentList: ArrayList<Delivery> = ArrayList()
 
-        Timber.d("completed deliveries: ${Gson().toJson(completedDeliveries?.value)}")
         //take only first objects since room already sorts delivery
         if(!deliveriesPlaced!!.value.isNullOrEmpty()) mostRecentList.add(deliveriesPlaced!!.value!![0]!!)
         if(!deliveriesInTransit!!.value.isNullOrEmpty()) mostRecentList.add(deliveriesInTransit!!.value!![0]!!)

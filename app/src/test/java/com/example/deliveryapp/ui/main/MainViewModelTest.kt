@@ -37,60 +37,60 @@ class MainViewModelTest{
 
     private lateinit var mainViewModel: MainViewModel
 
-    private val inTransitList = listOf(
-        Delivery().apply {
-            id = "1"
-            pickUpAddress = "Accra"
-            destinationAddress = "Tema"
-            deliveryStatus = Delivery.STATUS_IN_TRANSIT
-        },Delivery().apply {
-            id = "2"
-            pickUpAddress = "Kumasi"
-            destinationAddress = "Tema"
-            deliveryStatus = Delivery.STATUS_IN_TRANSIT
-        },Delivery().apply {
-            id = "3"
-            pickUpAddress = "Accra"
-            destinationAddress = "Tema"
-            deliveryStatus = Delivery.STATUS_IN_TRANSIT
-        }
-    )
+
+
     private val placedList = listOf(
         Delivery().apply {
-            id = "1"
-            pickUpAddress = "Accra"
-            destinationAddress = "Tema"
-            deliveryStatus = Delivery.STATUS_PLACED
-        },Delivery().apply {
             id = "2"
-            pickUpAddress = "Kumasi"
-            destinationAddress = "Tema"
-            deliveryStatus = Delivery.STATUS_PLACED
-        },Delivery().apply {
-            id = "3"
-            pickUpAddress = "Accra"
-            destinationAddress = "Tema"
-            deliveryStatus = Delivery.STATUS_PLACED
-        }
-    )
-    private val completedList = listOf(
+            title = "Two"
+            createdAt = 1565435531000
+            updatedAt = 1565435531000
+            pickUpTime = 1565437531000
+            deliveryStatus = Delivery.STATUS_PLACED},
         Delivery().apply {
             id = "1"
-            pickUpAddress = "Accra"
-            destinationAddress = "Tema"
-            deliveryStatus = Delivery.STATUS_CANCELLED
-        },Delivery().apply {
-            id = "2"
-            pickUpAddress = "Kumasi"
-            destinationAddress = "Tema"
-            deliveryStatus = Delivery.STATUS_COMPLETED
-        },Delivery().apply {
+            title = "One"
+            createdAt = 1565434531000
+            updatedAt = 1565434531000
+            pickUpTime = 1565437531000
+            deliveryStatus = Delivery.STATUS_PLACED})
+    private val inTransitList = listOf(
+        Delivery().apply {
+            id = "3.5"
+            title = "Three And Half"
+            createdAt = 1565436531000
+            updatedAt = 1565437531000
+            estimatedTimeOfArrival = 1565437531000
+            deliveryStatus = Delivery.STATUS_IN_TRANSIT},
+        Delivery().apply {
             id = "3"
-            pickUpAddress = "Accra"
-            destinationAddress = "Tema"
-            deliveryStatus = Delivery.STATUS_COMPLETED
-        }
-    )
+            title = "Three"
+            createdAt = 1565435531000
+            updatedAt = 1565436531000
+            estimatedTimeOfArrival = 1565436531000
+            deliveryStatus = Delivery.STATUS_IN_TRANSIT})
+    private val completedList = listOf(
+        Delivery().apply {
+            id = "6"
+            title = "Six"
+            createdAt = 1565435531000
+            updatedAt = 1565439531000
+            deliveryTime = 1565439531000
+            deliveryStatus = Delivery.STATUS_CANCELLED},
+        Delivery().apply {
+            id = "5"
+            title = "Five"
+            createdAt = 1565435531000
+            updatedAt = 1565438531000
+            deliveryTime = 1565438531000
+            deliveryStatus = Delivery.STATUS_COMPLETED},
+        Delivery().apply {
+            id = "4"
+            title = "Four"
+            createdAt = 1565435531000
+            updatedAt = 1565437531000
+            deliveryTime = 1565437531000
+            deliveryStatus = Delivery.STATUS_COMPLETED})
 
     private val user = User().apply {
         id = "akfjklka"
@@ -109,7 +109,7 @@ class MainViewModelTest{
     fun setUp(){
         MockitoAnnotations.initMocks(this)
 
-        Mockito.`when` { userRepository.getCurrentUser() }.thenReturn { MutableLiveData(user) }
+        Mockito.`when` ( userRepository.getCurrentUser() ).thenReturn ( MutableLiveData(user) )
 
         mainViewModel = MainViewModel(deliveryRepository, userRepository, testProvider)
 
@@ -140,9 +140,11 @@ class MainViewModelTest{
         mainViewModel.deliveriesPlaced = dummyLD
 
         assertNotNull(mainViewModel.deliveriesPlaced)
-        assertEquals("1", mainViewModel.deliveriesPlaced!!.value?.get(0)!!.id)
-        assertEquals("2", mainViewModel.deliveriesPlaced!!.value?.get(1)!!.id)
-        assertEquals("3", mainViewModel.deliveriesPlaced!!.value?.get(2)!!.id)
+
+        assertEquals(placedList.size, mainViewModel.deliveriesPlaced!!.value!!.size)
+
+        assertEquals(placedList[0].id, mainViewModel.deliveriesPlaced!!.value?.get(0)!!.id)
+        assertEquals(placedList[1].id, mainViewModel.deliveriesPlaced!!.value?.get(1)!!.id)
     }
 
     @Test
@@ -154,9 +156,11 @@ class MainViewModelTest{
         mainViewModel.deliveriesInTransit = dummyLD
 
         assertNotNull(mainViewModel.deliveriesInTransit)
-        assertEquals("4", mainViewModel.deliveriesInTransit!!.value?.get(0)!!.id)
-        assertEquals("5", mainViewModel.deliveriesInTransit!!.value?.get(1)!!.id)
-        assertEquals("6", mainViewModel.deliveriesInTransit!!.value?.get(2)!!.id)
+
+        assertEquals(inTransitList.size, mainViewModel.deliveriesInTransit!!.value!!.size)
+
+        assertEquals(inTransitList[0].id, mainViewModel.deliveriesInTransit!!.value?.get(0)!!.id)
+        assertEquals(inTransitList[1].id, mainViewModel.deliveriesInTransit!!.value?.get(1)!!.id)
     }
 
     @Test
@@ -168,9 +172,12 @@ class MainViewModelTest{
         mainViewModel.completedDeliveries = dummyLD
 
         assertNotNull(mainViewModel.completedDeliveries)
-        assertEquals("7", mainViewModel.completedDeliveries!!.value?.get(0)!!.id)
-        assertEquals("8", mainViewModel.completedDeliveries!!.value?.get(1)!!.id)
-        assertEquals("9", mainViewModel.completedDeliveries!!.value?.get(2)!!.id)
+
+        assertEquals(completedList.size, mainViewModel.completedDeliveries!!.value!!.size)
+
+        assertEquals(completedList[0].id, mainViewModel.completedDeliveries!!.value?.get(0)!!.id)
+        assertEquals(completedList[1].id, mainViewModel.completedDeliveries!!.value?.get(1)!!.id)
+        assertEquals(completedList[2].id, mainViewModel.completedDeliveries!!.value?.get(2)!!.id)
     }
 
     @Test
@@ -181,7 +188,20 @@ class MainViewModelTest{
     }
 
     @Test
-    fun `set network state on get network state`(){
-        assertNotNull(mainViewModel.networkState!!.value)
+    fun `get most recent delivery`(){
+        //mock paged list
+        val dummyLD = MutableLiveData<PagedList<Delivery>>()
+        dummyLD.postValue(mockPagedList(placedList))
+        mainViewModel.deliveriesPlaced = dummyLD
+
+        dummyLD.postValue(mockPagedList(inTransitList))
+        mainViewModel.deliveriesInTransit = dummyLD
+
+        dummyLD.postValue(mockPagedList(completedList))
+        mainViewModel.completedDeliveries = dummyLD
+
+        val recentDelivery = mainViewModel.getMostRecentDelivery()
+        assertEquals(recentDelivery!!.id, "6")
     }
+
 }

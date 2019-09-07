@@ -24,7 +24,7 @@ import dagger.android.support.DaggerAppCompatActivity
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import javax.inject.Inject
 
-class NewDeliveryActivity : DaggerAppCompatActivity(),Injectable,DeliveryFormValidation{
+class NewDeliveryActivity : DaggerAppCompatActivity(),DeliveryFormValidation{
 
     private lateinit var binding : ActivityNewDeliveryBinding
     private lateinit var formFragment: NewDeliveryFormFragment
@@ -40,6 +40,8 @@ class NewDeliveryActivity : DaggerAppCompatActivity(),Injectable,DeliveryFormVal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AndroidInjection.inject(this)
 
         if (savedInstanceState != null) {
             //Restore the fragment's instance

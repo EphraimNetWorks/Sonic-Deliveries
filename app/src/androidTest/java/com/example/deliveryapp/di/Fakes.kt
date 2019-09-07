@@ -86,7 +86,7 @@ class FakeDeliveryRepository: DeliveryRepository(ApiService(),object: DeliveryDa
         return MutableLiveData()
     }
 
-    override fun cancelDelivery(deliveryId: String) {
+    override fun cancelDelivery(deliveryId: String, cancelledTime:Long) {
 
     }
 

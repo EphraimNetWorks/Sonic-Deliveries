@@ -26,7 +26,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class LoginActivity : AppCompatActivity(),Injectable {
+class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
 
@@ -37,6 +37,8 @@ class LoginActivity : AppCompatActivity(),Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AndroidInjection.inject(this)
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
 
