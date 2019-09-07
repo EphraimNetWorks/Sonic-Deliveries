@@ -87,7 +87,20 @@
     <string name="delivery_id">DELIVERY ID</string>
     <string name="delivered_on_title">DELIVERED ON</string>
     <string name="cancelled_on">CANCELLED ON</string>
-
+    <string name="on_boarding_page1_title">Welcome</string>
+    <string name="on_boarding_page1_description">Thanks for choosing Sonic Deliveries for all your delivery purposes
+    </string>
+    <string name="on_boarding_page2_title">Best Delivery Service</string>
+    <string name="on_boarding_page2_description">You came to the right place. We offer the best delivery service you can
+        find
+    </string>
+    <string name="on_boarding_page3_title">Customer Service</string>
+    <string name="on_boarding_page3_description">Best of all we\'ll be right next to you through every step your
+        delivery order.
+    </string>
+    <string name="getting_started">Getting Started</string>
+    <string name="getting_started_message">Create an account or login to get started with Sonic Deliveries</string>
+    
     <string-array name="old_user_salutations">
         <item>Hi there,</item>
         <item>What\'s up?</item>
