@@ -7,6 +7,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.test.espresso.idling.CountingIdlingResource
 import com.example.deliveryapp.R
@@ -40,7 +41,7 @@ class SignUpActivity : AppCompatActivity(),Injectable {
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
 
-        viewModel = ViewModelProviders.of(this,viewModelFactory).get(SignUpViewModel::class.java)
+        viewModel = ViewModelProvider(this,viewModelFactory).get(SignUpViewModel::class.java)
 
         binding.signupButton.setOnClickListener {
             val name = binding.signupNameEditext.text.toString()

@@ -17,8 +17,13 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
+        vectorDrawables.generatedDensities = []
         multiDexEnabled true
         testInstrumentationRunner "com.example.deliveryapp.AndroidTestRunner"
+    }
+    aaptOptions {
+        additionalParameters "--no-version-vectors"
     }
     buildTypes {
         release {
@@ -88,11 +93,11 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:4.9.0"
 
     // ViewModel and LiveData
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha02'
-    kapt 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha02'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha04'
+    kapt 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha04'
 
     // optional - ReactiveStreams support for LiveData
-    implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.2.0-alpha02'
+    implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.2.0-alpha04'
 
     // optional - Test helpers for LiveData
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
@@ -156,7 +161,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.0'
 
     // Add dependency
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    //implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     //maps dependencies
     implementation 'com.google.android.gms:play-services-maps:17.0.0'

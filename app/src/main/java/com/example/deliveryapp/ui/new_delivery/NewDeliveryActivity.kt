@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
@@ -53,7 +54,8 @@ class NewDeliveryActivity : DaggerAppCompatActivity(),DeliveryFormValidation{
 
         setUpActionBar()
 
-        viewModel = ViewModelProviders.of(this,viewModelFactory).get(NewDeliveryViewModel::class.java)
+        viewModel = ViewModelProvider(this,viewModelFactory).get(NewDeliveryViewModel::class.java)
+
         binding.lifecycleOwner = this
 
         setUpFormFragment()

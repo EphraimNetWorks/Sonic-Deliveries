@@ -17,6 +17,7 @@ import dagger.android.AndroidInjection
 import javax.inject.Inject
 import android.content.SharedPreferences
 import android.content.Context
+import androidx.lifecycle.ViewModelProvider
 
 
 class SplashActivity : AppCompatActivity(),Injectable {
@@ -31,7 +32,7 @@ class SplashActivity : AppCompatActivity(),Injectable {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        viewModel = ViewModelProviders.of(this,viewModelFactory).get(SplashViewModel::class.java)
+        viewModel = ViewModelProvider(this,viewModelFactory).get(SplashViewModel::class.java)
 
         if(isfirstTime()){
             goToNextActivity( true, isLoggedIn = false)

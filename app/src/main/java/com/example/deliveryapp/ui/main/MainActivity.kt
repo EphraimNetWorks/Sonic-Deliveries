@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         AndroidInjection.inject(this)
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
 
-        viewModel = ViewModelProviders.of(this,viewModelFactory).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this,viewModelFactory).get(MainViewModel::class.java)
 
         setUpSalutation()
 

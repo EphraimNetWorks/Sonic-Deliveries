@@ -11,6 +11,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.test.espresso.idling.CountingIdlingResource
@@ -48,7 +49,7 @@ class TrackDeliveryActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        trackDeliveryViewModel = ViewModelProviders.of(this,viewModelFactory).get(TrackDeliveryViewModel::class.java)
+        trackDeliveryViewModel = ViewModelProvider(this,viewModelFactory).get(TrackDeliveryViewModel::class.java)
 
         mDelivery = intent.getSerializableExtra(DELIVERY_EXTRA) as Delivery
 

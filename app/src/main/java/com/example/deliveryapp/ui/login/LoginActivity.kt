@@ -9,6 +9,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.test.espresso.idling.CountingIdlingResource
 import com.example.deliveryapp.R
@@ -42,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
 
-        viewModel = ViewModelProviders.of(this,viewModelFactory).get(LoginViewModel::class.java)
+        viewModel = ViewModelProvider(this,viewModelFactory).get(LoginViewModel::class.java)
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login)
         binding.lifecycleOwner = this
