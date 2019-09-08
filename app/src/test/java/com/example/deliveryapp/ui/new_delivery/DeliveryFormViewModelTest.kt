@@ -98,6 +98,41 @@ class DeliveryFormViewModelTest {
             ,DeliveryFormViewModel.VAL_VALID)
     }
 
+    @Test
+    fun `set invalid new delivery if delivery if item name is invalid`(){
+        viewModel.validateNewDelivery("", "address","somewhere",
+            "some date")
+        assertFalse(viewModel.isNewDeliveryValid())
+    }
+
+    @Test
+    fun `set invalid new delivery if delivery if pickup address is invalid`(){
+        viewModel.validateNewDelivery("name", "","somewhere",
+            "some date")
+        assertFalse(viewModel.isNewDeliveryValid())
+    }
+
+    @Test
+    fun `set invalid new delivery if delivery if destination address is invalid`(){
+        viewModel.validateNewDelivery("name", "address","",
+            "some date")
+        assertFalse(viewModel.isNewDeliveryValid())
+    }
+
+    @Test
+    fun `set invalid new delivery if delivery if pick up date is invalid`(){
+        viewModel.validateNewDelivery("name", "address","somewhere",
+            "")
+        assertFalse(viewModel.isNewDeliveryValid())
+    }
+
+    @Test
+    fun `set valid new delivery if delivery is valid`(){
+        viewModel.validateNewDelivery("name", "address","somewhere",
+            "some date")
+        assertTrue(viewModel.isNewDeliveryValid())
+    }
+
 
 
     @Test

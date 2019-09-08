@@ -19,9 +19,7 @@ import javax.inject.Inject
 import kotlin.collections.HashMap
 
 
-class LoginViewModel @Inject constructor(private val userRepo:UserRepository,
-                                         private val dispatcherProvider: DispatcherProvider = DispatcherProvider()
-) :ViewModel(){
+class LoginViewModel @Inject constructor(private val userRepo:UserRepository) :ViewModel(){
 
     private var networkState:LiveData<NetworkState>?=null
     var validationMap: HashMap<String,Int> = HashMap()

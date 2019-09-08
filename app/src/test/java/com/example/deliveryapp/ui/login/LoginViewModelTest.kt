@@ -7,6 +7,8 @@ import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.ui.new_delivery.DeliveryFormViewModel
 import com.example.deliveryapp.utils.DispatcherProvider
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -51,7 +53,7 @@ class LoginViewModelTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
-        loginViewModel = LoginViewModel(userRepository,testProvider)
+        loginViewModel = LoginViewModel(userRepository)
 
         loginViewModel.EMAIL_ADDRESS_PATTERN = EMAIL_ADDRESS_PATTERN
     }
@@ -133,7 +135,20 @@ class LoginViewModelTest {
 
         Mockito.`when`(userRepository.getNetworkState()).thenReturn(networkState)
         loginViewModel.loginUser("narteyephraim@gmail.com", "asdfghjkl")
+        loginViewModel.getNetworkState()
+        verify(userRepository, times(1)).getNetworkState()
+
         assertNotNull(loginViewModel.getNetworkState())
+
+    }
+
+
+    @Test
+    fun `login user`(){
+        loginViewModel.loginUser("narteyephraim@gmail.com", "asdfghjkl")
+
+        verify(userRepository, times(1)).login("narteyephraim@gmail.com", "asdfghjkl")
+
     }
 
 

@@ -111,7 +111,7 @@ class MainViewModelTest{
 
         Mockito.`when` ( userRepository.getCurrentUser() ).thenReturn ( MutableLiveData(user) )
 
-        mainViewModel = MainViewModel(deliveryRepository, userRepository, testProvider)
+        mainViewModel = MainViewModel(deliveryRepository, userRepository)
 
     }
 
@@ -202,6 +202,7 @@ class MainViewModelTest{
 
         val recentDelivery = mainViewModel.getMostRecentDelivery()
         assertEquals(recentDelivery!!.id, "6")
+
     }
 
 }

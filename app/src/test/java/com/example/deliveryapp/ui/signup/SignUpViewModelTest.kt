@@ -5,7 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
+import com.example.deliveryapp.data.remote.request.SignUpRequest
 import com.example.deliveryapp.ui.new_delivery.DeliveryFormViewModel
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.After
 import org.junit.Before
@@ -147,9 +150,23 @@ class SignUpViewModelTest {
     fun `set network state on get network state`(){
         val networkState = MutableLiveData<NetworkState>()
         whenever(userRepository.getNetworkState()).thenReturn(networkState)
+        signUpViewModel.getNetworkState()
+        verify(userRepository,times(1)).getNetworkState()
         assertNotNull(signUpViewModel.getNetworkState())
     }
 
+    @Test
+    fun `sign up user`(){
+        val name = "name"
+        val phone = "0240000000"
+        val email = "email@email.com"
+        val password = "password"
+        signUpViewModel.signUpUser(name,phone,email, password)
+
+        verify(userRepository,times(1)).signUp(SignUpRequest(
+            name,phone,email, password))
+
+    }
 
     companion object{
         private const val EMAIL_PATTERN =

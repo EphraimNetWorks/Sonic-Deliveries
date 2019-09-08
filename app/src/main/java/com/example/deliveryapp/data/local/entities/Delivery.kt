@@ -59,6 +59,12 @@ class Delivery : Serializable{
 
     var additionalInfo:String = "None"
 
+    override fun equals(other: Any?): Boolean {
+        return if(other is Delivery){
+            other.id == id
+        }else false
+    }
+
     companion object{
         const val STATUS_COMPLETED = 2
         const val STATUS_IN_TRANSIT = 1

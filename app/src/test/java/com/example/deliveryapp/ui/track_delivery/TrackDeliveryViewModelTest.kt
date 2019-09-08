@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.remote.NetworkState
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -33,6 +35,8 @@ class TrackDeliveryViewModelTest{
         Mockito.`when`(deliveryRepo.getNetworkState()).thenReturn(testNetworkState)
 
         val networkState = viewModel.getNetWorkState()
+
+        verify(deliveryRepo, times(1)).getNetworkState()
 
         assertEquals(networkState.value!!.status, testNetworkState.value!!.status)
 
