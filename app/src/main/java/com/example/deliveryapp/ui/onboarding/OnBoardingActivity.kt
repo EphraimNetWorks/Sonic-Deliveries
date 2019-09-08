@@ -41,6 +41,7 @@ class OnBoardingActivity : AppCompatActivity() {
             val getStartedFragmentTransaction = supportFragmentManager.beginTransaction()
             val bf = GettingStartedFragment()
             getStartedFragmentTransaction.replace(R.id.on_boarding_frame, bf)
+            getStartedFragmentTransaction.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out)
             getStartedFragmentTransaction.commit()
         }
 

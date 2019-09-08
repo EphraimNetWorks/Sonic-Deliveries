@@ -304,23 +304,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/placed_deliveries_recycler_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintVertical_bias="0"
-                            android:layout_marginBottom="@dimen/margin_normal"
-                            android:layout_marginEnd="@dimen/margin_normal"
-                            android:layout_marginStart="@dimen/margin_normal"
-                            android:layout_marginTop="@dimen/margin_normal"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            app:data="@{viewModel.deliveriesPlaced}"
-                            android:orientation="horizontal"/>
-
                     <TextView
                         android:id="@+id/no_deliveries_textview"
                         android:layout_width="wrap_content"
@@ -332,6 +315,7 @@
                         android:layout_marginBottom="@dimen/margin_normal"
                         android:textSize="@dimen/textsize_large"
                         android:layout_marginEnd="@dimen/margin_large"
+                        app:data="@{viewModel.deliveriesPlaced}"
                         android:text="@string/no_placed_delivery_error"/>
 
                     <com.facebook.shimmer.ShimmerFrameLayout
@@ -348,7 +332,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         shimmer:duration="200"
-                        app:shimmer_colored="true"
                         networkState="@{viewModel.deliveriesPlacedPair}">
 
 
@@ -366,6 +349,24 @@
                         </LinearLayout>
 
                     </com.facebook.shimmer.ShimmerFrameLayout>
+    
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/placed_deliveries_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintVertical_bias="0"
+                        android:visibility="gone"
+                        android:layout_marginBottom="@dimen/margin_normal"
+                        android:layout_marginEnd="@dimen/margin_normal"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:data="@{viewModel.deliveriesPlaced}"
+                        android:orientation="horizontal"/>
 
                 </FrameLayout>
 
@@ -385,24 +386,7 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/in_transit_deliveries_recycler_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintVertical_bias="0"
-                            android:layout_marginBottom="@dimen/margin_normal"
-                            android:layout_marginEnd="@dimen/margin_normal"
-                            android:layout_marginStart="@dimen/margin_normal"
-                            android:layout_marginTop="@dimen/margin_normal"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:visibility="gone"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            app:data="@{viewModel.deliveriesInTransit}"
-                            android:orientation="horizontal"/>
+                    
                     <TextView
                         android:id="@+id/no_deliveries_in_transit_textview"
                         android:layout_width="wrap_content"
@@ -413,6 +397,7 @@
                         android:layout_marginBottom="@dimen/margin_normal"
                         android:textSize="@dimen/textsize_large"
                         android:layout_marginEnd="@dimen/margin_large"
+                        app:data="@{viewModel.deliveriesInTransit}"
                         android:text="@string/no_deliveries_in_transit_message"/>
 
                     <com.facebook.shimmer.ShimmerFrameLayout
@@ -445,6 +430,25 @@
                         </LinearLayout>
 
                     </com.facebook.shimmer.ShimmerFrameLayout>
+    
+    
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/in_transit_deliveries_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintVertical_bias="0"
+                        android:layout_marginBottom="@dimen/margin_normal"
+                        android:layout_marginEnd="@dimen/margin_normal"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:visibility="gone"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:data="@{viewModel.deliveriesInTransit}"
+                        android:orientation="horizontal"/>
 
                 </FrameLayout>
 
@@ -465,24 +469,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_large">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/completed_deliveries_recycler_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintVertical_bias="0"
-                            android:layout_marginBottom="@dimen/margin_normal"
-                            android:layout_marginEnd="@dimen/margin_normal"
-                            android:layout_marginStart="@dimen/margin_normal"
-                            android:layout_marginTop="@dimen/margin_normal"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            app:data="@{viewModel.completedDeliveries}"
-                            android:orientation="horizontal"/>
+                    
                     <TextView
                             android:id="@+id/no_deliveries_completed_textview"
                             android:layout_width="wrap_content"
@@ -493,6 +480,7 @@
                             android:layout_marginBottom="@dimen/margin_normal"
                             android:textSize="@dimen/textsize_large"
                             android:layout_marginEnd="@dimen/margin_large"
+                            app:data="@{viewModel.completedDeliveries}"
                             android:text="@string/no_complete_deliveries_error"/>
 
                     <com.facebook.shimmer.ShimmerFrameLayout
@@ -525,6 +513,25 @@
                         </LinearLayout>
 
                     </com.facebook.shimmer.ShimmerFrameLayout>
+    
+    
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/completed_deliveries_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintVertical_bias="0"
+                        android:layout_marginBottom="@dimen/margin_normal"
+                        android:layout_marginEnd="@dimen/margin_normal"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:data="@{viewModel.completedDeliveries}"
+                        android:orientation="horizontal"/>
 
                 </FrameLayout>
 

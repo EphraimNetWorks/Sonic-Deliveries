@@ -46,7 +46,7 @@ class SplashActivity : AppCompatActivity(),Injectable {
     fun isfirstTime():Boolean{
         val prefs = getSharedPreferences("first_time", Context.MODE_PRIVATE)
 
-        return prefs.getBoolean("isFirstTime", false)
+        return prefs.getBoolean("isFirstTime", true)
     }
 
     fun updateFirstTime(){

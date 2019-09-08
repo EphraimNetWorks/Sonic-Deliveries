@@ -63,7 +63,9 @@ open class UserRepository(private val apiService:ApiService,
     }
 
     fun logoutUser() {
-        localDatabase.clearAllTables()
-        apiService.logoutUser()
+        GlobalScope.launch {
+            localDatabase.clearAllTables()
+            apiService.logoutUser()
+        }
     }
 }

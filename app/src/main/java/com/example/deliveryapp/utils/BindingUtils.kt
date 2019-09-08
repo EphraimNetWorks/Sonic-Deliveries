@@ -29,6 +29,14 @@ object BindingUtils {
     }
 
     @JvmStatic
+    @BindingAdapter("data")
+    fun <T> setNoDataTextviewVisibility(textView: TextView, data: PagedList<T>?) {
+        if(!data.isNullOrEmpty()) {
+            textView.visibility = View.GONE
+        }
+    }
+
+    @JvmStatic
     @BindingAdapter("imageUrl")
     fun setImageResource(imageView: ImageView, url: String?) {
         Glide.with(imageView)
