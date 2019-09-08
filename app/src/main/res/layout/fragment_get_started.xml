@@ -9,66 +9,88 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
         
+        <View
+            android:id="@+id/header_design"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_xlarge"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/getting_started_background_1"/>
 
-        <LinearLayout
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            app:layout_constraintTop_toBottomOf="@id/header_design"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+    
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_large"
                 android:orientation="vertical"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
+                android:layout_marginStart="@dimen/margin_large"
+                android:layout_marginEnd="@dimen/margin_large">
+        
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/getting_started"
+                    android:textSize="@dimen/main_salutation_textsize"
+                    android:textColor="@color/black"/>
+        
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/getting_started_message"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:textSize="@dimen/textsize_large"
+                    android:textColor="@color/black"/>
+        
+        
+        
+                <Button
+                    android:id="@+id/sign_up_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="@dimen/margin_xlarge"
+                    android:padding="@dimen/margin_large"
+                    android:layout_marginBottom="@dimen/margin_large"
+                    android:background="@drawable/color_button_background"
+                    android:clickable="false"
+                    android:textStyle="bold"
+                    android:text="@string/sign_up"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textsize_large" />
+        
+        
+        
+                <Button
+                    android:id="@+id/login_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:padding="@dimen/margin_large"
+                    android:layout_marginBottom="@dimen/margin_large"
+                    android:background="@drawable/cancel_button_background"
+                    android:clickable="false"
+                    android:textStyle="bold"
+                    android:text="@string/login"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsize_large" />
+            </LinearLayout>
+            
+        </ScrollView>
     
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="@string/getting_started"
-                android:textSize="@dimen/main_salutation_textsize"
-                android:textColor="@color/black"/>
-    
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/getting_started_message"
-                android:layout_marginTop="@dimen/margin_normal"
-                android:textSize="@dimen/textsize_large"
-                android:textColor="@color/black"/>
-    
-    
-    
-            <Button
-                android:id="@+id/sign_up_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="@dimen/margin_xlarge"
-                android:padding="@dimen/margin_large"
-                android:layout_marginBottom="@dimen/margin_large"
-                android:background="@drawable/color_button_background"
-                android:clickable="false"
-                android:textStyle="bold"
-                android:text="@string/sign_up"
-                android:textColor="@color/white"
-                android:textSize="@dimen/textsize_large" />
-    
-    
-    
-            <Button
-                android:id="@+id/login_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="@dimen/margin_large"
-                android:padding="@dimen/margin_large"
-                android:layout_marginBottom="@dimen/margin_large"
-                android:background="@drawable/cancel_button_background"
-                android:clickable="false"
-                android:textStyle="bold"
-                android:text="@string/login"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/textsize_large" />
-        </LinearLayout>
+        <View
+            android:id="@+id/footer_design"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_xlarge"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/getting_started_background_2"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

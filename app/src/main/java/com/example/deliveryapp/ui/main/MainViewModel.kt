@@ -71,11 +71,14 @@ class MainViewModel @Inject constructor(
 
         deliveriesPlacedPair = Transformations.map(deliveriesPlaced!!) { Pair(it,networkState!!.value)}
         deliveriesInTransitPair = Transformations.map(deliveriesInTransit!!) { Pair(it,networkState!!.value)}
-        completedDeliveriesPair = Transformations.map(completedDeliveries!!) { Pair(it,networkState!!.value)}
+        completedDeliveriesPair = Transformations.map(completedDeliveries!!) {
+            Pair(it,networkState!!.value)
+        }
 
         deliveriesPlacedPair = Transformations.map(repoNetworkState) { Pair(deliveriesPlaced!!.value,it)}
         deliveriesInTransitPair = Transformations.map(repoNetworkState) { Pair(deliveriesInTransit!!.value,it)}
-        completedDeliveriesPair = Transformations.map(repoNetworkState) { Pair(completedDeliveries!!.value,it)}
+        completedDeliveriesPair = Transformations.map(repoNetworkState) {
+            Pair(completedDeliveries!!.value,it)}
 
         mostRecentDelivery = Transformations.map(deliveriesPlaced!!) { getMostRecentDelivery()}
         mostRecentDelivery = Transformations.map(deliveriesInTransit!!) { getMostRecentDelivery()}

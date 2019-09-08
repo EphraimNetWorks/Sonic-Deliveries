@@ -347,7 +347,8 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        shimmer:duration="2000"
+                        shimmer:duration="200"
+                        app:shimmer_colored="true"
                         networkState="@{viewModel.deliveriesPlacedPair}">
 
 

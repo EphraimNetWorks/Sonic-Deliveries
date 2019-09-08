@@ -182,6 +182,7 @@ class OnBoardingActivityTest {
 
 
         onView(withId(R.id.sign_up_button))
+            .perform(scrollTo())
             .check(matches(isDisplayed()))
             .perform(click())
 

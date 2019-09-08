@@ -20,7 +20,8 @@ object BindingUtils {
     @JvmStatic
     @BindingAdapter("data")
     fun <T> setRecyclerViewProperties(recyclerView: RecyclerView, data: PagedList<T>?) {
-        if(data!=null) {
+        if(!data.isNullOrEmpty()) {
+            recyclerView.visibility = View.VISIBLE
             if (recyclerView.adapter is BindablePagingAdapter<*>) {
                 (recyclerView.adapter as BindablePagingAdapter<T>).submitItems(data)
             }
