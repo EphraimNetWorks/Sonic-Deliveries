@@ -3,6 +3,7 @@ package com.example.deliveryapp.di
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
+import com.example.deliveryapp.data.local.LocalDatabase
 import com.example.deliveryapp.data.local.dao.DeliveryDao
 import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.Delivery
@@ -11,6 +12,7 @@ import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.utils.MockRoomDataSource
+import org.mockito.Mockito
 
 class FakeUserRepository(currentUser:User? = null): UserRepository(ApiService(),object : UserDao {
     override fun deleteUser(user: User) {
@@ -23,7 +25,7 @@ class FakeUserRepository(currentUser:User? = null): UserRepository(ApiService(),
     override fun getCurrentUser(): LiveData<User>? {
         return MutableLiveData(currentUser)
     }
-})
+},Mockito.mock(LocalDatabase::class.java))
 
 class FakeDeliveryRepository: DeliveryRepository(ApiService(),object: DeliveryDao{
 

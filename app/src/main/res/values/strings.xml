@@ -100,6 +100,7 @@
     </string>
     <string name="getting_started">Getting Started</string>
     <string name="getting_started_message">Create an account or login to get started with Sonic Deliveries</string>
+    <string name="logout">Logout</string>
     
     <string-array name="old_user_salutations">
         <item>Hi there,</item>

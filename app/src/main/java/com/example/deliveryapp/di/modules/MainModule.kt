@@ -1,5 +1,6 @@
 package com.example.deliveryapp.di.modules
 
+import com.example.deliveryapp.data.local.LocalDatabase
 import com.example.deliveryapp.data.local.dao.DeliveryDao
 import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
@@ -24,8 +25,8 @@ class MainModule{
     }
 
     @Provides
-    fun providesUserRepository(apiService: ApiService, userDao: UserDao): UserRepository {
-        return UserRepository(apiService,userDao)
+    fun providesUserRepository(apiService: ApiService, userDao: UserDao, localDatabase: LocalDatabase): UserRepository {
+        return UserRepository(apiService,userDao,localDatabase)
     }
 
     @Provides

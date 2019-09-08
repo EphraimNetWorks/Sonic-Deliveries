@@ -1,12 +1,14 @@
 package com.example.deliveryapp.data.local.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.deliveryapp.data.local.LocalDatabase
 import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.request.SignUpRequest
 import com.nhaarman.mockitokotlin2.capture
+import com.nhaarman.mockitokotlin2.times
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import org.junit.Before
 
@@ -30,6 +32,8 @@ class UserRepositoryTest {
     lateinit var apiService: ApiService
     @Mock
     lateinit var userDao: UserDao
+    @Mock
+    lateinit var localDatabase: LocalDatabase
 
     @Captor
     lateinit var callbackCaptor:ArgumentCaptor<ApiCallback<User?>>
@@ -46,7 +50,7 @@ class UserRepositoryTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        userRepository = UserRepository(apiService,userDao)
+        userRepository = UserRepository(apiService,userDao, localDatabase)
     }
 
     @Test
@@ -148,6 +152,13 @@ class UserRepositoryTest {
             errorMessage
         )
 
+    }
+
+
+    @Test
+    fun `logout user`(){
+        userRepository.logoutUser()
+        com.nhaarman.mockitokotlin2.verify(apiService, times(1)).logoutUser()
     }
 
     private fun <T> any(type : Class<T>): T {

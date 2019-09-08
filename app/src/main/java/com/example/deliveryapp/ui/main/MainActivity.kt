@@ -11,6 +11,7 @@ import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.ActivityMainBinding
 import com.example.deliveryapp.di.Injectable
+import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
 import com.example.deliveryapp.utils.ViewModelFactory
 import com.google.gson.Gson
@@ -21,7 +22,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(),Injectable {
+class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(),Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AndroidInjection.inject(this)
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
 
         viewModel = ViewModelProviders.of(this,viewModelFactory).get(MainViewModel::class.java)
@@ -48,6 +50,11 @@ class MainActivity : AppCompatActivity(),Injectable {
 
         binding.newDeliveryFab.setOnClickListener {
             startActivity(NewDeliveryActivity.newInstance(this))
+        }
+
+        binding.logoutButton.setOnClickListener {
+            viewModel.logoutUser()
+            startActivity(LoginActivity.newInstance(this, SALUTATION_TYPE_NEW_LOGIN))
         }
 
     }

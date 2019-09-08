@@ -47,7 +47,6 @@ import org.mockito.MockitoAnnotations
 import java.util.*
 import kotlin.collections.ArrayList
 
-@RunWith(AndroidJUnit4::class)
 class MainActivityTest {
 
     @get:Rule
@@ -360,6 +359,21 @@ class MainActivityTest {
             )
         )
 
+    }
+
+    @Test
+    fun logoutUser(){
+        normalMainActivityLaunch()
+
+        Espresso.onView(ViewMatchers.withId(R.id.logout_button))
+            .perform(ViewActions.click())
+
+        Intents.intended(
+            Matchers.allOf(
+                IntentMatchers.hasComponent(ComponentNameMatchers.hasShortClassName(Constants.LOGIN_ACTIVITY_SHORT_CLASS_NAME)),
+                IntentMatchers.toPackage(Constants.PACKAGE_NAME)
+            )
+        )
     }
 
     private fun normalMainActivityLaunch(){

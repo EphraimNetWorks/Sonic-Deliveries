@@ -2,6 +2,7 @@ package com.example.deliveryapp.data.local.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.deliveryapp.data.local.LocalDatabase
 import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.remote.ApiCallback
@@ -14,7 +15,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-open class UserRepository(private val apiService:ApiService, private val userDao: UserDao){
+open class UserRepository(private val apiService:ApiService,
+                          private val userDao: UserDao,
+                          private val localDatabase: LocalDatabase){
 
     private var networkState:MutableLiveData<NetworkState> = MutableLiveData()
 
@@ -57,5 +60,10 @@ open class UserRepository(private val apiService:ApiService, private val userDao
 
     fun getCurrentUser(): LiveData<User>? {
         return userDao.getCurrentUser()
+    }
+
+    fun logoutUser() {
+        localDatabase.clearAllTables()
+        apiService.logoutUser()
     }
 }

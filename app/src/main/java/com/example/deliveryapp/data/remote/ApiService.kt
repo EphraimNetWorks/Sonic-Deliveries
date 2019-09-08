@@ -5,6 +5,7 @@ import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.models.Location
 import com.example.deliveryapp.data.remote.request.SignUpRequest
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -162,6 +163,10 @@ class ApiService {
                     Timber.e("Get Directions Result failed with error: %s", e.message)
                 }
             })
+    }
+
+    fun logoutUser(){
+        auth.signOut()
     }
 
     companion object{

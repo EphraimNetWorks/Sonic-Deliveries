@@ -131,6 +131,10 @@ class MainViewModel @Inject constructor(
         viewModelJob.cancel()
     }
 
+    fun logoutUser() {
+        userRepo.logoutUser()
+    }
+
     companion object{
         const val pageSize = 20
     }

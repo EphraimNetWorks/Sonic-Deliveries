@@ -8,6 +8,8 @@ import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.utils.DispatcherProvider
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -203,6 +205,12 @@ class MainViewModelTest{
         val recentDelivery = mainViewModel.getMostRecentDelivery()
         assertEquals(recentDelivery!!.id, "6")
 
+    }
+
+    @Test
+    fun `logout user`(){
+        mainViewModel.logoutUser()
+        verify(userRepository, times(1)).logoutUser()
     }
 
 }
