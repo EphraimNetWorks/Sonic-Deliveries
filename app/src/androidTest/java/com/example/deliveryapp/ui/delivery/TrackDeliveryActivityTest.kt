@@ -24,13 +24,17 @@ import timber.log.Timber
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import com.example.deliveryapp.data.local.LocalDatabase
+import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
-import com.example.deliveryapp.di.FakeUserRepository
+import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.di.TestAppInjector
 import com.example.deliveryapp.di.TestMainModule
 import com.example.deliveryapp.utils.*
 import junit.framework.Assert.assertTrue
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
 
@@ -91,7 +95,11 @@ class TrackDeliveryActivityTest {
 
         //TestAppInjector(TestMainModule(FakeUserRepository(),deliveryRepo)).inject()
 
-        TestAppInjector(FakeUserRepository(),deliveryRepo).newInject()
+        TestAppInjector(
+            UserRepository(
+                Mockito.mock(ApiService::class.java),
+                Mockito.mock(UserDao::class.java),
+                Mockito.mock(LocalDatabase::class.java)),deliveryRepo).newInject()
 
         testContext = InstrumentationRegistry.getInstrumentation().targetContext
 

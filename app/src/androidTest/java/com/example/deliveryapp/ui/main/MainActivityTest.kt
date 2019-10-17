@@ -22,10 +22,15 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.example.deliveryapp.AndroidTestApplication
 import com.example.deliveryapp.R
+import com.example.deliveryapp.data.local.LocalDatabase
+import com.example.deliveryapp.data.local.dao.DeliveryDao
+import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.ApiCallback
+import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.di.TestAppInjector
 import com.example.deliveryapp.di.TestMainModule
@@ -64,7 +69,16 @@ class MainActivityTest {
     lateinit var deliveryRepo: DeliveryRepository
 
     @Mock
-    lateinit var userRepo: UserRepository
+    private lateinit var apiService: ApiService
+    @Mock
+    private lateinit var userDao: UserDao
+    @Mock
+    private lateinit var localDatabase: LocalDatabase
+    @Mock
+    lateinit var deliveryDao: DeliveryDao
+
+
+    private lateinit var userRepo: UserRepository
 
     private lateinit var app:AndroidTestApplication
 
@@ -131,6 +145,9 @@ class MainActivityTest {
 
         MockitoAnnotations.initMocks(this)
 
+        userRepo = UserRepository(apiService,userDao,localDatabase)
+        deliveryRepo = DeliveryRepository(apiService,deliveryDao)
+
         TestAppInjector(userRepo,deliveryRepo).newInject()
 
         val testUserLD = MutableLiveData(testUser)
@@ -141,21 +158,26 @@ class MainActivityTest {
         val inTransitDS= MockRoomDataSource.mockDataSourceFactory(inTransitDeliveries)
         val completedDS= MockRoomDataSource.mockDataSourceFactory(completedDeliveries)
 
-        Mockito.`when`(deliveryRepo.getDeliveriesPlaced())
+        Mockito.`when`(deliveryDao.getDeliveriesPlaced())
             .thenReturn(placedDS)
-        Mockito.`when`(deliveryRepo.getDeliveriesInTransit())
+        Mockito.`when`(deliveryDao.getDeliveriesInTransit())
             .thenReturn(inTransitDS)
-        Mockito.`when`(deliveryRepo.getCompletedDeliveries())
+        Mockito.`when`(deliveryDao.getCompletedDeliveries())
             .thenReturn(completedDS)
-        Mockito.`when`(userRepo.getCurrentUser()).thenReturn (testUserLD)
+
+        Mockito.`when`(userDao.getCurrentUser()).thenReturn (testUserLD)
+
+
+        Mockito.doAnswer {
+            val callback = it.getArgument<ApiCallback<List<Delivery>>>(0)
+            callback.onSuccess(completedDeliveries)
+        }.`when`(apiService).loadMyDeliveries(com.nhaarman.mockitokotlin2.any())
 
     }
 
     @Test
     fun showNewUserSalutation(){
 
-        Mockito.`when`(deliveryRepo.getNetworkState())
-            .thenReturn(MutableLiveData(NetworkState.LOADED))
         activityRule.launchActivity(MainActivity.newInstance(app,MainActivity.SALUTATION_TYPE_SIGN_UP))
 
         EspressoTestUtil.disableProgressBarAnimations(activityRule)
@@ -168,8 +190,6 @@ class MainActivityTest {
     @Test
     fun showNewLoginSalutation(){
 
-        Mockito.`when`(deliveryRepo.getNetworkState())
-            .thenReturn(MutableLiveData(NetworkState.LOADED))
         activityRule.launchActivity(MainActivity.newInstance(app,MainActivity.SALUTATION_TYPE_NEW_LOGIN))
 
         EspressoTestUtil.disableProgressBarAnimations(activityRule)
@@ -182,8 +202,6 @@ class MainActivityTest {
     @Test
     fun showAlreadyLoggedInUserSalutation(){
 
-        Mockito.`when`(deliveryRepo.getNetworkState())
-            .thenReturn(MutableLiveData(NetworkState.LOADED))
         activityRule.launchActivity(MainActivity.newInstance(app,MainActivity.SALUTATION_TYPE_ALREADY_LOGGED_IN))
 
         EspressoTestUtil.disableProgressBarAnimations(activityRule)
@@ -378,8 +396,6 @@ class MainActivityTest {
 
     private fun normalMainActivityLaunch(){
 
-        Mockito.`when`(deliveryRepo.getNetworkState())
-            .thenReturn(MutableLiveData(NetworkState.LOADED))
         activityRule.launchActivity(MainActivity.newInstance(app,MainActivity.SALUTATION_TYPE_ALREADY_LOGGED_IN))
 
         EspressoTestUtil.disableProgressBarAnimations(activityRule)

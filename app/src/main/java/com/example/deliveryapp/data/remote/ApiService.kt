@@ -3,6 +3,14 @@ package com.example.deliveryapp.data.remote
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.models.Location
+import com.example.deliveryapp.data.remote.ApiService.Companion.COLLECTION_DELIVERIES
+import com.example.deliveryapp.data.remote.ApiService.Companion.COLLECTION_USERS
+import com.example.deliveryapp.data.remote.ApiService.Companion.DELIVERY_STATUS_FIELD_NAME
+import com.example.deliveryapp.data.remote.ApiService.Companion.DELIVERY_TIME_DATE_FIELD_NAME
+import com.example.deliveryapp.data.remote.ApiService.Companion.DELIVERY_TIME_FIELD_NAME
+import com.example.deliveryapp.data.remote.ApiService.Companion.DOCUMENT_COLLECTION_MY_DELIVERIES
+import com.example.deliveryapp.data.remote.ApiService.Companion.UNKNOWN_FAILURE_ERROR
+import com.example.deliveryapp.data.remote.ApiService.Companion.UPDATED_AT_FIELD_NAME
 import com.example.deliveryapp.data.remote.request.SignUpRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -19,8 +27,40 @@ import org.joda.time.DateTime
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
+interface ApiService {
 
-class ApiService {
+    fun loginUser(email:String, password:String, callback:ApiCallback<User?>)
+
+    fun signUpUser(signUpRequest: SignUpRequest, callback: ApiCallback<User?>)
+
+    fun loadMyDeliveries(callback: ApiCallback<List<Delivery>>)
+
+    fun cancelDelivery(deliveryId: String, callback: ApiCallback<Boolean>)
+
+    fun sendNewDelivery(newDelivery: Delivery, callback: ApiCallback<Boolean>)
+
+    fun getDirections(origin: Location, destination: Location, apiKey: String,
+                      apiCallback: ApiCallback<DirectionsResult>)
+
+    fun logoutUser()
+
+    companion object{
+
+        const val COLLECTION_USERS = "users"
+        const val COLLECTION_DELIVERIES = "deliveries"
+
+        const val UNKNOWN_FAILURE_ERROR = "Unknown reason for failure"
+        const val DOCUMENT_COLLECTION_MY_DELIVERIES ="my_deliveries"
+
+        const val DELIVERY_STATUS_FIELD_NAME = "deliveryStatus"
+        const val DELIVERY_TIME_FIELD_NAME = "deliveryTime"
+        const val DELIVERY_TIME_DATE_FIELD_NAME = "deliveryTimeDate"
+        const val UPDATED_AT_FIELD_NAME = "updatedAt"
+
+    }
+}
+
+class ApiServiceImpl :ApiService{
 
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
@@ -28,7 +68,7 @@ class ApiService {
     private var userId :String? = null
         get() {return if(auth.currentUser == null) null else auth.currentUser!!.uid}
 
-    fun loginUser(email:String, password:String, callback:ApiCallback<User?>){
+    override fun loginUser(email:String, password:String, callback:ApiCallback<User?>){
         Timber.d("login details email: $email, password: $password")
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener{task->
@@ -40,7 +80,7 @@ class ApiService {
                                 callback.onSuccess(task1.result!!.toObject(User::class.java))
                                 Timber.d("login and read user success")
                             }else{
-                                callback.onFailed(task.exception?.message?: UNKNOWN_FAILURE_ERROR)
+                                callback.onFailed(task1.exception?.message?: UNKNOWN_FAILURE_ERROR)
                                 Timber.w("read user failed with error:${task.exception?.message}")
                             }
                         }
@@ -51,7 +91,7 @@ class ApiService {
             }
     }
 
-    fun signUpUser(signUpRequest: SignUpRequest, callback: ApiCallback<User?>){
+    override fun signUpUser(signUpRequest: SignUpRequest, callback: ApiCallback<User?>){
         auth.createUserWithEmailAndPassword(signUpRequest.email,signUpRequest.password)
             .addOnCompleteListener{task ->
                 if(task.isSuccessful){
@@ -78,7 +118,7 @@ class ApiService {
             }
     }
 
-    fun loadMyDeliveries(callback: ApiCallback<List<Delivery>>){
+    override fun loadMyDeliveries(callback: ApiCallback<List<Delivery>>){
 
         db.collection(COLLECTION_DELIVERIES).document(userId!!).collection(DOCUMENT_COLLECTION_MY_DELIVERIES).get().addOnCompleteListener { task ->
             if(task.isSuccessful){
@@ -92,7 +132,7 @@ class ApiService {
         }
     }
 
-    fun cancelDelivery(deliveryId: String, callback: ApiCallback<Boolean>) {
+    override fun cancelDelivery(deliveryId: String, callback: ApiCallback<Boolean>) {
 
 
         val deliveryRef = db.collection(COLLECTION_DELIVERIES).document(userId!!)
@@ -117,7 +157,7 @@ class ApiService {
             }
     }
 
-    fun sendNewDelivery(newDelivery: Delivery, callback: ApiCallback<Boolean>) {
+    override fun sendNewDelivery(newDelivery: Delivery, callback: ApiCallback<Boolean>) {
         val deliveryId = db.collection(COLLECTION_DELIVERIES).document(userId!!)
             .collection(DOCUMENT_COLLECTION_MY_DELIVERIES).document().id
         newDelivery.id = deliveryId
@@ -138,7 +178,7 @@ class ApiService {
         }
     }
 
-    fun getDirections(origin: Location, destination: Location, apiKey: String,
+    override fun getDirections(origin: Location, destination: Location, apiKey: String,
                       apiCallback: ApiCallback<DirectionsResult>) {
 
         val geoApiContext = GeoApiContext.Builder()
@@ -165,22 +205,8 @@ class ApiService {
             })
     }
 
-    fun logoutUser(){
+    override fun logoutUser(){
         auth.signOut()
     }
 
-    companion object{
-
-        const val COLLECTION_USERS = "users"
-        const val COLLECTION_DELIVERIES = "deliveries"
-
-        const val UNKNOWN_FAILURE_ERROR = "Unknown reason for failure"
-        const val DOCUMENT_COLLECTION_MY_DELIVERIES ="my_deliveries"
-
-        const val DELIVERY_STATUS_FIELD_NAME = "deliveryStatus"
-        const val DELIVERY_TIME_FIELD_NAME = "deliveryTime"
-        const val DELIVERY_TIME_DATE_FIELD_NAME = "deliveryTimeDate"
-        const val UPDATED_AT_FIELD_NAME = "updatedAt"
-
-    }
 }

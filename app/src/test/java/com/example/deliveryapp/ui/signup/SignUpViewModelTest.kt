@@ -3,10 +3,14 @@ package com.example.deliveryapp.ui.signup
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.deliveryapp.data.local.LocalDatabase
+import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.data.remote.request.SignUpRequest
 import com.example.deliveryapp.ui.new_delivery.DeliveryFormViewModel
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -16,7 +20,9 @@ import org.junit.Before
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import java.util.regex.Pattern
 
@@ -26,6 +32,12 @@ class SignUpViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
+    lateinit var apiService: ApiService
+    @Mock
+    lateinit var userDao: UserDao
+    @Mock
+    lateinit var localDatabase: LocalDatabase
+
     lateinit var userRepository: UserRepository
 
     private lateinit var signUpViewModel:SignUpViewModel
@@ -33,6 +45,7 @@ class SignUpViewModelTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
+        userRepository = UserRepository(apiService,userDao,localDatabase)
         signUpViewModel = SignUpViewModel(userRepository)
 
         signUpViewModel.PHONE_PATTERN = PHONE_PATTERN
@@ -148,10 +161,7 @@ class SignUpViewModelTest {
 
     @Test
     fun `set network state on get network state`(){
-        val networkState = MutableLiveData<NetworkState>()
-        whenever(userRepository.getNetworkState()).thenReturn(networkState)
         signUpViewModel.getNetworkState()
-        verify(userRepository,times(1)).getNetworkState()
         assertNotNull(signUpViewModel.getNetworkState())
     }
 
@@ -163,8 +173,7 @@ class SignUpViewModelTest {
         val password = "password"
         signUpViewModel.signUpUser(name,phone,email, password)
 
-        verify(userRepository,times(1)).signUp(SignUpRequest(
-            name,phone,email, password))
+        verify(apiService,times(1)).signUpUser(ArgumentMatchers.any(SignUpRequest::class.java),any())
 
     }
 

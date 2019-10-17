@@ -3,10 +3,14 @@ package com.example.deliveryapp.ui.main
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
+import com.example.deliveryapp.data.local.LocalDatabase
+import com.example.deliveryapp.data.local.dao.DeliveryDao
+import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.utils.DispatcherProvider
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -32,6 +36,14 @@ class MainViewModelTest{
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
+    lateinit var apiService: ApiService
+    @Mock
+    lateinit var userDao: UserDao
+    @Mock
+    lateinit var deliveryDao: DeliveryDao
+    @Mock
+    lateinit var localDatabase: LocalDatabase
+
     lateinit var userRepository: UserRepository
 
     @Mock
@@ -111,7 +123,10 @@ class MainViewModelTest{
     fun setUp(){
         MockitoAnnotations.initMocks(this)
 
-        Mockito.`when` ( userRepository.getCurrentUser() ).thenReturn ( MutableLiveData(user) )
+        userRepository = UserRepository(apiService,userDao, localDatabase)
+        deliveryRepository = DeliveryRepository(apiService,deliveryDao)
+
+        Mockito.`when` ( userDao.getCurrentUser() ).thenReturn ( MutableLiveData(user) )
 
         mainViewModel = MainViewModel(deliveryRepository, userRepository)
 
@@ -210,7 +225,7 @@ class MainViewModelTest{
     @Test
     fun `logout user`(){
         mainViewModel.logoutUser()
-        verify(userRepository, times(1)).logoutUser()
+        verify(apiService, times(1)).logoutUser()
     }
 
 }

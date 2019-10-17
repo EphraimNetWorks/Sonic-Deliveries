@@ -1,22 +1,37 @@
 package com.example.deliveryapp.ui.new_delivery
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.example.deliveryapp.data.local.dao.DeliveryDao
+import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.models.Location
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
+import com.example.deliveryapp.data.remote.ApiService
 import com.google.maps.model.DirectionsResult
 import com.google.maps.model.LatLng
 import org.junit.Before
 
 import org.junit.Assert.*
+import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
 class DeliveryFormViewModelTest {
 
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     @Mock
+    lateinit var apiService: ApiService
+    @Mock
+    lateinit var deliveryDao: DeliveryDao
+
     lateinit var deliveryRepo: DeliveryRepository
 
     lateinit var viewModel :DeliveryFormViewModel
@@ -25,8 +40,8 @@ class DeliveryFormViewModelTest {
     fun setUp() {
 
         MockitoAnnotations.initMocks(this)
+        deliveryRepo = DeliveryRepository(apiService,deliveryDao)
 
-        Mockito.`when`(deliveryRepo.directionResults).thenReturn(MutableLiveData())
         viewModel = DeliveryFormViewModel(deliveryRepo)
 
     }
@@ -143,7 +158,7 @@ class DeliveryFormViewModelTest {
         val apiKey = "test"
         viewModel.getDirections(origin,destination,apiKey)
 
-        Mockito.verify(deliveryRepo).getDirectionResults(origin,destination, apiKey)
+        Mockito.verify(apiService).getDirections(any(Location::class.java),any(Location::class.java), anyString(), com.nhaarman.mockitokotlin2.any())
 
     }
 }

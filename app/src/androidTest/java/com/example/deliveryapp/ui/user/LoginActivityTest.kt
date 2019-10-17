@@ -21,9 +21,15 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.example.deliveryapp.*
+import com.example.deliveryapp.data.local.LocalDatabase
+import com.example.deliveryapp.data.local.dao.DeliveryDao
+import com.example.deliveryapp.data.local.dao.UserDao
+import com.example.deliveryapp.data.local.entities.User
+import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.ApiCallback
+import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
-import com.example.deliveryapp.di.FakeDeliveryRepository
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.di.TestAppInjector
 import com.example.deliveryapp.di.TestMainModule
@@ -37,9 +43,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
+import org.mockito.*
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.verify
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -59,9 +65,14 @@ class LoginActivityTest {
     val espressoTestingIdlingResourceRule = EspressoTestingIdlingResourceRule()
 
     @Mock
+    private lateinit var apiService: ApiService
+    @Mock
+    private lateinit var userDao: UserDao
+    @Mock
+    private lateinit var localDatabase:LocalDatabase
+
+
     private lateinit var userRepo: UserRepository
-    @Inject
-    lateinit var injected: UserRepository
 
     private lateinit var testEmail:String
     private lateinit var testPassword:String
@@ -78,9 +89,12 @@ class LoginActivityTest {
 
         MockitoAnnotations.initMocks(this)
 
-        //injector = TestAppInjector(TestMainModule(userRepo,FakeDeliveryRepository()))
+        userRepo = UserRepository(apiService,userDao,localDatabase)
 
-        injector = TestAppInjector(userRepo,FakeDeliveryRepository())
+        injector = TestAppInjector(userRepo, DeliveryRepository(
+            Mockito.mock(ApiService::class.java),
+            Mockito.mock(DeliveryDao::class.java))
+        )
 
         injector.newInject()
 
@@ -89,8 +103,6 @@ class LoginActivityTest {
         intentsTestRule.launchActivity(Intent(testContext,LoginActivity::class.java))
 
         EspressoTestUtil.disableProgressBarAnimations(intentsTestRule)
-
-        Mockito.`when`(userRepo.getCurrentUser()).thenReturn (MutableLiveData())
 
     }
 
@@ -191,15 +203,13 @@ class LoginActivityTest {
         Assert.assertTrue(intentsTestRule.activity.isDestroyed)
     }
 
+    @Captor
+    lateinit var callbackCaptor: ArgumentCaptor<ApiCallback<User?>>
     @Test
     fun goToMainActivity_afterLogin() {
 
         testEmail ="narteyephraim@gmail.com"
         testPassword = "asdfghjkl"
-
-        val networkLoaded = MutableLiveData<NetworkState>()
-        networkLoaded.postValue(NetworkState.LOADED)
-        Mockito.`when`(userRepo.getNetworkState()).thenReturn(networkLoaded)
 
         onView(withId(R.id.login_email_editext))
             .perform(typeText(testEmail), closeSoftKeyboard())
@@ -210,9 +220,19 @@ class LoginActivityTest {
         onView(withId(R.id.login_button))
             .check(matches(isDisplayed()))
             .perform(click())
+
+        verify(apiService).loginUser(anyString(), anyString(), callbackCaptor.capture())
+
+        val callback = callbackCaptor.value
+        callback.onSuccess(User().apply {
+            email = testEmail
+            id = "1"
+            name = "Ephraim Nartey"
+
+        })
+
         // Verifies that the MainActivity received an intent
         // with the correct package name .
-
         intended(allOf(
             hasComponent(hasShortClassName(Constants.MAIN_ACTIVITY_SHORT_CLASS_NAME)),
             toPackage(Constants.PACKAGE_NAME)))

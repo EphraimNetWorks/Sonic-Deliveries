@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-open class UserRepository(private val apiService:ApiService,
+class UserRepository(private val apiService:ApiService,
                           private val userDao: UserDao,
                           private val localDatabase: LocalDatabase){
 

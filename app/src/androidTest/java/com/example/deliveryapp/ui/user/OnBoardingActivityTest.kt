@@ -24,10 +24,13 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.example.deliveryapp.*
+import com.example.deliveryapp.data.local.LocalDatabase
+import com.example.deliveryapp.data.local.dao.DeliveryDao
+import com.example.deliveryapp.data.local.dao.UserDao
+import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
-import com.example.deliveryapp.di.FakeDeliveryRepository
-import com.example.deliveryapp.di.FakeUserRepository
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.di.TestAppInjector
 import com.example.deliveryapp.di.TestMainModule
@@ -69,7 +72,12 @@ class OnBoardingActivityTest {
     fun setUp(){
 
 
-        injector = TestAppInjector(FakeUserRepository(),FakeDeliveryRepository())
+        injector = TestAppInjector(UserRepository(
+            Mockito.mock(ApiService::class.java),
+            Mockito.mock(UserDao::class.java),
+            Mockito.mock(LocalDatabase::class.java)),
+            DeliveryRepository(Mockito.mock(ApiService::class.java),
+            Mockito.mock(DeliveryDao::class.java)))
 
         injector.newInject()
 

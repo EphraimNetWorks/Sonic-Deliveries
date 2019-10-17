@@ -20,10 +20,16 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.example.deliveryapp.AndroidTestApplication
 import com.example.deliveryapp.R
+import com.example.deliveryapp.data.local.LocalDatabase
+import com.example.deliveryapp.data.local.dao.DeliveryDao
+import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.Delivery
+import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
+import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.ApiCallback
+import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
-import com.example.deliveryapp.di.FakeUserRepository
 import com.example.deliveryapp.di.TestAppInjector
 import com.example.deliveryapp.di.TestMainModule
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
@@ -36,8 +42,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.any
+import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import timber.log.Timber
 import java.util.*
@@ -59,8 +68,12 @@ class NewDeliveryActivityTest {
     private lateinit var app:AndroidTestApplication
 
     @Mock
-    lateinit var deliveryRepo: DeliveryRepository
+    lateinit var apiService: ApiService
 
+    @Mock
+    lateinit var deliveryDao: DeliveryDao
+
+    lateinit var deliveryRepo: DeliveryRepository
 
 
     @Before
@@ -68,9 +81,13 @@ class NewDeliveryActivityTest {
 
         MockitoAnnotations.initMocks(this)
 
+        deliveryRepo = DeliveryRepository(apiService, deliveryDao)
+
         app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as AndroidTestApplication
 
-        TestAppInjector(FakeUserRepository(),deliveryRepo).newInject()
+        TestAppInjector(UserRepository(mock(ApiService::class.java),
+            mock(UserDao::class.java),
+            mock(LocalDatabase::class.java)),deliveryRepo).newInject()
 
         activityRule.launchActivity(NewDeliveryActivity.newInstance(app))
 
@@ -80,11 +97,6 @@ class NewDeliveryActivityTest {
 
     @Test
     fun setUpActionBarAndFormFragment(){
-
-        Mockito.`when`(deliveryRepo.getNetworkState())
-            .thenReturn(MutableLiveData(NetworkState.LOADING))
-
-        Timber.d("delivery repo: ${deliveryRepo.getNetworkState().value?.status}")
 
         EspressoTestUtil.disableProgressBarAnimations(activityRule)
 

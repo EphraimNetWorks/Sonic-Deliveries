@@ -21,9 +21,16 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.example.deliveryapp.R
+import com.example.deliveryapp.data.local.LocalDatabase
+import com.example.deliveryapp.data.local.dao.DeliveryDao
+import com.example.deliveryapp.data.local.dao.UserDao
+import com.example.deliveryapp.data.local.entities.User
+import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.ApiCallback
+import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
-import com.example.deliveryapp.di.FakeDeliveryRepository
+import com.example.deliveryapp.data.remote.request.SignUpRequest
 import com.example.deliveryapp.di.TestAppInjector
 import com.example.deliveryapp.di.TestMainModule
 import com.example.deliveryapp.ui.signup.SignUpActivity
@@ -36,9 +43,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
+import org.mockito.*
 import org.mockito.MockitoAnnotations.*
 
 @RunWith(AndroidJUnit4::class)
@@ -65,14 +70,26 @@ class SignUpActivityTest {
     private lateinit var testContext: Context
 
     @Mock
+    private lateinit var apiService: ApiService
+    @Mock
+    private lateinit var userDao: UserDao
+    @Mock
+    private lateinit var localDatabase: LocalDatabase
+
     private lateinit var userRepo: UserRepository
+
+    @Captor
+    lateinit var callbackCaptor: ArgumentCaptor<ApiCallback<User?>>
 
     @Before
     fun setUp(){
         initMocks(this)
 
-        //TestAppInjector(TestMainModule(userRepo,FakeDeliveryRepository())).inject()
-        TestAppInjector(userRepo,FakeDeliveryRepository()).newInject()
+        userRepo = UserRepository(apiService,userDao,localDatabase)
+
+        TestAppInjector(userRepo, DeliveryRepository(
+            Mockito.mock(ApiService::class.java),
+            Mockito.mock(DeliveryDao::class.java))).newInject()
 
         testContext = getInstrumentation().targetContext
 
@@ -277,10 +294,6 @@ class SignUpActivityTest {
         testPassword = "myloyalsubjects"
         testConfirmPassword = "myloyalsubjects"
 
-        val networkLoaded = MutableLiveData<NetworkState>()
-        networkLoaded.postValue(NetworkState.LOADED)
-        Mockito.`when`(userRepo.getNetworkState()).thenReturn(networkLoaded)
-
         onView(withId(R.id.signup_name_editext))
             .perform(typeText(testName), closeSoftKeyboard())
 
@@ -299,6 +312,16 @@ class SignUpActivityTest {
         onView(withId(R.id.signup_button))
             .check(matches(ViewMatchers.isDisplayed()))
             .perform(click())
+
+        Mockito.verify(apiService).signUpUser(ArgumentMatchers.any(SignUpRequest::class.java), callbackCaptor.capture())
+
+        val callback = callbackCaptor.value
+        callback.onSuccess(User().apply {
+            email = testEmail
+            id = "1"
+            name = "Ephraim Nartey"
+
+        })
 
         Intents.intended(
             Matchers.allOf(
@@ -316,10 +339,6 @@ class SignUpActivityTest {
         testPassword = "myloyalsubjects"
         testConfirmPassword = "myloyalsubjects"
 
-        val networkState = MutableLiveData<NetworkState>()
-        networkState.postValue(NetworkState.error("This is a test network error"))
-        Mockito.`when`(userRepo.getNetworkState()).thenReturn(networkState)
-
         onView(withId(R.id.signup_name_editext))
             .perform(typeText(testName), closeSoftKeyboard())
 
@@ -339,10 +358,15 @@ class SignUpActivityTest {
             .check(matches(ViewMatchers.isDisplayed()))
             .perform(click())
 
+        val errMsg = "error"
+        Mockito.verify(apiService).signUpUser(ArgumentMatchers.any(SignUpRequest::class.java), callbackCaptor.capture())
+
+        val callback = callbackCaptor.value
+        callback.onFailed(errMsg)
+
         onView(withId(R.id.signup_error_textview))
-            //.perform(scrollTo())
             .check(matches(ViewMatchers.isDisplayed()))
-            .check(matches(withText(networkState.value!!.message)))
+            .check(matches(withText(errMsg)))
 
 
     }

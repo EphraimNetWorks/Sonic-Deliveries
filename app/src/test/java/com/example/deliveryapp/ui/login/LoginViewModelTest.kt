@@ -2,11 +2,15 @@ package com.example.deliveryapp.ui.login
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.example.deliveryapp.data.local.LocalDatabase
+import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.ui.new_delivery.DeliveryFormViewModel
 import com.example.deliveryapp.utils.DispatcherProvider
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -22,6 +26,7 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import org.junit.Rule
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
@@ -33,6 +38,12 @@ class LoginViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
+    lateinit var apiService: ApiService
+    @Mock
+    lateinit var userDao: UserDao
+    @Mock
+    lateinit var localDatabase: LocalDatabase
+
     lateinit var userRepository: UserRepository
 
     private lateinit var loginViewModel:LoginViewModel
@@ -52,6 +63,8 @@ class LoginViewModelTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
+
+        userRepository = UserRepository(apiService,userDao, localDatabase)
 
         loginViewModel = LoginViewModel(userRepository)
 
@@ -133,10 +146,8 @@ class LoginViewModelTest {
     fun `set network state on get network state`(){
         val networkState = MutableLiveData<NetworkState>()
 
-        Mockito.`when`(userRepository.getNetworkState()).thenReturn(networkState)
         loginViewModel.loginUser("narteyephraim@gmail.com", "asdfghjkl")
         loginViewModel.getNetworkState()
-        verify(userRepository, times(1)).getNetworkState()
 
         assertNotNull(loginViewModel.getNetworkState())
 
@@ -147,7 +158,7 @@ class LoginViewModelTest {
     fun `login user`(){
         loginViewModel.loginUser("narteyephraim@gmail.com", "asdfghjkl")
 
-        verify(userRepository, times(1)).login("narteyephraim@gmail.com", "asdfghjkl")
+        verify(apiService, times(1)).loginUser(anyString(),anyString(),any())
 
     }
 

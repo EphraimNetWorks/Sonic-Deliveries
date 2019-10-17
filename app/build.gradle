@@ -63,6 +63,7 @@ dependencies {
 
     //Android Test Dependencies
     androidTestImplementation 'org.mockito:mockito-android:3.0.0'
+    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

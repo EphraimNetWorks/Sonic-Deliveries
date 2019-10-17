@@ -2,8 +2,11 @@ package com.example.deliveryapp.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.example.deliveryapp.data.local.LocalDatabase
+import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.UserRepository
+import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.ui.splash.SplashViewModel
 import com.example.deliveryapp.utils.DispatcherProvider
@@ -31,6 +34,12 @@ class SplashViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
+    lateinit var apiService: ApiService
+    @Mock
+    lateinit var userDao: UserDao
+    @Mock
+    lateinit var localDatabase: LocalDatabase
+
     lateinit var userRepository: UserRepository
 
     private lateinit var splashViewModel: SplashViewModel
@@ -51,7 +60,9 @@ class SplashViewModelTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
-        Mockito.`when`(userRepository.getCurrentUser()).thenReturn(MutableLiveData(user))
+        userRepository = UserRepository(apiService,userDao, localDatabase)
+
+        Mockito.`when`(userDao.getCurrentUser()).thenReturn(MutableLiveData(user))
         splashViewModel = SplashViewModel(userRepository)
     }
 
