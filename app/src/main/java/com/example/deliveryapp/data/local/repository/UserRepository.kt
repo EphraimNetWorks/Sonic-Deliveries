@@ -14,6 +14,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.concurrent.Executors
 
 class UserRepository(private val apiService:ApiService,
                           private val userDao: UserDao,
@@ -29,9 +30,9 @@ class UserRepository(private val apiService:ApiService,
         networkState.postValue(NetworkState.LOADING)
         apiService.loginUser(email,password, object : ApiCallback<User?>{
             override fun onSuccess(result: User?) {
-                Thread {
+                execute {
                     userDao.saveUser(result!!)
-                }.start()
+                }
                 networkState.postValue(NetworkState.LOADED)
                 Timber.d("login success")
             }
@@ -63,9 +64,11 @@ class UserRepository(private val apiService:ApiService,
     }
 
     fun logoutUser() {
-        GlobalScope.launch {
-            localDatabase.clearAllTables()
-            apiService.logoutUser()
-        }
+        execute { localDatabase.clearAllTables() }
+        apiService.logoutUser()
+    }
+
+    fun execute (block:()->Unit){
+        Executors.newSingleThreadScheduledExecutor().execute(block)
     }
 }

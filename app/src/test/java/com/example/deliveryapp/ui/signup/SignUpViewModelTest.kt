@@ -173,8 +173,14 @@ class SignUpViewModelTest {
         val password = "password"
         signUpViewModel.signUpUser(name,phone,email, password)
 
-        verify(apiService,times(1)).signUpUser(ArgumentMatchers.any(SignUpRequest::class.java),any())
+        verify(apiService,times(1)).signUpUser(com.nhaarman.mockitokotlin2.any(),com.nhaarman.mockitokotlin2.any())
 
+    }
+
+
+    @After
+    fun validate() {
+        Mockito.validateMockitoUsage()
     }
 
     companion object{

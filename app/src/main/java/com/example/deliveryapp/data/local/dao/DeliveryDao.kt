@@ -15,6 +15,9 @@ interface DeliveryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveMyDelivery(myDelivery: Delivery)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun saveMyDeliveries(vararg myDeliveries: Delivery)
+
     @Query("SELECT * FROM delivery WHERE id=:deliveryId LIMIT 1")
     fun getMyDelivery(deliveryId:String): LiveData<Delivery>
 

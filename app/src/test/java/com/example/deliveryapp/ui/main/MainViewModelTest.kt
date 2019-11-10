@@ -21,6 +21,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -220,6 +221,13 @@ class MainViewModelTest{
         val recentDelivery = mainViewModel.getMostRecentDelivery()
         assertEquals(recentDelivery!!.id, "6")
 
+    }
+
+
+
+    @After
+    fun validate() {
+        Mockito.validateMockitoUsage()
     }
 
     @Test

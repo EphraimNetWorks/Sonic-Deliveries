@@ -7,6 +7,7 @@ import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -47,7 +48,7 @@ class NewDeliveryViewModelTest{
 
         val networkState = viewModel.getNetworkState()
 
-        assertNotNull(networkState.value)
+        assertNotNull(networkState)
 
     }
 
@@ -58,7 +59,13 @@ class NewDeliveryViewModelTest{
 
         viewModel.submitNewDelivery(testDelivery)
 
-        Mockito.verify(apiService).sendNewDelivery(any(Delivery::class.java),com.nhaarman.mockitokotlin2.any())
+        Mockito.verify(apiService).sendNewDelivery(com.nhaarman.mockitokotlin2.any(),com.nhaarman.mockitokotlin2.any())
 
+    }
+
+
+    @After
+    fun validate() {
+        Mockito.validateMockitoUsage()
     }
 }

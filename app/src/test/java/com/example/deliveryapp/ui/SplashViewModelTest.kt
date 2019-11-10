@@ -66,8 +66,11 @@ class SplashViewModelTest {
         splashViewModel = SplashViewModel(userRepository)
     }
 
+
+
     @After
-    fun tearDown() {
+    fun validate() {
+        Mockito.validateMockitoUsage()
     }
 
     @Test

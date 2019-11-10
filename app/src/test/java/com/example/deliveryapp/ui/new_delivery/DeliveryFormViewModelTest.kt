@@ -20,6 +20,11 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.mockito.Mockito.validateMockitoUsage
+import android.R.attr.direction
+import com.google.android.libraries.places.internal.`is`
+import org.junit.After
+
 
 class DeliveryFormViewModelTest {
 
@@ -158,7 +163,12 @@ class DeliveryFormViewModelTest {
         val apiKey = "test"
         viewModel.getDirections(origin,destination,apiKey)
 
-        Mockito.verify(apiService).getDirections(any(Location::class.java),any(Location::class.java), anyString(), com.nhaarman.mockitokotlin2.any())
+        Mockito.verify(apiService).getDirections(com.nhaarman.mockitokotlin2.any(),com.nhaarman.mockitokotlin2.any(), com.nhaarman.mockitokotlin2.any(), com.nhaarman.mockitokotlin2.any())
 
+    }
+
+    @After
+    fun validate() {
+        validateMockitoUsage()
     }
 }

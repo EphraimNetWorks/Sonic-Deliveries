@@ -23,6 +23,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 import timber.log.Timber
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 
@@ -66,10 +67,8 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
         apiService.loadMyDeliveries(object : ApiCallback<List<Delivery>>{
             override fun onSuccess(result: List<Delivery>) {
                 Timber.d("get my deliveries success")
-                GlobalScope.launch (dispatcherProvider.IO){
-                    for(delivery in result){
-                        deliveryDao.saveMyDelivery(delivery)
-                    }
+                execute{
+                    deliveryDao.saveMyDeliveries(*result.toTypedArray())
                 }
                 networkState.postValue(NetworkState.LOADED)
             }
@@ -109,9 +108,9 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
 
         apiService.cancelDelivery(deliveryId, object : ApiCallback<Boolean>{
             override fun onSuccess(result: Boolean) {
-                Thread{
+                execute{
                     deliveryDao.cancelDelivery(deliveryId,DateTime.now().millis)
-                }.start()
+                }
                 networkState.postValue(NetworkState.LOADED)
             }
 
@@ -126,9 +125,9 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
 
         apiService.sendNewDelivery(newDelivery, object : ApiCallback<Boolean>{
             override fun onSuccess(result: Boolean) {
-                Thread{
+                execute{
                     deliveryDao.saveMyDelivery(newDelivery)
-                }.start()
+                }
                 networkState.postValue(NetworkState.LOADED)
             }
 
@@ -155,5 +154,11 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
             }
         })
         return directionResults
+    }
+
+
+
+    fun execute (block:()->Unit){
+        Executors.newSingleThreadScheduledExecutor().execute(block)
     }
 }
