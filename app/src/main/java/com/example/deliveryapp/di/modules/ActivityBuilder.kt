@@ -1,6 +1,7 @@
 package com.example.deliveryapp.di.modules
 
 
+import com.example.deliveryapp.di.scopes.ActivityScope
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.ui.main.MainActivity
 import com.example.deliveryapp.ui.splash.SplashActivity
@@ -14,22 +15,28 @@ import dagger.android.ContributesAndroidInjector
 abstract class ActivityBuilder {
 
 
-    @ContributesAndroidInjector
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [HomeModule::class, DeliveryModule::class])
     internal abstract fun bindMainActivity(): MainActivity
 
-    @ContributesAndroidInjector
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [LoginModule::class, DeliveryModule::class])
     internal abstract fun bindLoginActivity(): LoginActivity
 
-    @ContributesAndroidInjector
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [SignUpModule::class])
     internal abstract fun bindSignUpActivity(): SignUpActivity
 
-    @ContributesAndroidInjector(modules = [FragmentBuilder::class])
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [NewDeliveryModule::class, DeliveryModule::class, FragmentBuilder::class])
     internal abstract fun bindNewDeliveryActivity(): NewDeliveryActivity
 
-    @ContributesAndroidInjector
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [TrackDeliveryModule::class, DeliveryModule::class])
     internal abstract fun bindTrackDeliveryActivity(): TrackDeliveryActivity
 
-    @ContributesAndroidInjector
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [SplashModule::class])
     internal abstract fun bindSplashActivity(): SplashActivity
 
 }

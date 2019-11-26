@@ -5,7 +5,9 @@ import javax.inject.Provider
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.deliveryapp.di.scopes.ActivityScope
 
+@ActivityScope
 class ViewModelFactory @Inject
 constructor(private val viewModels: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>) : ViewModelProvider.Factory {
 

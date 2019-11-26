@@ -2,14 +2,10 @@ package com.example.deliveryapp.ui.user
 
 import android.content.Context
 import android.content.Intent
-import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasShortClassName
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -19,26 +15,15 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import androidx.test.rule.ActivityTestRule
 import com.example.deliveryapp.*
-import com.example.deliveryapp.data.local.LocalDatabase
-import com.example.deliveryapp.data.local.dao.DeliveryDao
-import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.User
-import com.example.deliveryapp.data.local.repository.DeliveryRepository
-import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
-import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.di.TestAppInjector
-import com.example.deliveryapp.di.TestMainModule
-import com.example.deliveryapp.ui.signup.SignUpActivity
 import com.example.deliveryapp.utils.*
 import junit.framework.Assert
-import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Matchers.allOf
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -46,7 +31,6 @@ import org.junit.runner.RunWith
 import org.mockito.*
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.verify
-import timber.log.Timber
 import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
@@ -64,39 +48,20 @@ class LoginActivityTest {
     @JvmField
     val espressoTestingIdlingResourceRule = EspressoTestingIdlingResourceRule()
 
-    @Mock
-    private lateinit var apiService: ApiService
-    @Mock
-    private lateinit var userDao: UserDao
-    @Mock
-    private lateinit var localDatabase:LocalDatabase
-
-
-    private lateinit var userRepo: UserRepository
+    @Inject
+    lateinit var apiService: ApiService
 
     private lateinit var testEmail:String
     private lateinit var testPassword:String
     private lateinit var testContext: Context
-    private lateinit var injector: TestAppInjector
-
-    private val testProvider = DispatcherProvider(
-        IO = Dispatchers.Unconfined,
-        Main = Dispatchers.Unconfined
-    )
 
     @Before
     fun setUp(){
 
         MockitoAnnotations.initMocks(this)
 
-        userRepo = UserRepository(apiService,userDao,localDatabase)
 
-        injector = TestAppInjector(userRepo, DeliveryRepository(
-            Mockito.mock(ApiService::class.java),
-            Mockito.mock(DeliveryDao::class.java))
-        )
-
-        injector.newInject()
+        TestAppInjector.inject{it.inject(this)}
 
         testContext = getInstrumentation().targetContext
 

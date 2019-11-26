@@ -2,13 +2,8 @@ package com.example.deliveryapp.ui.main
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.DataSource
-import androidx.paging.PageKeyedDataSource
-import androidx.paging.PositionalDataSource
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -17,39 +12,25 @@ import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.example.deliveryapp.AndroidTestApplication
 import com.example.deliveryapp.R
-import com.example.deliveryapp.data.local.LocalDatabase
 import com.example.deliveryapp.data.local.dao.DeliveryDao
 import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.entities.User
-import com.example.deliveryapp.data.local.repository.DeliveryRepository
-import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
-import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.di.TestAppInjector
-import com.example.deliveryapp.di.TestMainModule
-import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
 import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import com.example.deliveryapp.utils.*
-import io.mockk.coEvery
-import io.mockk.mockkStatic
 import org.hamcrest.Matchers
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class MainActivityTest {
@@ -65,20 +46,12 @@ class MainActivityTest {
     @JvmField
     val espressoTestingIdlingResourceRule = EspressoTestingIdlingResourceRule()
 
-    @Mock
-    lateinit var deliveryRepo: DeliveryRepository
-
-    @Mock
-    private lateinit var apiService: ApiService
-    @Mock
-    private lateinit var userDao: UserDao
-    @Mock
-    private lateinit var localDatabase: LocalDatabase
-    @Mock
+    @Inject
+    lateinit var apiService: ApiService
+    @Inject
+    lateinit var userDao: UserDao
+    @Inject
     lateinit var deliveryDao: DeliveryDao
-
-
-    private lateinit var userRepo: UserRepository
 
     private lateinit var app:AndroidTestApplication
 
@@ -145,10 +118,7 @@ class MainActivityTest {
 
         MockitoAnnotations.initMocks(this)
 
-        userRepo = UserRepository(apiService,userDao,localDatabase)
-        deliveryRepo = DeliveryRepository(apiService,deliveryDao)
-
-        TestAppInjector(userRepo,deliveryRepo).newInject()
+        TestAppInjector.inject{it.inject(this)}
 
         val testUserLD = MutableLiveData(testUser)
 

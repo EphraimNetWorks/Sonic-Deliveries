@@ -10,22 +10,20 @@ import com.example.deliveryapp.data.remote.ApiServiceImpl
 import com.example.deliveryapp.utils.DispatcherProvider
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 class MainModule{
 
 
     @Provides
+    @Singleton
     fun providesApiService(): ApiService {
         return ApiServiceImpl()
     }
 
     @Provides
-    fun providesDeliveryRepository(apiService: ApiService, orderDao: DeliveryDao): DeliveryRepository {
-        return DeliveryRepository(apiService, orderDao)
-    }
-
-    @Provides
+    @Singleton
     fun providesUserRepository(apiService: ApiService, userDao: UserDao, localDatabase: LocalDatabase): UserRepository {
         return UserRepository(apiService,userDao,localDatabase)
     }

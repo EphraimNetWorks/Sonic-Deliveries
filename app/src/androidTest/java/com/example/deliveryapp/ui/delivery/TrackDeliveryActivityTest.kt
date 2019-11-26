@@ -5,9 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -20,22 +18,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import timber.log.Timber
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import com.example.deliveryapp.data.local.LocalDatabase
-import com.example.deliveryapp.data.local.dao.UserDao
-import com.example.deliveryapp.data.local.repository.DeliveryRepository
-import com.example.deliveryapp.data.local.repository.UserRepository
-import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.di.TestAppInjector
-import com.example.deliveryapp.di.TestMainModule
 import com.example.deliveryapp.utils.*
 import junit.framework.Assert.assertTrue
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 
 
 @RunWith(AndroidJUnit4::class)
@@ -83,23 +71,10 @@ class TrackDeliveryActivityTest {
         R.string.delivery_cancelled
     )
 
-    @Mock
-    private lateinit var deliveryRepo: DeliveryRepository
-
     @Before
     fun setUp(){
 
-        Timber.e("init test")
-
-        MockitoAnnotations.initMocks(this)
-
-        //TestAppInjector(TestMainModule(FakeUserRepository(),deliveryRepo)).inject()
-
-        TestAppInjector(
-            UserRepository(
-                Mockito.mock(ApiService::class.java),
-                Mockito.mock(UserDao::class.java),
-                Mockito.mock(LocalDatabase::class.java)),deliveryRepo).newInject()
+        TestAppInjector.inject{}
 
         testContext = InstrumentationRegistry.getInstrumentation().targetContext
 

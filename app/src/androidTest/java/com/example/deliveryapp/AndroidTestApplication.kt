@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.multidex.MultiDexApplication
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.di.TestAppInjector
-import com.example.deliveryapp.di.TestMainModule
 import dagger.android.*
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations

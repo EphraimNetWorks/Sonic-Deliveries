@@ -1,55 +1,27 @@
 package com.example.deliveryapp.ui.user
 
-import android.content.Context
 import android.content.Intent
-import androidx.lifecycle.MutableLiveData
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasShortClassName
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import androidx.test.rule.ActivityTestRule
 import com.example.deliveryapp.*
-import com.example.deliveryapp.data.local.LocalDatabase
-import com.example.deliveryapp.data.local.dao.DeliveryDao
-import com.example.deliveryapp.data.local.dao.UserDao
-import com.example.deliveryapp.data.local.repository.DeliveryRepository
-import com.example.deliveryapp.data.local.repository.UserRepository
-import com.example.deliveryapp.data.remote.ApiService
-import com.example.deliveryapp.data.remote.NetworkState
-import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.di.TestAppInjector
-import com.example.deliveryapp.di.TestMainModule
 import com.example.deliveryapp.ui.onboarding.OnBoardingActivity
-import com.example.deliveryapp.ui.signup.SignUpActivity
 import com.example.deliveryapp.utils.*
-import junit.framework.Assert
-import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Matchers.allOf
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
-import timber.log.Timber
-import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -66,20 +38,11 @@ class OnBoardingActivityTest {
     @JvmField
     val espressoTestingIdlingResourceRule = EspressoTestingIdlingResourceRule()
 
-    private lateinit var injector: TestAppInjector
 
     @Before
     fun setUp(){
 
-
-        injector = TestAppInjector(UserRepository(
-            Mockito.mock(ApiService::class.java),
-            Mockito.mock(UserDao::class.java),
-            Mockito.mock(LocalDatabase::class.java)),
-            DeliveryRepository(Mockito.mock(ApiService::class.java),
-            Mockito.mock(DeliveryDao::class.java)))
-
-        injector.newInject()
+        TestAppInjector.inject{}
 
         val testContext = getInstrumentation().targetContext
 
@@ -89,7 +52,6 @@ class OnBoardingActivityTest {
 
     @Test
     fun verifyOnBoardingPageContents() {
-        //val e = NoMatchingViewException.Builder().build()
 
         val firstPageTitle = intentsTestRule.activity.getString(R.string.on_boarding_page1_title)
         val firstPageDescription = intentsTestRule.activity.getString(R.string.on_boarding_page1_title)
@@ -140,7 +102,6 @@ class OnBoardingActivityTest {
 
     @Test
     fun verifyOnBoardingPreviousPageContents() {
-        //val e = NoMatchingViewException.Builder().build()
 
         onView(withId(R.id.on_boarding_frame)).perform(swipeLeft())
 

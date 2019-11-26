@@ -3,9 +3,7 @@ package com.example.deliveryapp.ui.delivery
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import android.os.Parcelable
 import android.widget.DatePicker
-import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
@@ -17,39 +15,24 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.example.deliveryapp.AndroidTestApplication
 import com.example.deliveryapp.R
-import com.example.deliveryapp.data.local.LocalDatabase
 import com.example.deliveryapp.data.local.dao.DeliveryDao
-import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.Delivery
-import com.example.deliveryapp.data.local.entities.User
-import com.example.deliveryapp.data.local.repository.DeliveryRepository
-import com.example.deliveryapp.data.local.repository.UserRepository
-import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
-import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.di.TestAppInjector
-import com.example.deliveryapp.di.TestMainModule
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
 import com.example.deliveryapp.utils.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.libraries.places.compat.Place
-import com.schibstedspain.leku.LocationPickerActivity
 import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.any
-import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
-import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 class NewDeliveryActivityTest {
@@ -67,13 +50,11 @@ class NewDeliveryActivityTest {
 
     private lateinit var app:AndroidTestApplication
 
-    @Mock
+    @Inject
     lateinit var apiService: ApiService
 
-    @Mock
+    @Inject
     lateinit var deliveryDao: DeliveryDao
-
-    lateinit var deliveryRepo: DeliveryRepository
 
 
     @Before
@@ -81,13 +62,9 @@ class NewDeliveryActivityTest {
 
         MockitoAnnotations.initMocks(this)
 
-        deliveryRepo = DeliveryRepository(apiService, deliveryDao)
-
         app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as AndroidTestApplication
 
-        TestAppInjector(UserRepository(mock(ApiService::class.java),
-            mock(UserDao::class.java),
-            mock(LocalDatabase::class.java)),deliveryRepo).newInject()
+        TestAppInjector.inject{it.inject(this)}
 
         activityRule.launchActivity(NewDeliveryActivity.newInstance(app))
 

@@ -2,6 +2,7 @@ package com.example.deliveryapp.di
 
 import android.app.Application
 import com.example.deliveryapp.Sonic
+import com.example.deliveryapp.di.modules.*
 
 
 import javax.inject.Singleton
@@ -9,15 +10,10 @@ import javax.inject.Singleton
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
-import com.example.deliveryapp.di.modules.ActivityBuilder
-import com.example.deliveryapp.di.modules.MainModule
-import com.example.deliveryapp.di.modules.RoomModule
-import com.example.deliveryapp.di.modules.ViewModelModule
 
 @Singleton
 @Component(modules = [AndroidSupportInjectionModule::class,
     RoomModule::class,
-    ViewModelModule::class,
     ActivityBuilder::class,
     MainModule::class
 ])
