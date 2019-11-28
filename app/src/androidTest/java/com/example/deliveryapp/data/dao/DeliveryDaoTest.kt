@@ -17,6 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -32,7 +33,7 @@ class DeliveryDaoTest {
     private lateinit var deliveryDao: DeliveryDao
     private lateinit var db: LocalDatabase
 
-    @Rule
+    @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     var testDeliveries = listOf(
@@ -75,13 +76,13 @@ class DeliveryDaoTest {
             context, LocalDatabase::class.java).allowMainThreadQueries().build()
         deliveryDao = db.deliveryDao()
 
-        testDeliveries.forEach { deliveryDao.saveMyDelivery(it) }
 
     }
 
     @After
     @Throws(IOException::class)
     fun closeDb() {
+        db.clearAllTables()
         db.close()
     }
 
@@ -102,60 +103,75 @@ class DeliveryDaoTest {
     @Test
     @Throws(Exception::class)
     fun filterDeliveriesPlaced() {
+        testDeliveries.forEach { deliveryDao.saveMyDelivery(it) }
+
         val pagedListBuilder =
             LivePagedListBuilder<Int, Delivery>(deliveryDao.getDeliveriesPlaced()!!, 30)
         val resultListLD = pagedListBuilder.build()
-        resultListLD.observeForever(object : Observer<PagedList<Delivery>>{
-            override fun onChanged(results: PagedList<Delivery>?) {
-                if(results!=null){
-                    assertThat(results[0]!!.id, equalTo(testDeliveries[0].id))
-                    assertThat(results[1]!!.id, equalTo(testDeliveries[1].id))
-                    resultListLD.removeObserver(this)
+        resultListLD.observeOnce {pagedList->
+            pagedList?.run{
+                this.forEach {
+                    assertThat(it.deliveryStatus, equalTo(Delivery.STATUS_PLACED))
                 }
             }
-        })
+        }
+
     }
 
     @Test
     @Throws(Exception::class)
     fun filterDeliveriesInTransit() {
+        testDeliveries.forEach { deliveryDao.saveMyDelivery(it) }
+
         val pagedListBuilder =
             LivePagedListBuilder<Int, Delivery>(deliveryDao.getDeliveriesInTransit()!!, 30)
         val resultListLD = pagedListBuilder.build()
-        resultListLD.observeForever(object : Observer<PagedList<Delivery>>{
-            override fun onChanged(results: PagedList<Delivery>?) {
-                if(results!=null){
-                    assertThat(results[0]!!.id, equalTo(testDeliveries[2].id))
-                    resultListLD.removeObserver(this)
+        resultListLD.observeOnce {pagedList->
+            pagedList?.run{
+                this.forEach {
+                    assertThat(it.deliveryStatus, equalTo(Delivery.STATUS_IN_TRANSIT))
                 }
             }
-        })
+        }
+
     }
 
     @Test
     @Throws(Exception::class)
     fun filterDeliveriesCompleted() {
+        testDeliveries.forEach { deliveryDao.saveMyDelivery(it) }
 
-            val pagedListBuilder =
-                LivePagedListBuilder<Int, Delivery>(deliveryDao.getCompletedDeliveries()!!, 30)
-            val resultListLD = pagedListBuilder.build()
-            resultListLD.observeForever(object : Observer<PagedList<Delivery>>{
-                override fun onChanged(results: PagedList<Delivery>?) {
-                    if(results!=null){
-                        assertThat(results[0]!!.id, equalTo(testDeliveries[3].id))
-                        assertThat(results[1]!!.id, equalTo(testDeliveries[4].id))
-                        assertThat(results[2]!!.id, equalTo(testDeliveries[5].id))
-                        resultListLD.removeObserver(this)
-                    }
+        val pagedListBuilder =
+            LivePagedListBuilder<Int, Delivery>(deliveryDao.getCompletedDeliveries()!!, 30)
+        val resultListLD = pagedListBuilder.build()
+        resultListLD.observeOnce {pagedList->
+            pagedList?.run{
+                this.forEach {
+                    assert(it.deliveryStatus == Delivery.STATUS_COMPLETED || it.deliveryStatus == Delivery.STATUS_CANCELLED)
                 }
-            })
+            }
+        }
     }
 
     @Test
     @Throws(Exception::class)
     fun cancelDelivery() {
+
+        testDeliveries.forEach { deliveryDao.saveMyDelivery(it) }
+
         deliveryDao.cancelDelivery(testDeliveries[0].id,DateTime.now().millis)
         val result= LiveDataTestUtil.getValue(deliveryDao.getMyDelivery(testDeliveries[0].id))
         assertThat(result!!.deliveryStatus, equalTo(Delivery.STATUS_CANCELLED))
+    }
+
+    private fun <T> LiveData<T>.observeOnce(block:(t: T?)->Unit) {
+
+        observeForever(object : Observer<T> {
+            override fun onChanged(t: T?) {
+                block.invoke(t)
+                removeObserver(this)
+            }
+        })
+
     }
 }

@@ -26,6 +26,8 @@ import com.example.deliveryapp.data.remote.request.SignUpRequest
 import com.example.deliveryapp.di.TestAppInjector
 import com.example.deliveryapp.ui.signup.SignUpActivity
 import com.example.deliveryapp.utils.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.whenever
 import junit.framework.Assert.assertTrue
 import org.hamcrest.Matchers
@@ -83,7 +85,7 @@ class SignUpActivityTest {
     fun showEmptyNameErrorMsg_onSignUpValidation(){
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_name_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_name_error_message))))
@@ -91,10 +93,10 @@ class SignUpActivityTest {
         testName = ""
 
         onView(withId(R.id.signup_name_editext))
-            .perform(typeText(testName), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testName), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_name_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_name_error_message))))
@@ -107,19 +109,19 @@ class SignUpActivityTest {
         testName = "King Julian"
 
         onView(withId(R.id.signup_name_editext))
-            .perform(typeText(testName), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testName), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_phone_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_phone_error_message))))
 
         onView(withId(R.id.signup_phone_editext))
-            .perform(typeText(""), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(""), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_phone_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_phone_error_message))))
@@ -127,10 +129,10 @@ class SignUpActivityTest {
         testPhone = "1"
 
         onView(withId(R.id.signup_phone_editext))
-            .perform(typeText(testPhone), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testPhone), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_phone_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.invalid_phone_error_message))))
@@ -144,31 +146,31 @@ class SignUpActivityTest {
         testPhone = "+23399323499"
 
         onView(withId(R.id.signup_name_editext))
-            .perform(typeText(testName), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testName), closeSoftKeyboard())
 
         onView(withId(R.id.signup_phone_editext))
-            .perform(typeText(testPhone), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testPhone), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_email_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_email_field_error))))
 
         onView(withId(R.id.signup_email_editext))
-            .perform(typeText(""), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(""), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_email_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_email_field_error))))
 
         onView(withId(R.id.signup_email_editext))
-            .perform(typeText("1"), closeSoftKeyboard())
+            .perform(scrollTo(),typeText("1"), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_email_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.invalid_email_error_message))))
@@ -183,34 +185,34 @@ class SignUpActivityTest {
         testEmail = "worldwideking@gmail.com"
 
         onView(withId(R.id.signup_name_editext))
-            .perform(typeText(testName), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testName), closeSoftKeyboard())
 
         onView(withId(R.id.signup_phone_editext))
-            .perform(typeText(testPhone), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testPhone), closeSoftKeyboard())
 
         onView(withId(R.id.signup_email_editext))
-            .perform(typeText(testEmail), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testEmail), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_password_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_password_field_error_message))))
 
         onView(withId(R.id.signup_confirm_password_editext))
-            .perform(typeText(""), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(""), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_password_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.empty_password_field_error_message))))
 
         onView(withId(R.id.signup_password_editext))
-            .perform(typeText("1"), closeSoftKeyboard())
+            .perform(scrollTo(),typeText("1"), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_password_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.invalid_password_error_message))))
@@ -227,18 +229,18 @@ class SignUpActivityTest {
         testConfirmPassword = "testconfirm"
 
         onView(withId(R.id.signup_name_editext))
-            .perform(typeText(testName), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testName), closeSoftKeyboard())
 
         onView(withId(R.id.signup_phone_editext))
-            .perform(typeText(testPhone), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testPhone), closeSoftKeyboard())
 
         onView(withId(R.id.signup_email_editext))
-            .perform(typeText(testEmail), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testEmail), closeSoftKeyboard())
         onView(withId(R.id.signup_password_editext))
-            .perform(typeText(testPassword), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testPassword), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_password_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.password_dont_match_error_message))))
@@ -247,10 +249,10 @@ class SignUpActivityTest {
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.password_dont_match_error_message))))
 
         onView(withId(R.id.signup_confirm_password_editext))
-            .perform(typeText(testConfirmPassword), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testConfirmPassword), closeSoftKeyboard())
 
         onView(withId(R.id.signup_button))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_password_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.password_dont_match_error_message))))
@@ -258,14 +260,6 @@ class SignUpActivityTest {
         onView(withId(R.id.signup_confirm_password_text_layout))
             .check(matches(CustomMatchers.withError(testContext.getString(R.string.password_dont_match_error_message))))
 
-    }
-
-    @Test
-    fun backButtonClosesActivity(){
-
-        Espresso.pressBackUnconditionally()
-
-        assertTrue(activityRule.activity.isDestroyed)
     }
 
     @Test
@@ -277,33 +271,36 @@ class SignUpActivityTest {
         testConfirmPassword = "myloyalsubjects"
 
         onView(withId(R.id.signup_name_editext))
-            .perform(typeText(testName), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testName), closeSoftKeyboard())
 
         onView(withId(R.id.signup_phone_editext))
-            .perform(typeText(testPhone), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testPhone), closeSoftKeyboard())
 
         onView(withId(R.id.signup_email_editext))
-            .perform(typeText(testEmail), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testEmail), closeSoftKeyboard())
 
         onView(withId(R.id.signup_password_editext))
-            .perform(typeText(testPassword), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testPassword), closeSoftKeyboard())
 
         onView(withId(R.id.signup_confirm_password_editext))
-            .perform(typeText(testConfirmPassword), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testConfirmPassword), closeSoftKeyboard())
+
+        doAnswer {
+            val callback = it.arguments[1] as ApiCallback<User>
+            callback.onSuccess(User().apply {
+                email = testEmail
+                id = "1"
+                name = "Ephraim Nartey"
+
+            })
+
+            return@doAnswer
+
+        }.`when`(apiService).signUpUser(any(), any())
 
         onView(withId(R.id.signup_button))
             .check(matches(ViewMatchers.isDisplayed()))
-            .perform(click())
-
-        Mockito.verify(apiService).signUpUser(ArgumentMatchers.any(SignUpRequest::class.java), callbackCaptor.capture())
-
-        val callback = callbackCaptor.value
-        callback.onSuccess(User().apply {
-            email = testEmail
-            id = "1"
-            name = "Ephraim Nartey"
-
-        })
+            .perform(scrollTo(),click())
 
         Intents.intended(
             Matchers.allOf(
@@ -322,29 +319,32 @@ class SignUpActivityTest {
         testConfirmPassword = "myloyalsubjects"
 
         onView(withId(R.id.signup_name_editext))
-            .perform(typeText(testName), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testName), closeSoftKeyboard())
 
         onView(withId(R.id.signup_phone_editext))
-            .perform(typeText(testPhone), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testPhone), closeSoftKeyboard())
 
         onView(withId(R.id.signup_email_editext))
-            .perform(typeText(testEmail), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testEmail), closeSoftKeyboard())
 
         onView(withId(R.id.signup_password_editext))
-            .perform(typeText(testPassword), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testPassword), closeSoftKeyboard())
 
         onView(withId(R.id.signup_confirm_password_editext))
-            .perform(typeText(testConfirmPassword), closeSoftKeyboard())
+            .perform(scrollTo(),typeText(testConfirmPassword), closeSoftKeyboard())
+
+        val errMsg = "error"
+        doAnswer {
+            val callback = it.arguments[1] as ApiCallback<User>
+            callback.onFailed(errMsg)
+
+            return@doAnswer
+
+        }.`when`(apiService).signUpUser(any(), any())
 
         onView(withId(R.id.signup_button))
             .check(matches(ViewMatchers.isDisplayed()))
-            .perform(click())
-
-        val errMsg = "error"
-        Mockito.verify(apiService).signUpUser(ArgumentMatchers.any(SignUpRequest::class.java), callbackCaptor.capture())
-
-        val callback = callbackCaptor.value
-        callback.onFailed(errMsg)
+            .perform(scrollTo(),click())
 
         onView(withId(R.id.signup_error_textview))
             .check(matches(ViewMatchers.isDisplayed()))

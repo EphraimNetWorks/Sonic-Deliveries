@@ -2,7 +2,8 @@ package com.example.deliveryapp.ui.user
 
 import android.content.Context
 import android.content.Intent
-import androidx.test.espresso.Espresso
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.DataSource
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -16,21 +17,24 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.example.deliveryapp.*
+import com.example.deliveryapp.data.local.dao.DeliveryDao
+import com.example.deliveryapp.data.local.dao.UserDao
+import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.di.TestAppInjector
 import com.example.deliveryapp.utils.*
-import junit.framework.Assert
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.whenever
 import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.*
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito.verify
 import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
@@ -50,6 +54,10 @@ class LoginActivityTest {
 
     @Inject
     lateinit var apiService: ApiService
+    @Inject
+    lateinit var deliveryDao: DeliveryDao
+    @Inject
+    lateinit var userDao: UserDao
 
     private lateinit var testEmail:String
     private lateinit var testPassword:String
@@ -57,9 +65,6 @@ class LoginActivityTest {
 
     @Before
     fun setUp(){
-
-        MockitoAnnotations.initMocks(this)
-
 
         TestAppInjector.inject{it.inject(this)}
 
@@ -145,7 +150,7 @@ class LoginActivityTest {
         onView(withId(R.id.sign_up))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
-            .perform(click())
+            .perform(scrollTo(),click())
 
         // Verifies that the SignUpActivity received an intent
         // with the correct package name .
@@ -156,22 +161,20 @@ class LoginActivityTest {
 
     }
 
-
-
-    @Test
-    fun backButtonClosesActivity(){
-
-        EspressoTestUtil.disableProgressBarAnimations(intentsTestRule)
-
-        Espresso.pressBackUnconditionally()
-
-        Assert.assertTrue(intentsTestRule.activity.isDestroyed)
-    }
-
-    @Captor
-    lateinit var callbackCaptor: ArgumentCaptor<ApiCallback<User?>>
     @Test
     fun goToMainActivity_afterLogin() {
+
+        whenever(userDao.getCurrentUser()).thenReturn( MutableLiveData(User().apply {
+            email = ""
+            id = "1"
+            name = "Ephraim Nartey"
+
+        }))
+        val dSFactory:DataSource.Factory<Int,Delivery> = MockRoomDataSource.mockDataSourceFactory(
+            listOf())
+        whenever(deliveryDao.getDeliveriesInTransit()).thenReturn( dSFactory)
+        whenever(deliveryDao.getDeliveriesPlaced()).thenReturn(dSFactory)
+        whenever(deliveryDao.getCompletedDeliveries()).thenReturn( dSFactory)
 
         testEmail ="narteyephraim@gmail.com"
         testPassword = "asdfghjkl"
@@ -182,19 +185,23 @@ class LoginActivityTest {
         onView(withId(R.id.login_password_editext))
             .perform(typeText(testPassword), closeSoftKeyboard())
 
+        doAnswer {
+            val callback = it.arguments[2] as ApiCallback<User>
+            callback.onSuccess(User().apply {
+                email = testEmail
+                id = "1"
+                name = "Ephraim Nartey"
+
+            })
+
+            return@doAnswer
+
+        }.`when`(apiService).loginUser(anyString(), anyString(), any())
+
         onView(withId(R.id.login_button))
             .check(matches(isDisplayed()))
             .perform(click())
 
-        verify(apiService).loginUser(anyString(), anyString(), callbackCaptor.capture())
-
-        val callback = callbackCaptor.value
-        callback.onSuccess(User().apply {
-            email = testEmail
-            id = "1"
-            name = "Ephraim Nartey"
-
-        })
 
         // Verifies that the MainActivity received an intent
         // with the correct package name .
@@ -204,5 +211,35 @@ class LoginActivityTest {
 
     }
 
+    @Test
+    fun showError_onLoginError() {
+
+        testEmail ="narteyephraim@gmail.com"
+        testPassword = "asdfghjkl"
+
+        onView(withId(R.id.login_email_editext))
+            .perform(typeText(testEmail), closeSoftKeyboard())
+
+        onView(withId(R.id.login_password_editext))
+            .perform(typeText(testPassword), closeSoftKeyboard())
+
+        val errMsg = "error"
+        doAnswer {
+            val callback = it.arguments[2] as ApiCallback<User>
+            callback.onFailed(errMsg)
+
+            return@doAnswer
+
+        }.`when`(apiService).loginUser(anyString(), anyString(), any())
+
+        onView(withId(R.id.login_button))
+            .check(matches(isDisplayed()))
+            .perform(click())
+
+
+        onView(withId(R.id.login_error_textview))
+            .check(matches(withText(errMsg)))
+
+    }
 
 }
