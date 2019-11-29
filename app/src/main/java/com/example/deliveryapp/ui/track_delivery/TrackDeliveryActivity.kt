@@ -1,7 +1,6 @@
 package com.example.deliveryapp.ui.track_delivery
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -12,13 +11,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.test.espresso.idling.CountingIdlingResource
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.ActivityTrackDeliveryBinding
-import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.utils.ViewModelFactory
 import dagger.android.AndroidInjection
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
@@ -29,9 +25,9 @@ class TrackDeliveryActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    lateinit var trackDeliveryViewModel: TrackDeliveryViewModel
+    private lateinit var trackDeliveryViewModel: TrackDeliveryViewModel
 
-    lateinit var mDelivery: Delivery
+    private lateinit var mDelivery: Delivery
     lateinit var binding:ActivityTrackDeliveryBinding
 
     private lateinit var timelineAdapter:DeliveryTimelineAdapter
@@ -85,13 +81,13 @@ class TrackDeliveryActivity : AppCompatActivity() {
     }
 
     private fun startObservers(){
-        trackDeliveryViewModel.getNetWorkState().observe(this, Observer {
+        trackDeliveryViewModel.networkState.observe(this, Observer {
             if(it.status == Status.SUCCESS) finish()
         })
     }
 
     private fun stopObservers(){
-        trackDeliveryViewModel.getNetWorkState().removeObservers(this)
+        trackDeliveryViewModel.networkState.removeObservers(this)
     }
 
     private fun setUpDeliveryTimeline(){
@@ -106,11 +102,11 @@ class TrackDeliveryActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
-        if(mDelivery.deliveryStatus == Delivery.STATUS_PLACED ||
-                mDelivery.deliveryStatus == Delivery.STATUS_IN_TRANSIT) {
+        return if(mDelivery.deliveryStatus == Delivery.STATUS_PLACED ||
+            mDelivery.deliveryStatus == Delivery.STATUS_IN_TRANSIT) {
             menuInflater.inflate(R.menu.track_delivery_menu, menu)
-            return true
-        }else return false
+            true
+        }else false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

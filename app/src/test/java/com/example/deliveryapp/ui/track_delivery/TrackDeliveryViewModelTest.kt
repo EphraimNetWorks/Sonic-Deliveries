@@ -44,7 +44,7 @@ class TrackDeliveryViewModelTest{
     @Test
     fun `get network state returns repo network state`(){
 
-        val networkState = viewModel.getNetWorkState()
+        val networkState = viewModel.networkState
 
         assertNotNull(networkState)
 

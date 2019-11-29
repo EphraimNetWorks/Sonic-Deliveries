@@ -5,22 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.test.espresso.idling.CountingIdlingResource
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivityLoginBinding
 import com.example.deliveryapp.ui.main.MainActivity
 import com.example.deliveryapp.ui.signup.SignUpActivity
 import com.example.deliveryapp.utils.ViewModelFactory
-import com.google.gson.Gson
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
-import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.utils.EspressoTestingIdlingResource
 import dagger.android.AndroidInjection
 import timber.log.Timber
@@ -81,11 +76,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun goToNextActivity(isAlreadyLoggedIn:Boolean){
 
-        if(intent.hasExtra(MainActivity.EXTRA_SALUTATION_TYPE)){
-            startActivity(MainActivity.newInstance(this,intent.getIntExtra(MainActivity.EXTRA_SALUTATION_TYPE,
+        when {
+            intent.hasExtra(MainActivity.EXTRA_SALUTATION_TYPE) -> startActivity(MainActivity.newInstance(this,intent.getIntExtra(MainActivity.EXTRA_SALUTATION_TYPE,
                 MainActivity.SALUTATION_TYPE_NEW_LOGIN)))
-        }else {
-            startActivity(
+            else -> startActivity(
                 MainActivity.newInstance(
                     this, if (isAlreadyLoggedIn)
                         MainActivity.SALUTATION_TYPE_ALREADY_LOGGED_IN
@@ -115,7 +109,7 @@ class LoginActivity : AppCompatActivity() {
                 viewModel.loginUser(email,password)
 
                 EspressoTestingIdlingResource.increment()
-                viewModel.getNetworkState()!!.observe(this, Observer { networkState->
+                viewModel.networkState.observe(this, Observer { networkState->
                     binding.networkState = networkState
                     handleNetworkState(networkState)})
             }
@@ -135,11 +129,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onBackPressed() {
         finishAffinity()
         super.onBackPressed()
-    }
-
-    override fun onDestroy() {
-        viewModel.getNetworkState()?.removeObservers(this)
-        super.onDestroy()
     }
 
     companion object{

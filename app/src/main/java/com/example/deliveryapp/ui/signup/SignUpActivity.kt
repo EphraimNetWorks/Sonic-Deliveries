@@ -1,6 +1,6 @@
 package com.example.deliveryapp.ui.signup
 
-import android.content.Intent
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -8,8 +8,6 @@ import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.test.espresso.idling.CountingIdlingResource
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivitySignUpBinding
@@ -21,7 +19,6 @@ import com.example.deliveryapp.utils.ViewModelFactory
 import dagger.android.AndroidInjection
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import timber.log.Timber
-import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
 
@@ -64,12 +61,15 @@ class SignUpActivity : AppCompatActivity(),Injectable {
     }
 
     private fun handleNetworkState(networkState: NetworkState) {
-        if(networkState.status == Status.SUCCESS){
-            goToNextActivity()
-            EspressoTestingIdlingResource.decrement()
-        }else if(networkState.status == Status.FAILED){
-            binding.signupButton.visibility = View.VISIBLE
-            EspressoTestingIdlingResource.decrement()
+        when {
+            networkState.status == Status.SUCCESS -> {
+                goToNextActivity()
+                EspressoTestingIdlingResource.decrement()
+            }
+            networkState.status == Status.FAILED -> {
+                binding.signupButton.visibility = View.VISIBLE
+                EspressoTestingIdlingResource.decrement()
+            }
         }
     }
 
@@ -80,39 +80,33 @@ class SignUpActivity : AppCompatActivity(),Injectable {
     private fun processValidationMap(valMap: HashMap<String, Int>){
         resetTextInputLayoutErrors()
 
-        if(valMap[SignUpViewModel.VAL_MAP_NAME_KEY]!= SignUpViewModel.VAL_VALID){
+        when {
+            valMap[SignUpViewModel.VAL_MAP_NAME_KEY]!= SignUpViewModel.VAL_VALID -> binding.signupNameTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_NAME_KEY]!!)
+            valMap[SignUpViewModel.VAL_MAP_PHONE_KEY]!= SignUpViewModel.VAL_VALID -> binding.signupPhoneTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_PHONE_KEY]!!)
+            valMap[SignUpViewModel.VAL_MAP_EMAIL_KEY]!= SignUpViewModel.VAL_VALID -> binding.signupEmailTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_EMAIL_KEY]!!)
+            valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY] != SignUpViewModel.VAL_VALID -> {
 
-            binding.signupNameTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_NAME_KEY]!!)
+                binding.signupPasswordTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY]!!)
 
-        }else if(valMap[SignUpViewModel.VAL_MAP_PHONE_KEY]!= SignUpViewModel.VAL_VALID){
+                if(valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY] == SignUpViewModel.PASSWORDS_DONT_MATCH){
+                    binding.signupConfirmPasswordTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY]!!)
+                }
 
-            binding.signupPhoneTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_PHONE_KEY]!!)
-
-        }else if(valMap[SignUpViewModel.VAL_MAP_EMAIL_KEY]!= SignUpViewModel.VAL_VALID){
-
-            binding.signupEmailTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_EMAIL_KEY]!!)
-
-        }else if (valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY] != SignUpViewModel.VAL_VALID){
-
-            binding.signupPasswordTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY]!!)
-
-            if(valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY] == SignUpViewModel.PASSWORDS_DONT_MATCH){
-                binding.signupConfirmPasswordTextLayout.error = getString(valMap[SignUpViewModel.VAL_MAP_PASSWORD_KEY]!!)
             }
+            else -> {
 
-        }else{
+                binding.signupButton.visibility = View.GONE
+                viewModel.signUpUser(binding.signupNameEditext.text.toString(),
+                    binding.signupPhoneEditext.text.toString(),
+                    binding.signupEmailEditext.text.toString(),
+                    binding.signupPasswordEditext.text.toString())
 
-            binding.signupButton.visibility = View.GONE
-            viewModel.signUpUser(binding.signupNameEditext.text.toString(),
-                binding.signupPhoneEditext.text.toString(),
-                binding.signupEmailEditext.text.toString(),
-                binding.signupPasswordEditext.text.toString())
-
-            EspressoTestingIdlingResource.increment()
-            viewModel.getNetworkState()!!.observe(this, Observer { networkState->
-                binding.networkState = networkState
-                handleNetworkState(networkState)
-            })
+                EspressoTestingIdlingResource.increment()
+                viewModel.networkState.observe(this, Observer { networkState->
+                    binding.networkState = networkState
+                    handleNetworkState(networkState)
+                })
+            }
         }
     }
 
@@ -125,11 +119,5 @@ class SignUpActivity : AppCompatActivity(),Injectable {
         binding.signupPasswordTextLayout.error = null
     }
 
-
-    override fun onDestroy() {
-
-        viewModel.getNetworkState()?.removeObservers(this)
-        super.onDestroy()
-    }
 
 }

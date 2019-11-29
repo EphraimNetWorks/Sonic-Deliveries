@@ -10,11 +10,8 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(private val userRepo:UserRepository) : ViewModel(){
 
 
-    private var currentUser :LiveData<User>? = null
+    val currentUser :LiveData<User>?
+        get() = userRepo.getCurrentUser()
 
-    fun getCurrentUser() : LiveData<User>?{
-        currentUser = userRepo.getCurrentUser()
-        return currentUser
-    }
 
 }

@@ -24,7 +24,7 @@ class MyDate : Serializable{
     // format 1 = Wednesday Jan 12,2039
     fun getDateFormat1():String{
 
-        val format1 = SimpleDateFormat(FORMAT_1)
+        val format1 = SimpleDateFormat(FORMAT_1, Locale.ENGLISH)
 
         return format1.format(Date(timeStamp))
     }

@@ -5,34 +5,27 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.ResultReceiver
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.models.Location
 import com.example.deliveryapp.data.local.models.MyDate
 import com.example.deliveryapp.databinding.FragmentNewDeliveryFormBinding
 import com.example.deliveryapp.di.Injectable
-import com.example.deliveryapp.services.FetchAddressIntentService
 import com.example.deliveryapp.utils.ViewModelFactory
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException
-import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.libraries.places.compat.Places
 import com.google.maps.android.PolyUtil
 import com.google.maps.model.DirectionsResult
 import com.schibstedspain.leku.LATITUDE
@@ -62,6 +55,8 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AndroidSupportInjection.inject(this)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(DeliveryFormViewModel::class.java)
 
     }
 
@@ -79,7 +74,7 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
 
     private fun startObservers(){
 
-        viewModel.directionsResult!!.observe(this, Observer { directionResult-> updatePolyline(directionResult) })
+        viewModel.directionsResult!!.observe(viewLifecycleOwner, Observer { directionResult-> updatePolyline(directionResult) })
     }
 
     private fun stopObservers(){
@@ -102,8 +97,8 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
     }
 
 
-    val dateListener: DatePickerDialog.OnDateSetListener =
-        DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+    private val dateListener: DatePickerDialog.OnDateSetListener =
+        DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
 
             viewModel.mPickUpDate = MyDate(year,monthOfYear+1,dayOfMonth)
             binding.deliveryDateSelectButton.text = viewModel.mPickUpDate!!.getDateFormat1()
@@ -187,7 +182,7 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
         polyline?.remove()
         val decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.encodedPath)
         polyline =
-            mMap.addPolyline(PolylineOptions().addAll(decodedPath).color(resources.getColor(R.color.colorAccent)))
+            mMap.addPolyline(PolylineOptions().addAll(decodedPath).color(ContextCompat.getColor(context!!,R.color.colorAccent)))
     }
 
     private fun queryDirections(pickUpLocation:Location, destinationLocation:Location) {
@@ -259,8 +254,6 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
         if(savedInstanceState!=null){
             restoreState(savedInstanceState)
         }
-
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DeliveryFormViewModel::class.java)
 
         startObservers()
 

@@ -1,9 +1,7 @@
 package com.example.deliveryapp.data.local.dao
 
 import androidx.lifecycle.LiveData
-import androidx.paging.DataSource
 import androidx.room.*
-import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.entities.User
 
 @Dao

@@ -1,18 +1,14 @@
 package com.example.deliveryapp.ui.track_delivery
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.AdapterDeliveryTimelineBinding
 import com.github.vipulasri.timelineview.TimelineView
-import kotlinx.android.synthetic.main.adapter_delivery_timeline.view.*
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
@@ -78,29 +74,34 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
             @ColorRes val textResColor:Int
             @ColorRes val lineResColor:Int
 
-            if(delivery.deliveryStatus == Delivery.STATUS_CANCELLED){
-                timelineResMarker = R.drawable.ic_marker_complete
-                markerResColor = R.color.grey
-                textResColor = R.color.grey
-                lineResColor = R.color.grey
+            when {
+                delivery.deliveryStatus == Delivery.STATUS_CANCELLED -> {
+                    timelineResMarker = R.drawable.ic_marker_complete
+                    markerResColor = R.color.grey
+                    textResColor = R.color.grey
+                    lineResColor = R.color.grey
 
-            } else if(position < delivery.deliveryStatus){
-                timelineResMarker = R.drawable.ic_marker_complete
-                markerResColor = R.color.colorPrimary
-                textResColor = R.color.black
-                lineResColor = R.color.blue
+                }
+                position < delivery.deliveryStatus -> {
+                    timelineResMarker = R.drawable.ic_marker_complete
+                    markerResColor = R.color.colorPrimary
+                    textResColor = R.color.black
+                    lineResColor = R.color.blue
 
-            }else if(position == delivery.deliveryStatus){
-                timelineResMarker = R.drawable.ic_marker_complete
-                markerResColor = R.color.colorAccent
-                textResColor = R.color.blue
-                lineResColor = R.color.colorAccent
+                }
+                position == delivery.deliveryStatus -> {
+                    timelineResMarker = R.drawable.ic_marker_complete
+                    markerResColor = R.color.colorAccent
+                    textResColor = R.color.blue
+                    lineResColor = R.color.colorAccent
 
-            }else{
-                timelineResMarker = R.drawable.ic_marker_incomplete
-                markerResColor = R.color.grey
-                textResColor = R.color.grey
-                lineResColor = R.color.grey
+                }
+                else -> {
+                    timelineResMarker = R.drawable.ic_marker_incomplete
+                    markerResColor = R.color.grey
+                    textResColor = R.color.grey
+                    lineResColor = R.color.grey
+                }
             }
 
             setMarker(timelineResMarker,markerResColor)
@@ -123,7 +124,7 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
 
 object VectorDrawableUtils {
 
-    fun getDrawable(context: Context, drawableResId: Int): Drawable? {
+    private fun getDrawable(context: Context, drawableResId: Int): Drawable? {
         return VectorDrawableCompat.create(context.resources, drawableResId, context.theme)
     }
 

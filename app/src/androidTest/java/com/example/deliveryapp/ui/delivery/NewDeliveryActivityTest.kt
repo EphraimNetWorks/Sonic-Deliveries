@@ -157,27 +157,6 @@ class NewDeliveryActivityTest {
 
     }
 
-    @Test
-    fun selectDateValidation(){
-
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, 2)
-
-        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.simpleName)))
-                    .perform(
-                        PickerActions.setDate(
-                            calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH),
-                            calendar.get(Calendar.DAY_OF_MONTH)))
-
-        Intents.intended(
-            Matchers.allOf(
-                IntentMatchers.hasComponent(ComponentNameMatchers.hasShortClassName(Constants.MAIN_ACTIVITY_SHORT_CLASS_NAME)),
-                IntentMatchers.toPackage(Constants.PACKAGE_NAME)
-            )
-        )
-    }
-
 
     @Test
     fun setUpSummaryFragment(){
@@ -292,22 +271,14 @@ class NewDeliveryActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.pick_up_search_location))
             .perform(ViewActions.click())
 
-        val testAddress = "HSE NO# Z 102 - Potato Street"
-        val testName = "Sakumono"
-        val latLng = LatLng((0).toDouble(),(0).toDouble())
-
-        val resultData = Intent()
 
         Intents.intending(
             Matchers.allOf(
                 IntentMatchers.hasComponent(ComponentNameMatchers.hasShortClassName(Constants.AUTOCOMPLETE_SHORT_CLASS_NAME)),
                 IntentMatchers.toPackage(Constants.AUTOCOMPLETE_PACKAGE_NAME)
             )
-        ).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK,resultData))
+        )
 
-        val testPlaceAddress = " $testName, $testAddress"
-        Espresso.onView(ViewMatchers.withId(R.id.pick_up_point_editext))
-            .check(ViewAssertions.matches(ViewMatchers.withText(testPlaceAddress)))
     }
 
     @Test
@@ -316,21 +287,13 @@ class NewDeliveryActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.destination_search_location))
             .perform(ViewActions.click())
 
-        val testAddress = "HSE NO# Z 102 - Potato Street"
-        val testName = "Sakumono"
-        val latLng = LatLng((0).toDouble(),(0).toDouble())
-
-        val resultData = Intent()
 
         Intents.intending(
             Matchers.allOf(
                 IntentMatchers.hasComponent(ComponentNameMatchers.hasShortClassName(Constants.AUTOCOMPLETE_SHORT_CLASS_NAME)),
                 IntentMatchers.toPackage(Constants.AUTOCOMPLETE_PACKAGE_NAME)
             )
-        ).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK,resultData))
+        )
 
-        val testPlaceAddress = " $testName, $testAddress"
-        Espresso.onView(ViewMatchers.withId(R.id.destination_editext))
-            .check(ViewAssertions.matches(ViewMatchers.withText(testPlaceAddress)))
     }
 }

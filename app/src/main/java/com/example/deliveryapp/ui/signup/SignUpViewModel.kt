@@ -3,28 +3,28 @@ package com.example.deliveryapp.ui.signup
 import android.util.Patterns
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.data.remote.request.SignUpRequest
-import timber.log.Timber
-import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
 class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) :ViewModel(){
-    private var networkState: LiveData<NetworkState>? = null
+    val networkState: LiveData<NetworkState>
+        get() = userRepo.networkState
+
     var validationMap: HashMap<String, Int> = HashMap()
 
 
-    var EMAIL_ADDRESS_PATTERN:Pattern? = null
-    var PHONE_PATTERN:Pattern? = null
+    private var emailPattern:Pattern? = null
+    private var phonePattern:Pattern? = null
+
     init {
-        PHONE_PATTERN = Patterns.PHONE
-        EMAIL_ADDRESS_PATTERN = Patterns.EMAIL_ADDRESS
+        phonePattern = Patterns.PHONE
+        emailPattern = Patterns.EMAIL_ADDRESS
 
         initializeValidationMap()
     }
@@ -62,7 +62,7 @@ class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) 
         var validationMessage = VAL_VALID
         if(email.isEmpty()){
             validationMessage = EMPTY_EMAIL_ADDRESS
-        }else if(!EMAIL_ADDRESS_PATTERN!!.matcher(email).matches()){
+        }else if(!emailPattern!!.matcher(email).matches()){
             validationMessage = INVALID_EMAIL_ADDRESS
         }
 
@@ -74,7 +74,7 @@ class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) 
         var validationMessage = VAL_VALID
         if(phone.isEmpty()){
             validationMessage = EMPTY_PHONE_NUMBER
-        }else if(!PHONE_PATTERN!!.matcher(phone).matches()){
+        }else if(!phonePattern!!.matcher(phone).matches()){
             validationMessage = INVALID_PHONE_NUMBER
         }
 
@@ -84,12 +84,10 @@ class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) 
 
     fun validatePassword(password:String, confirmPassword:String){
         var validationMessage = VAL_VALID
-        if(password.isEmpty()){
-            validationMessage = EMPTY_PASSWORD
-        }else if(password.length<6){
-            validationMessage = INVALID_PASSWORD
-        }else if(password != confirmPassword){
-            validationMessage = PASSWORDS_DONT_MATCH
+        when {
+            password.isEmpty() -> validationMessage = EMPTY_PASSWORD
+            password.length<6 -> validationMessage = INVALID_PASSWORD
+            password != confirmPassword -> validationMessage = PASSWORDS_DONT_MATCH
         }
 
         validationMap[VAL_MAP_PASSWORD_KEY] = validationMessage
@@ -102,11 +100,6 @@ class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) 
             email,
             password
         ))
-    }
-
-    fun getNetworkState(): LiveData<NetworkState>? {
-        this.networkState = userRepo.getNetworkState()
-        return networkState
     }
 
     companion object{

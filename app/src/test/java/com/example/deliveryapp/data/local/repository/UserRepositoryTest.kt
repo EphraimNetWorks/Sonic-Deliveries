@@ -59,7 +59,7 @@ class UserRepositoryTest {
         userRepository.login("ffs","sfg")
 
         assertEquals(
-            userRepository.getNetworkState().value!!.status,
+            userRepository.networkState.value!!.status,
             Status.RUNNING
         )
 
@@ -77,7 +77,7 @@ class UserRepositoryTest {
         callback.onSuccess(user)
 
         assertEquals(
-            userRepository.getNetworkState().value!!.status,
+            userRepository.networkState.value!!.status,
             Status.SUCCESS
         )
 
@@ -96,7 +96,7 @@ class UserRepositoryTest {
         callback.onFailed(errorMessage)
 
         assertEquals(
-            userRepository.getNetworkState().value!!.message,
+            userRepository.networkState.value!!.message,
             errorMessage
         )
 
@@ -109,7 +109,7 @@ class UserRepositoryTest {
         userRepository.login("ffs","sfg")
 
         assertEquals(
-            userRepository.getNetworkState().value!!.status,
+            userRepository.networkState.value!!.status,
             Status.RUNNING
         )
 
@@ -128,7 +128,7 @@ class UserRepositoryTest {
         callback.onSuccess(user)
 
         assertEquals(
-            userRepository.getNetworkState().value!!.status,
+            userRepository.networkState.value!!.status,
             Status.SUCCESS
         )
 
@@ -148,7 +148,7 @@ class UserRepositoryTest {
         callback.onFailed(errorMessage)
 
         assertEquals(
-            userRepository.getNetworkState().value!!.message,
+            userRepository.networkState.value!!.message,
             errorMessage
         )
 

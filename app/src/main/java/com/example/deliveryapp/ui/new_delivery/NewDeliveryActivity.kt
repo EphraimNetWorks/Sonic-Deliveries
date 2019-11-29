@@ -3,22 +3,17 @@ package com.example.deliveryapp.ui.new_delivery
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivityNewDeliveryBinding
-import com.example.deliveryapp.di.Injectable
-import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import com.example.deliveryapp.utils.ViewModelFactory
 import dagger.android.AndroidInjection
 import dagger.android.support.DaggerAppCompatActivity
@@ -77,7 +72,7 @@ class NewDeliveryActivity : DaggerAppCompatActivity(),DeliveryFormValidation{
             formFragment.validateNewDelivery()
         }else if(currentFragment == SUMMARY_FRAGMENT_TAG){
             viewModel.submitNewDelivery(mDelivery)
-            viewModel.getNetworkState().observe(this, Observer {
+            viewModel.networkState.observe(this, Observer {
                 binding.networkState = it
                 handleNetworkState(it)})
         }
@@ -107,7 +102,7 @@ class NewDeliveryActivity : DaggerAppCompatActivity(),DeliveryFormValidation{
         formFragment = NewDeliveryFormFragment.newInstance()
     }
 
-    fun setUpFormFragment(){
+    private fun setUpFormFragment(){
         // update the main content by replacing fragments
         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left,
@@ -149,10 +144,6 @@ class NewDeliveryActivity : DaggerAppCompatActivity(),DeliveryFormValidation{
 
         mDelivery = formFragment.getNewDelivery()
         setUpSummaryFragment(mDelivery)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     companion object{

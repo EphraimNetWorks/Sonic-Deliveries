@@ -46,7 +46,7 @@ class NewDeliveryViewModelTest{
 
 
 
-        val networkState = viewModel.getNetworkState()
+        val networkState = viewModel.networkState
 
         assertNotNull(networkState)
 

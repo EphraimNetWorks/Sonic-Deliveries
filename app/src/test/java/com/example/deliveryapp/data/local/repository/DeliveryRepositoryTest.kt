@@ -91,7 +91,7 @@ class DeliveryRepositoryTest {
         deliveryRepository.getDeliveriesPlaced()
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.RUNNING
         )
 
@@ -103,7 +103,7 @@ class DeliveryRepositoryTest {
         deliveryRepository.getDeliveriesInTransit()
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.RUNNING
         )
 
@@ -115,7 +115,7 @@ class DeliveryRepositoryTest {
         deliveryRepository.getCompletedDeliveries()
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.RUNNING
         )
 
@@ -132,7 +132,7 @@ class DeliveryRepositoryTest {
         callback.onSuccess(list)
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.SUCCESS
         )
     }
@@ -149,12 +149,12 @@ class DeliveryRepositoryTest {
         callback.onFailed(errorMessage)
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.message,
+            deliveryRepository.networkState.value!!.message,
             errorMessage
         )
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.FAILED
         )
     }
@@ -170,7 +170,7 @@ class DeliveryRepositoryTest {
         callback.onSuccess(list)
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.SUCCESS
         )
     }
@@ -187,12 +187,12 @@ class DeliveryRepositoryTest {
         callback.onFailed(errorMessage)
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.message,
+            deliveryRepository.networkState.value!!.message,
             errorMessage
         )
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.FAILED
         )
     }
@@ -208,7 +208,7 @@ class DeliveryRepositoryTest {
         callback.onSuccess(list)
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.SUCCESS
         )
     }
@@ -225,12 +225,12 @@ class DeliveryRepositoryTest {
         callback.onFailed(errorMessage)
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.message,
+            deliveryRepository.networkState.value!!.message,
             errorMessage
         )
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.FAILED
         )
     }
@@ -241,7 +241,7 @@ class DeliveryRepositoryTest {
         deliveryRepository.cancelDelivery("fdjha")
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.RUNNING
         )
 
@@ -260,12 +260,12 @@ class DeliveryRepositoryTest {
         callback.onFailed(errorMessage)
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.message,
+            deliveryRepository.networkState.value!!.message,
             errorMessage
         )
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.FAILED
         )
     }
@@ -282,7 +282,7 @@ class DeliveryRepositoryTest {
         callback.onSuccess(true)
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.SUCCESS
         )
     }
@@ -293,7 +293,7 @@ class DeliveryRepositoryTest {
         deliveryRepository.submitNewDelivery(testdelivery)
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.RUNNING
         )
 
@@ -312,12 +312,12 @@ class DeliveryRepositoryTest {
         callback.onFailed(errorMessage)
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.message,
+            deliveryRepository.networkState.value!!.message,
             errorMessage
         )
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.FAILED
         )
     }
@@ -334,7 +334,7 @@ class DeliveryRepositoryTest {
         callback.onSuccess(true)
 
         assertEquals(
-            deliveryRepository.getNetworkState().value!!.status,
+            deliveryRepository.networkState.value!!.status,
             Status.SUCCESS
         )
     }

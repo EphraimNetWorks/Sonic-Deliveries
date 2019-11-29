@@ -13,10 +13,7 @@ import com.example.deliveryapp.data.remote.ApiService.Companion.UNKNOWN_FAILURE_
 import com.example.deliveryapp.data.remote.ApiService.Companion.UPDATED_AT_FIELD_NAME
 import com.example.deliveryapp.data.remote.request.SignUpRequest
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.google.maps.DirectionsApi
 import com.google.maps.GeoApiContext
 import com.google.maps.PendingResult
@@ -65,7 +62,7 @@ class ApiServiceImpl :ApiService{
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
-    private var userId :String? = null
+    private val userId :String?
         get() {return if(auth.currentUser == null) null else auth.currentUser!!.uid}
 
     override fun loginUser(email:String, password:String, callback:ApiCallback<User?>){
@@ -199,7 +196,7 @@ class ApiServiceImpl :ApiService{
                 }
 
                 override fun onFailure(e: Throwable) {
-                    apiCallback.onFailed(e.localizedMessage)
+                    apiCallback.onFailed(e.localizedMessage?:"Unable to get directions")
                     Timber.e("Get Directions Result failed with error: %s", e.message)
                 }
             })

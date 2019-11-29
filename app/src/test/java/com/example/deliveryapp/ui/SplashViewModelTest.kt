@@ -75,8 +75,8 @@ class SplashViewModelTest {
 
     @Test
     fun `validate current user`(){
-        assertNotNull(splashViewModel.getCurrentUser())
-        assertEquals("Ephraim Nartey", splashViewModel.getCurrentUser()!!.value!!.name)
+        assertNotNull(splashViewModel.currentUser)
+        assertEquals("Ephraim Nartey", splashViewModel.currentUser!!.value!!.name)
     }
 
 }

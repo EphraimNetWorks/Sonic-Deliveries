@@ -3,17 +3,12 @@ package com.example.deliveryapp.ui.login
 import android.util.Patterns
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.deliveryapp.R
-import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
-import com.example.deliveryapp.utils.DispatcherProvider
-import com.google.gson.Gson
 import kotlinx.coroutines.*
 import timber.log.Timber
-import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.collections.HashMap
@@ -21,16 +16,17 @@ import kotlin.collections.HashMap
 
 class LoginViewModel @Inject constructor(private val userRepo:UserRepository) :ViewModel(){
 
-    private var networkState:LiveData<NetworkState>?=null
+    val networkState:LiveData<NetworkState>
+        get() = userRepo.networkState
+
     var validationMap: HashMap<String,Int> = HashMap()
     private val viewModelJob  = Job()
 
-    var EMAIL_ADDRESS_PATTERN:Pattern? = null
+    private var emailPattern:Pattern? = null
 
     init {
-        EMAIL_ADDRESS_PATTERN = Patterns.EMAIL_ADDRESS
+        emailPattern = Patterns.EMAIL_ADDRESS
 
-        //initializeCurrentUser()
         initializeValidationMap()
     }
 
@@ -51,7 +47,7 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository) :V
         var validationMessage = VAL_VALID
         if(email.isEmpty()){
             validationMessage = EMPTY_EMAIL_ADDRESS
-        }else if(!EMAIL_ADDRESS_PATTERN!!.matcher(email).matches()){
+        }else if(!emailPattern!!.matcher(email).matches()){
             validationMessage = INVALID_EMAIL_ADDRESS
         }
 
@@ -73,12 +69,6 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository) :V
 
     fun loginUser(email: String, password: String){
         userRepo.login(email, password)
-    }
-
-    fun getNetworkState(): LiveData<NetworkState>?{
-        this.networkState = userRepo.getNetworkState()
-
-        return networkState
     }
 
     override fun onCleared() {

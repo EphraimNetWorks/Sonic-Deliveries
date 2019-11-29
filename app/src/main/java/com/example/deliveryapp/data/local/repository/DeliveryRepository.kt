@@ -11,15 +11,12 @@ import com.example.deliveryapp.data.remote.ApiService
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.utils.DispatcherProvider
 import com.google.maps.model.DirectionsResult
-import com.google.maps.model.LatLng
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Action
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 import timber.log.Timber
@@ -31,11 +28,13 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
 
     private var retryCompletable: Completable? = null
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val networkState = MutableLiveData<NetworkState>()
+    private val _networkState = MutableLiveData<NetworkState>()
+    val networkState:LiveData<NetworkState>
+        get() = _networkState
 
     fun getDeliveriesPlaced(dispatcherProvider: DispatcherProvider = DispatcherProvider()): DataSource.Factory<Int,Delivery>{
 
-        networkState.postValue(NetworkState.LOADING)
+        _networkState.postValue(NetworkState.LOADING)
         val scope = CoroutineScope(dispatcherProvider.IO)
         scope.launch {
             loadMyDeliveries()
@@ -45,7 +44,7 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
 
     fun getDeliveriesInTransit(dispatcherProvider: DispatcherProvider = DispatcherProvider()): DataSource.Factory<Int,Delivery>{
 
-        networkState.postValue(NetworkState.LOADING)
+        _networkState.postValue(NetworkState.LOADING)
         val scope = CoroutineScope(dispatcherProvider.IO)
         scope.launch {
             loadMyDeliveries()
@@ -55,7 +54,7 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
 
     fun getCompletedDeliveries(dispatcherProvider: DispatcherProvider = DispatcherProvider()): DataSource.Factory<Int,Delivery>{
 
-        networkState.postValue(NetworkState.LOADING)
+        _networkState.postValue(NetworkState.LOADING)
         val scope = CoroutineScope(dispatcherProvider.IO)
         scope.launch {
             loadMyDeliveries()
@@ -63,26 +62,22 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
         return deliveryDao.getCompletedDeliveries()!!
     }
 
-    private fun loadMyDeliveries(dispatcherProvider: DispatcherProvider = DispatcherProvider()){
+    private fun loadMyDeliveries(){
         apiService.loadMyDeliveries(object : ApiCallback<List<Delivery>>{
             override fun onSuccess(result: List<Delivery>) {
                 Timber.d("get my deliveries success")
                 execute{
                     deliveryDao.saveMyDeliveries(*result.toTypedArray())
                 }
-                networkState.postValue(NetworkState.LOADED)
+                _networkState.postValue(NetworkState.LOADED)
             }
 
             override fun onFailed(errMsg: String) {
                 Timber.w("get my deliveries failed with error: $errMsg")
                 setRetry(Action { loadMyDeliveries() })
-                networkState.postValue(NetworkState.error(errMsg))
+                _networkState.postValue(NetworkState.error(errMsg))
             }
         })
-    }
-
-    fun getNetworkState(): MutableLiveData<NetworkState> {
-        return networkState
     }
 
     fun retry() {
@@ -104,35 +99,35 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
     }
 
     fun cancelDelivery(deliveryId: String) {
-        networkState.postValue(NetworkState.LOADING)
+        _networkState.postValue(NetworkState.LOADING)
 
         apiService.cancelDelivery(deliveryId, object : ApiCallback<Boolean>{
             override fun onSuccess(result: Boolean) {
                 execute{
                     deliveryDao.cancelDelivery(deliveryId,DateTime.now().millis)
                 }
-                networkState.postValue(NetworkState.LOADED)
+                _networkState.postValue(NetworkState.LOADED)
             }
 
             override fun onFailed(errMsg: String) {
-                networkState.postValue(NetworkState.error(errMsg))
+                _networkState.postValue(NetworkState.error(errMsg))
             }
         })
     }
 
     fun submitNewDelivery(newDelivery: Delivery) {
-        networkState.postValue(NetworkState.LOADING)
+        _networkState.postValue(NetworkState.LOADING)
 
         apiService.sendNewDelivery(newDelivery, object : ApiCallback<Boolean>{
             override fun onSuccess(result: Boolean) {
                 execute{
                     deliveryDao.saveMyDelivery(newDelivery)
                 }
-                networkState.postValue(NetworkState.LOADED)
+                _networkState.postValue(NetworkState.LOADED)
             }
 
             override fun onFailed(errMsg: String) {
-                networkState.postValue(NetworkState.error(errMsg))
+                _networkState.postValue(NetworkState.error(errMsg))
             }
         })
     }
@@ -140,7 +135,7 @@ open class DeliveryRepository @Inject constructor(private val apiService:ApiServ
     val directionResults = MutableLiveData<DirectionsResult>()
 
     fun getDirectionResults(origin: Location, destination: Location, apiKey: String): LiveData<DirectionsResult> {
-        networkState.postValue(NetworkState.LOADING)
+        _networkState.postValue(NetworkState.LOADING)
 
         apiService.getDirections(origin,destination,apiKey, object : ApiCallback<DirectionsResult>{
             override fun onSuccess(result: DirectionsResult) {

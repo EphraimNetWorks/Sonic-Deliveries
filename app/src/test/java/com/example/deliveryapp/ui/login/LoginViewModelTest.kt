@@ -147,9 +147,9 @@ class LoginViewModelTest {
         val networkState = MutableLiveData<NetworkState>()
 
         loginViewModel.loginUser("narteyephraim@gmail.com", "asdfghjkl")
-        loginViewModel.getNetworkState()
+        loginViewModel.networkState
 
-        assertNotNull(loginViewModel.getNetworkState())
+        assertNotNull(loginViewModel.networkState)
 
     }
 

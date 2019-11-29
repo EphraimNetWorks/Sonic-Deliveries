@@ -33,8 +33,8 @@
     <string name="placed">Placed</string>
     <string name="in_transit">In Transit</string>
     <string name="title_activity_maps">Map</string>
-    <string name="delivering_package_from">Delivering package from</string>
-    <string name="delivered_on">Delivered on</string>
+    <string name="delivering_package_from">Delivering package from %s</string>
+    <string name="delivered_on">Delivered on %s</string>
     <string name="delivered">Delivered</string>
     <string name="item_name">ITEM NAME</string>
     <string name="delivered_summary_message">was succesfully delivered on</string>

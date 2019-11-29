@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.*
 import com.example.deliveryapp.data.local.entities.Delivery
-import org.joda.time.DateTime
 
 @Dao
 interface DeliveryDao {

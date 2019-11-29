@@ -7,7 +7,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.models.Location
-import com.google.android.gms.maps.model.LatLng
 import com.google.maps.model.DirectionsResult
 import kotlin.collections.HashMap
 import com.example.deliveryapp.data.local.models.MyDate

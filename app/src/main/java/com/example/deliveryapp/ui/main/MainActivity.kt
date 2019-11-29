@@ -7,11 +7,9 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.ActivityMainBinding
-import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
 import com.example.deliveryapp.utils.ViewModelFactory
@@ -19,7 +17,6 @@ import com.google.gson.Gson
 import dagger.android.AndroidInjection
 import timber.log.Timber
 import java.lang.IllegalArgumentException
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 

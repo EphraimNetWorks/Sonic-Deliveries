@@ -1,6 +1,6 @@
 package com.example.deliveryapp.ui.main
 
-import androidx.arch.core.util.Function
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -12,10 +12,7 @@ import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
-import com.example.deliveryapp.utils.DispatcherProvider
-import com.google.gson.Gson
 import kotlinx.coroutines.*
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -62,7 +59,7 @@ class MainViewModel @Inject constructor(
 
     private fun initializeTransformations(){
 
-        val repoNetworkState = deliveryRepo.getNetworkState()
+        val repoNetworkState = deliveryRepo.networkState
         networkState = Transformations.map(repoNetworkState) { it }
 
         deliveriesPlacedNo = Transformations.map(deliveriesPlaced!!) { it.size.toString()}
@@ -99,21 +96,21 @@ class MainViewModel @Inject constructor(
         return if(sortedList.isNotEmpty()) sortedList[sortedList.size -1] else null
     }
 
-    fun initDeliveriesPlaced() {
+    private fun initDeliveriesPlaced() {
         val pagedListBuilder: LivePagedListBuilder<Int, Delivery> =
             LivePagedListBuilder<Int, Delivery>(deliveryRepo.getDeliveriesPlaced(), pageSize)
         deliveriesPlaced = pagedListBuilder.build()
 
     }
 
-    fun initDeliveriesInTransit() {
+    private fun initDeliveriesInTransit() {
         val pagedListBuilder: LivePagedListBuilder<Int, Delivery> =
             LivePagedListBuilder<Int, Delivery>(deliveryRepo.getDeliveriesInTransit(), pageSize)
         deliveriesInTransit = pagedListBuilder.build()
 
     }
 
-    fun initCompletedDeliveries() {
+    private fun initCompletedDeliveries() {
         val pagedListBuilder: LivePagedListBuilder<Int, Delivery> =
             LivePagedListBuilder<Int, Delivery>(deliveryRepo.getCompletedDeliveries(), pageSize)
         completedDeliveries = pagedListBuilder.build()

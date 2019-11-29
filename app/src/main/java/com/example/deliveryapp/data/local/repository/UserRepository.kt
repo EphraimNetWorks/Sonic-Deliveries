@@ -20,40 +20,37 @@ class UserRepository(private val apiService:ApiService,
                           private val userDao: UserDao,
                           private val localDatabase: LocalDatabase){
 
-    private var networkState:MutableLiveData<NetworkState> = MutableLiveData()
-
-    fun getNetworkState():LiveData<NetworkState>{
-        return networkState
-    }
+    private var _networkState:MutableLiveData<NetworkState> = MutableLiveData()
+    var networkState:LiveData<NetworkState> = _networkState
 
     fun login(email:String, password:String){
-        networkState.postValue(NetworkState.LOADING)
+        _networkState.postValue(NetworkState.LOADING)
         apiService.loginUser(email,password, object : ApiCallback<User?>{
             override fun onSuccess(result: User?) {
                 execute {
                     userDao.saveUser(result!!)
                 }
-                networkState.postValue(NetworkState.LOADED)
+                _networkState.postValue(NetworkState.LOADED)
                 Timber.d("login success")
             }
 
             override fun onFailed(errMsg: String) {
-                networkState.postValue(NetworkState.error(errMsg))
+                _networkState.postValue(NetworkState.error(errMsg))
                 Timber.w("login failed with error $errMsg")
             }
         })
     }
 
     fun signUp(signUpRequest: SignUpRequest){
-        networkState.postValue(NetworkState.LOADING)
+        _networkState.postValue(NetworkState.LOADING)
         apiService.signUpUser(signUpRequest,object : ApiCallback<User?>{
             override fun onSuccess(result: User?) {
-                networkState.postValue(NetworkState.LOADED)
+                _networkState.postValue(NetworkState.LOADED)
                 Timber.d("sign up user success")
             }
 
             override fun onFailed(errMsg: String) {
-                networkState.postValue(NetworkState.error(errMsg))
+                _networkState.postValue(NetworkState.error(errMsg))
                 Timber.w("sign up user failed with error: $errMsg")
             }
         })

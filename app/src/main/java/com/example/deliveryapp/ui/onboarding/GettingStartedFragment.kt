@@ -2,14 +2,10 @@ package com.example.deliveryapp.ui.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.FragmentGetStartedBinding
 import com.example.deliveryapp.ui.login.LoginActivity

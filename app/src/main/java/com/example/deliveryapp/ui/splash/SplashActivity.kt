@@ -4,18 +4,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.example.deliveryapp.R
 import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.ui.main.MainActivity
 import com.example.deliveryapp.ui.onboarding.OnBoardingActivity
 import com.example.deliveryapp.utils.ViewModelFactory
-import dagger.android.AndroidInjection
 import javax.inject.Inject
-import android.content.SharedPreferences
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 
@@ -34,7 +30,7 @@ class SplashActivity : AppCompatActivity(),Injectable {
 
         viewModel = ViewModelProvider(this,viewModelFactory).get(SplashViewModel::class.java)
 
-        if(isfirstTime()){
+        if(isFirstTime()){
             goToNextActivity( true, isLoggedIn = false)
 
         }else{
@@ -44,21 +40,21 @@ class SplashActivity : AppCompatActivity(),Injectable {
 
     }
 
-    fun isfirstTime():Boolean{
+    private fun isFirstTime():Boolean{
         val prefs = getSharedPreferences("first_time", Context.MODE_PRIVATE)
 
         return prefs.getBoolean("isFirstTime", true)
     }
 
-    fun updateFirstTime(){
+    private fun updateFirstTime(){
         val editor = getSharedPreferences("first_time", Context.MODE_PRIVATE).edit()
 
         editor.putBoolean("isFirstTime", false)
         editor.apply()
     }
 
-    fun checkLoginStatus(){
-        val currentUserLD = viewModel.getCurrentUser()
+    private fun checkLoginStatus(){
+        val currentUserLD = viewModel.currentUser
         if(currentUserLD == null){
             goToNextActivity(false, isLoggedIn = false)
         }else{
@@ -69,14 +65,13 @@ class SplashActivity : AppCompatActivity(),Injectable {
         }
     }
 
-    fun goToNextActivity(isFirstTime:Boolean, isLoggedIn: Boolean){
+    private fun goToNextActivity(isFirstTime:Boolean, isLoggedIn: Boolean){
         Handler().postDelayed({
-            val intent = if(isFirstTime)
-                Intent(this,OnBoardingActivity::class.java)
-            else if(isLoggedIn)
-                MainActivity.newInstance(this,MainActivity.SALUTATION_TYPE_ALREADY_LOGGED_IN)
-            else
-                LoginActivity.newInstance(this,MainActivity.SALUTATION_TYPE_NEW_LOGIN)
+            val intent = when {
+                isFirstTime -> Intent(this,OnBoardingActivity::class.java)
+                isLoggedIn -> MainActivity.newInstance(this,MainActivity.SALUTATION_TYPE_ALREADY_LOGGED_IN)
+                else -> LoginActivity.newInstance(this,MainActivity.SALUTATION_TYPE_NEW_LOGIN)
+            }
 
             if(isFirstTime) updateFirstTime()
 
