@@ -60,7 +60,7 @@ class TrackDeliveryActivityTest {
         pickUpAddress = "Kumasi"
         destinationAddress = "Tema"
         deliveryStatus = Delivery.STATUS_CANCELLED
-        estimatedTimeOfArrival = 123442134132432
+        deliveryTime = 123442134132432
 
     }
 
@@ -93,17 +93,6 @@ class TrackDeliveryActivityTest {
             .check(matches(CustomMatchers.withTitle(trackActivityTitle)))
     }
 
-    @Test
-    fun backButtonClosesActivity(){
-
-        activityRule.launchActivity(TrackDeliveryActivity.newInstance(testContext,testNormalDelivery))
-
-        EspressoTestUtil.disableProgressBarAnimations(activityRule)
-
-        Espresso.pressBackUnconditionally()
-
-        assertTrue(activityRule.activity.isDestroyed)
-    }
 
     @Test
     fun populateViewsWithDeliveryInfo(){
@@ -135,7 +124,7 @@ class TrackDeliveryActivityTest {
 
 
         for(position in 0 until 3) {
-            //check if it has been cancelled on last item
+            //check if it has been completed is shown on last item
             val itemStatus = statusStringIds[position]
 
             onView(withId(R.id.delivery_timeline_recycler))

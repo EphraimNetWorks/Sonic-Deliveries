@@ -8,13 +8,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.AdapterDeliveryTimelineBinding
-import com.github.vipulasri.timelineview.TimelineView
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.example.deliveryapp.R
+import com.example.deliveryapp.utils.TimelineView
 
 
 class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Adapter<DeliveryTimelineAdapter.TimeLineViewHolder>(){
@@ -25,7 +25,7 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
         val binding = DataBindingUtil.inflate<AdapterDeliveryTimelineBinding>(
             layoutInflater, R.layout.adapter_delivery_timeline, parent, false
         )
-        return TimeLineViewHolder(binding,viewType)
+        return TimeLineViewHolder(binding, viewType)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -41,7 +41,7 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
     }
 
     inner class TimeLineViewHolder(private var binding: AdapterDeliveryTimelineBinding,
-                                   private var viewType: Int) : RecyclerView.ViewHolder(binding.root) {
+                                   viewType: Int) : RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.timeline.initLine(viewType)
@@ -108,14 +108,14 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
             val textColor = ContextCompat.getColor(itemView.context,textResColor)
             val lineColor = ContextCompat.getColor(itemView.context,lineResColor)
             binding.deliveryStatusText.setTextColor(textColor)
-            binding.timeline.setEndLineColor(lineColor,viewType)
-            binding.timeline.setStartLineColor(lineColor,viewType)
+            binding.timeline.setEndLineColor(lineColor)
+            binding.timeline.setStartLineColor(lineColor)
 
             binding.executePendingBindings()
         }
 
         private fun setMarker(drawableResId: Int, colorFilter: Int) {
-            binding.timeline.marker = VectorDrawableUtils.getDrawable(itemView.context, drawableResId, colorFilter)
+            binding.timeline.setMarker(VectorDrawableUtils.getDrawable(itemView.context, drawableResId, colorFilter))
         }
 
 

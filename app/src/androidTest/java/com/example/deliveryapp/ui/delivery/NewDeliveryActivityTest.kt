@@ -3,6 +3,7 @@ package com.example.deliveryapp.ui.delivery
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.view.View
 import android.widget.DatePicker
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
@@ -168,7 +169,10 @@ class NewDeliveryActivityTest {
             additionalInfo = "This is additional information"
         }
 
-        activityRule.activity.setUpSummaryFragment(testNewDelivery)
+
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.setUpSummaryFragment(testNewDelivery)
+        }
 
         //do assertions on summary fragment
         Espresso.onView(ViewMatchers.withId(R.id.summary_item_name_textview))
@@ -213,9 +217,7 @@ class NewDeliveryActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.destination_editext))
             .perform(ViewActions.scrollTo(),ViewActions.typeText(testNewDelivery.destinationAddress), ViewActions.closeSoftKeyboard())
 
-        Espresso.onView(ViewMatchers.withId(R.id.delivery_date_select_button))
-            .perform(ViewActions.scrollTo(),
-                ViewActions.typeText(testNewDelivery.pickUpTimeDate!!.getDateFormat1()), ViewActions.closeSoftKeyboard())
+        setDate(R.id.delivery_date_select_button, 1970, 1, 1)
 
         Espresso.onView(ViewMatchers.withId(R.id.additional_info_edittext))
             .perform(ViewActions.scrollTo(),ViewActions.typeText(testNewDelivery.additionalInfo), ViewActions.closeSoftKeyboard())
@@ -224,7 +226,7 @@ class NewDeliveryActivityTest {
             .perform(ViewActions.click())
 
         //do assertions on summary fragment
-        Espresso.onView(ViewMatchers.withId(R.id.summary_item_name_title))
+        Espresso.onView(ViewMatchers.withId(R.id.summary_item_name_textview))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
             .check(ViewAssertions.matches(ViewMatchers.withText(testNewDelivery.title)))
 
@@ -240,10 +242,16 @@ class NewDeliveryActivityTest {
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
             .check(ViewAssertions.matches(ViewMatchers.withText(testNewDelivery.pickUpTimeDate!!.getDateFormat1())))
 
-        Espresso.onView(ViewMatchers.withId(R.id.summary_addi_info_title))
+        Espresso.onView(ViewMatchers.withId(R.id.additional_info_textview))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
             .check(ViewAssertions.matches(ViewMatchers.withText(testNewDelivery.additionalInfo)))
 
+    }
+
+    fun setDate(datePickerLaunchViewId: Int, year:Int, monthOfYear:Int, dayOfMonth:Int) {
+        Espresso.onView(ViewMatchers.withId(datePickerLaunchViewId)).perform(ViewActions.scrollTo(),ViewActions.click())
+        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.java.name))).perform(PickerActions.setDate(year, monthOfYear, dayOfMonth))
+        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
     }
 
     @Test
@@ -256,7 +264,9 @@ class NewDeliveryActivityTest {
             additionalInfo = "This is additional information"
         }
 
-        activityRule.activity.setUpSummaryFragment(testNewDelivery)
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.setUpSummaryFragment(testNewDelivery)
+        }
 
         Espresso.onView(ViewMatchers.withId(R.id.back_button))
             .perform(ViewActions.click())

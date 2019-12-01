@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <View
+            android:id="@+id/timeline_top"
+            android:layout_width="@dimen/timeline_line_width"
+            android:layout_height="0dp"
+            android:background="@color/colorAccent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="@dimen/margin_small"
+            app:layout_constraintBottom_toTopOf="@id/timeline_marker"/>
+        
+        <ImageView
+            android:id="@+id/timeline_marker"
+            android:layout_width="@dimen/timeline_marker_size"
+            android:layout_height="@dimen/timeline_marker_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/ic_marker_complete"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    
+    
+        <View
+            android:id="@+id/timeline_bottom"
+            android:layout_width="@dimen/timeline_line_width"
+            android:layout_height="0dp"
+            android:background="@color/colorAccent"
+            android:layout_marginTop="@dimen/margin_small"
+            app:layout_constraintTop_toBottomOf="@id/timeline_marker"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

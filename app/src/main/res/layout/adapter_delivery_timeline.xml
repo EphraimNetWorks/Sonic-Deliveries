@@ -6,16 +6,12 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content">
         
-        <com.github.vipulasri.timelineview.TimelineView
+        <com.example.deliveryapp.utils.TimelineView
             android:id="@+id/timeline"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/margin_normal"
-            app:markerSize="@dimen/timeline_marker_size"
-            android:visibility="visible"
-            app:lineWidth="@dimen/timeline_line_width"
-            app:startLineColor="@color/blue"
-            app:endLineColor="@color/blue"/>
+            android:visibility="visible"/>
         
         <LinearLayout
             android:layout_width="wrap_content"

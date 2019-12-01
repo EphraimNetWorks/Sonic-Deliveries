@@ -9,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.deliveryapp.data.local.LocalDatabase
 import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.User
+import com.example.deliveryapp.utils.LiveDataTestUtil
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
@@ -48,12 +49,12 @@ class UserDaoTest {
             name = "Ephraim"
         }
         userDao.saveUser(user)
-        var result = userDao.getCurrentUser()
-        assertThat(user, equalTo(result!!.value))
+        var result = LiveDataTestUtil.getValue(userDao.getCurrentUser()!!)
+        assertThat(user, equalTo(result))
 
         userDao.deleteUser(user)
-        result = userDao.getCurrentUser()
-        assertThat(null, equalTo(result!!.value))
+        result = LiveDataTestUtil.getValue(userDao.getCurrentUser()!!)
+        assertThat(null, equalTo(result))
     }
 
 }
