@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +14,7 @@ import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.ActivityMainBinding
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
+import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import com.example.deliveryapp.utils.ViewModelFactory
 import com.google.gson.Gson
 import dagger.android.AndroidInjection
@@ -40,9 +43,9 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.initMyDeliveries()
 
-        binding.placedDeliveriesRecyclerView.adapter = DeliveryPagingAdapter(this)
-        binding.inTransitDeliveriesRecyclerView.adapter = DeliveryPagingAdapter(this)
-        binding.completedDeliveriesRecyclerView.adapter = DeliveryPagingAdapter(this)
+        binding.placedDeliveriesRecyclerView.adapter = DeliveryPagingAdapter(this::onDeliveryItemClicked)
+        binding.inTransitDeliveriesRecyclerView.adapter = DeliveryPagingAdapter(this::onDeliveryItemClicked)
+        binding.completedDeliveriesRecyclerView.adapter = DeliveryPagingAdapter(this::onDeliveryItemClicked)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
@@ -54,6 +57,14 @@ class MainActivity : AppCompatActivity() {
             viewModel.logoutUser()
             startActivity(LoginActivity.newInstance(this, SALUTATION_TYPE_NEW_LOGIN))
         }
+
+    }
+
+    private fun onDeliveryItemClicked(delivery:Delivery, textview: TextView){
+
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,textview,"itemName")
+
+        startActivity(TrackDeliveryActivity.newInstance(this,delivery),options.toBundle())
 
     }
 

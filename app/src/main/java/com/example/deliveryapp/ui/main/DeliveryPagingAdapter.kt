@@ -1,8 +1,10 @@
 package com.example.deliveryapp.ui.main
 
 import android.view.LayoutInflater
+import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -20,7 +22,7 @@ import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import com.example.deliveryapp.utils.BindablePagingAdapter
 import java.lang.IllegalArgumentException
 
-class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Delivery,DeliveryPagingAdapter.DeliveryViewHolder>(DELIVERY_DIFF_CALLBACK),
+class DeliveryPagingAdapter(private val onItemClick: (delivery:Delivery, textview:TextView)->Unit) : PagedListAdapter<Delivery,DeliveryPagingAdapter.DeliveryViewHolder>(DELIVERY_DIFF_CALLBACK),
     BindablePagingAdapter<Delivery>{
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeliveryViewHolder {
@@ -150,26 +152,25 @@ class DeliveryPagingAdapter(val activity: MainActivity) : PagedListAdapter<Deliv
         }
 
         override fun onClick(p0: View?) {
-            val options = when(delivery.deliveryStatus){
+            when(delivery.deliveryStatus){
                 Delivery.STATUS_PLACED-> {
                     val binding = genericBinding as AdapterDeliveryPlacedBinding
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(activity,binding.deliveryItemName,"itemName")
+                    onItemClick.invoke(delivery,binding.deliveryItemName)
                 }
                 Delivery.STATUS_IN_TRANSIT-> {
                     val binding = genericBinding as AdapterDeliveryInTransitBinding
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(activity,binding.deliveryItemName,"itemName")
+                    onItemClick.invoke(delivery,binding.deliveryItemName)
                 }
                 Delivery.STATUS_COMPLETED-> {
                     val binding = genericBinding as AdapterCompletedBinding
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(activity,binding.deliveryItemName,"itemName")
+                    onItemClick.invoke(delivery,binding.deliveryItemName)
                 }
                 Delivery.STATUS_CANCELLED-> {
                     val binding = genericBinding as AdapterCompletedBinding
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(activity,binding.deliveryItemName,"itemName")
+                    onItemClick.invoke(delivery,binding.deliveryItemName)
                 }
                 else -> throw IllegalArgumentException("unknown delivery status")
             }
-            itemView.context.startActivity(TrackDeliveryActivity.newInstance(itemView.context,delivery),options.toBundle())
 
         }
     }
