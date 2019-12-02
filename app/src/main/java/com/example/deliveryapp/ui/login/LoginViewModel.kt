@@ -22,7 +22,7 @@ class LoginViewModel @Inject constructor(private val userRepo:UserRepository) :V
     var validationMap: HashMap<String,Int> = HashMap()
     private val viewModelJob  = Job()
 
-    private var emailPattern:Pattern? = null
+    var emailPattern:Pattern? = null
 
     init {
         emailPattern = Patterns.EMAIL_ADDRESS

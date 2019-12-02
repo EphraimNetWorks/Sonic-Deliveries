@@ -19,8 +19,8 @@ class SignUpViewModel @Inject constructor(private val userRepo: UserRepository) 
     var validationMap: HashMap<String, Int> = HashMap()
 
 
-    private var emailPattern:Pattern? = null
-    private var phonePattern:Pattern? = null
+    var emailPattern:Pattern? = null
+    var phonePattern:Pattern? = null
 
     init {
         phonePattern = Patterns.PHONE

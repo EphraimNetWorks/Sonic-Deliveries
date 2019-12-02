@@ -68,7 +68,7 @@ class LoginViewModelTest {
 
         loginViewModel = LoginViewModel(userRepository)
 
-        loginViewModel.EMAIL_ADDRESS_PATTERN = EMAIL_ADDRESS_PATTERN
+        loginViewModel.emailPattern = EMAIL_ADDRESS_PATTERN
     }
 
     @After

@@ -48,8 +48,8 @@ class SignUpViewModelTest {
         userRepository = UserRepository(apiService,userDao,localDatabase)
         signUpViewModel = SignUpViewModel(userRepository)
 
-        signUpViewModel.PHONE_PATTERN = PHONE_PATTERN
-        signUpViewModel.EMAIL_ADDRESS_PATTERN = EMAIL_ADDRESS_PATTERN
+        signUpViewModel.phonePattern = PHONE_PATTERN
+        signUpViewModel.emailPattern = EMAIL_ADDRESS_PATTERN
     }
 
     @After
