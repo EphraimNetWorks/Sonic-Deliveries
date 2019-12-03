@@ -104,7 +104,7 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
                 }
             }
 
-            setMarker(timelineResMarker,markerResColor)
+            binding.timeline.setMarker(timelineResMarker,markerResColor)
             val textColor = ContextCompat.getColor(itemView.context,textResColor)
             val lineColor = ContextCompat.getColor(itemView.context,lineResColor)
             binding.deliveryStatusText.setTextColor(textColor)
@@ -114,24 +114,6 @@ class DeliveryTimelineAdapter(private val delivery: Delivery) : RecyclerView.Ada
             binding.executePendingBindings()
         }
 
-        private fun setMarker(drawableResId: Int, colorFilter: Int) {
-            binding.timeline.setMarker(VectorDrawableUtils.getDrawable(itemView.context, drawableResId, colorFilter))
-        }
-
 
     }
-}
-
-object VectorDrawableUtils {
-
-    private fun getDrawable(context: Context, drawableResId: Int): Drawable? {
-        return VectorDrawableCompat.create(context.resources, drawableResId, context.theme)
-    }
-
-    fun getDrawable(context: Context, drawableResId: Int, colorFilter: Int): Drawable {
-        val drawable = getDrawable(context, drawableResId)
-        drawable!!.setColorFilter(ContextCompat.getColor(context, colorFilter), PorterDuff.Mode.SRC_IN)
-        return drawable
-    }
-
 }

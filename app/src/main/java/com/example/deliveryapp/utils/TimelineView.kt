@@ -1,33 +1,30 @@
 package com.example.deliveryapp.utils
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.example.deliveryapp.R
 import kotlinx.android.synthetic.main.timeline_view.view.*
 
-class TimelineView: FrameLayout {
+class TimelineView @JvmOverloads constructor(context: Context,
+                                             attrs: AttributeSet? = null,
+                                             defStyleAttr: Int = 0,
+                                             defStyleRes: Int = 0): FrameLayout(context, attrs, defStyleAttr,defStyleRes) {
 
-    private lateinit var markerImageview:ImageView
-    private lateinit var startLine:View
-    private lateinit var endLine:View
+    private var markerImageview:ImageView
+    private var startLine:View
+    private var endLine:View
 
-    constructor (context: Context) : super(context) {
-        initView()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?): super(context, attrs) {
-        initView()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
-        initView()
-    }
-
-    private fun initView() {
+    init {
         val view = View.inflate(context, R.layout.timeline_view, null)
         markerImageview = view.timeline_marker
         startLine = view.timeline_top
@@ -65,8 +62,10 @@ class TimelineView: FrameLayout {
         endLine.setBackgroundColor(color)
     }
 
-    fun setMarker(drawable: Drawable){
+    fun setMarker(@DrawableRes drawableId: Int, @ColorRes markerTintId:Int){
+        val drawable = VectorDrawableCompat.create(context.resources, drawableId, context.theme)
         markerImageview.setImageDrawable(drawable)
+        ImageViewCompat.setImageTintList(markerImageview, ColorStateList.valueOf(ContextCompat.getColor(context,markerTintId)))
     }
 
     companion object{
