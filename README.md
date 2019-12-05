@@ -10,7 +10,7 @@ A sample android android project using Android Clean Architecture
 
 **Jenkins Status December 3,2019**
 
-![Screenshot_1565952400](https://user-images.githubusercontent.com/22669874/70034053-7f245d00-15a8-11ea-9518-54778d22b043.png)
+![Screenshot_1565952400](https://user-images.githubusercontent.com/22669874/70225128-589c2880-1746-11ea-8f35-1222185a54f6.png)
 
 **Screenshots**
 
