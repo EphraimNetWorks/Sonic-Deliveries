@@ -1,4 +1,4 @@
-A sample android android project using Android Clean Architecture
+A sample android project using Android Clean Architecture
 
 * *Android Core*
 * *Dagger 2*
