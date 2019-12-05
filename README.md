@@ -8,7 +8,7 @@ A sample android android project using Android Clean Architecture
 * *Unit and Instrumentation Tests*
 * *Continuous Integration (Jenkins)*
 
-**Jenkins Status December 3,2019**
+**Jenkins Status December 5,2019**
 
 ![Screenshot_1565952400](https://user-images.githubusercontent.com/22669874/70225128-589c2880-1746-11ea-8f35-1222185a54f6.png)
 
