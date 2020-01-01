@@ -1,5 +1,8 @@
 package com.example.deliveryapp
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -14,6 +17,14 @@ import org.powermock.modules.junit4.PowerMockRunner
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+       main(arrayOf<String>())
+    }
+
+    fun main(args: Array<String>) = runBlocking {
+        launch {
+            delay(1L)
+            print("B")
+        }
+        print("A")
     }
 }

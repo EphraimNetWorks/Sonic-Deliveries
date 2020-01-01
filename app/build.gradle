@@ -26,6 +26,10 @@ android {
         additionalParameters "--no-version-vectors"
     }
     buildTypes {
+        debug {
+            testCoverageEnabled true
+            ext.enableCrashlytics = false
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -33,141 +37,155 @@ android {
     }
 
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
 
     dataBinding {
         enabled true
+    }
+
+    testOptions {
+
+        animationsDisabled true
+
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation "androidx.appcompat:appcompat:$androidx_version"
+    implementation "androidx.core:core-ktx:$androidx_core_version"
+    implementation "androidx.recyclerview:recyclerview:$androidx_recycler_view_version"
+    implementation "androidx.constraintlayout:constraintlayout:$androidx_constraint_layout_version"
+    implementation "androidx.cardview:cardview:$androidx_cardview_version"
 
-    //Test Dependencies
-    testImplementation 'junit:junit:4.12'
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-    testImplementation 'org.mockito:mockito-inline:2.8.47'
-    testImplementation 'org.powermock:powermock-module-junit4:2.0.2'
-    testImplementation 'org.powermock:powermock-api-mockito2:2.0.2'
-    testImplementation "io.mockk:mockk:1.9"
-    kaptTest 'com.google.dagger:dagger-compiler:2.21'
+    //google dependency
+    implementation "com.google.android.material:material:$google_material_version"
+    implementation "androidx.annotation:annotation:$androidx_version"
+    implementation "com.google.android.gms:play-services-maps:$play_services_map_version"
 
-    //Android Test Dependencies
-    androidTestImplementation 'org.mockito:mockito-android:3.0.0'
-    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
-    androidTestImplementation 'com.github.tmurakami:dexopener:2.0.2'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'com.github.fabioCollini.daggermock:daggermock:0.8.5'
-    androidTestImplementation 'com.github.fabioCollini.daggermock:daggermock-kotlin:0.8.5'
-    androidTestAnnotationProcessor 'com.google.dagger:dagger-compiler:2.21'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
-    kaptAndroidTest 'com.google.dagger:dagger-compiler:2.21'
-    androidTestImplementation 'com.github.tmurakami:dexopener:2.0.2'
-    androidTestImplementation "io.mockk:mockk-android:1.9"
-    androidTestImplementation "android.arch.core:core-testing:1.1.1"
-
-    implementation 'com.azoft.carousellayoutmanager:carousel:1.2.4'
-
-    implementation 'com.google.firebase:firebase-core:17.2.1'
-    implementation 'com.google.firebase:firebase-auth:19.2.0'
+    //Firebase
+    implementation "com.google.firebase:firebase-core:$firebase_core_version"
+    implementation "com.google.firebase:firebase-auth:$firebase_auth_version"
 
     // Gson library
-    implementation "com.google.code.gson:gson:2.8.5"
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation "com.google.code.gson:gson:$gson_version"
+    implementation "com.squareup.retrofit2:converter-gson:$gson_converter_version"
 
     // Glide for image loading
-    implementation "com.github.bumptech.glide:glide:4.9.0"
-    kapt "com.github.bumptech.glide:compiler:4.9.0"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     // ViewModel and LiveData
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-rc02'
-    kapt 'androidx.lifecycle:lifecycle-extensions:2.2.0-rc02'
-    testImplementation 'androidx.arch.core:core-testing:2.1.0'
-    implementation 'androidx.room:room-runtime:2.2.2'
-    kapt 'androidx.room:room-compiler:2.2.2'
-    kapt "android.arch.persistence.room:compiler:1.1.1"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    kapt "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.room:room-runtime:$architecture_components_room_version"
+    kapt "androidx.room:room-compiler:$architecture_components_room_version"
+    kapt "android.arch.persistence.room:compiler:$room_compiler_version"
 
     // Test helpers
-    testImplementation 'androidx.room:room-testing:2.2.2'
-    implementation 'androidx.paging:paging-runtime:2.1.0'
+    testImplementation "androidx.room:room-testing:$architecture_components_room_version"
+    implementation "androidx.paging:paging-runtime:$paging_version"
 
     // alternatively - without Android dependencies for testing
-    testImplementation 'androidx.paging:paging-common:2.1.0'
+    testImplementation "androidx.paging:paging-common:$paging_version"
 
     // Time library
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'
+    implementation "com.jakewharton.threetenabp:threetenabp:$time_library_version"
 
     // Dagger dependencies
-    implementation 'com.google.dagger:dagger-android:2.21'
-    api 'com.google.dagger:dagger-android-support:2.21'
-    kapt 'com.google.dagger:dagger-compiler:2.21'
-    kapt "com.google.dagger:dagger-android-processor:2.21"
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    api "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
     // RxJava
-    implementation "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}"
-    implementation "io.reactivex.rxjava2:rxjava:${rxVersion}"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxjava_android_version"
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
 
     // Gson library
-    implementation "com.google.code.gson:gson:$gsonVersion"
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation "com.google.code.gson:gson:$gson_version"
+    implementation "com.squareup.retrofit2:converter-gson:$gson_converter_version"
 
     // Timber for logging
-    implementation 'com.jakewharton.timber:timber:4.6.1'
+    implementation "com.jakewharton.timber:timber:$timber_version"
 
 
     // (Recommended) Add Analytics
-    implementation 'com.google.firebase:firebase-analytics:17.2.1'
+    implementation "com.google.firebase:firebase-analytics:$firebase_analytics_version"
 
-    // Add dependency
-    //implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    //Crashlytics
+    implementation("com.crashlytics.sdk.android:crashlytics:$crashlytics_version@aar") {
+        transitive = true
+    }
 
     //maps dependencies
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-    //implementation 'com.google.android.libraries.places:places:2.0.0'
-    implementation 'com.google.maps.android:android-maps-utils:0.5'
-    implementation 'com.google.maps:google-maps-services:0.2.9'
-    implementation("com.google.android.libraries.places:places-compat:1.0.0")
-    implementation("com.schibstedspain.android:leku:5.0.0") {
+    implementation "com.google.android.gms:play-services-maps:$play_services_map_version"
+    implementation "com.google.android.gms:play-services-location:$play_services_map_version"
+    implementation "com.google.maps.android:android-maps-utils:$map_utils_version"
+    implementation "com.google.maps:google-maps-services:$maps_services_version"
+    implementation("com.google.android.libraries.places:places-compat:$places_version")
+    implementation("com.schibstedspain.android:leku:$leku_version") {
         exclude group: 'com.google.android.gms'
         exclude module: "play-services-places"
     }
 
-    implementation "androidx.core:core-ktx:1.1.0"
+    implementation "androidx.core:core-ktx:$ktx_version"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-2'
+    // Dependencies for LeakCanary (Memory Leak detection library)
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary_version"
+    androidTestImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary_version"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary_version"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanary_version"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
+    //Kotlin Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
+    implementation "androidx.multidex:multidex:$multidex_version"
 
-    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation "com.ramotion.paperonboarding:paper-onboarding:$paper_onboarding_version"
 
-    implementation 'com.ramotion.paperonboarding:paper-onboarding:1.1.3'
+    implementation "com.google.firebase:firebase-firestore:$firestore_version"
 
-    implementation 'com.google.firebase:firebase-firestore:21.3.0'
+    implementation "com.facebook.shimmer:shimmer:$shimmer_version"
 
-    implementation 'com.facebook.shimmer:shimmer:0.4.0'
+    implementation "androidx.test.espresso:espresso-idling-resource:$espresso_idling_resource_version"
 
-    implementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
 
-    implementation 'org.slf4j:slf4j-api:1.7.25'
-    implementation 'org.slf4j:slf4j-log4j12:1.7.25'
+    //Unit Test Dependencies
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
+    testImplementation "androidx.room:room-testing:$room_version"
+    testImplementation "android.arch.core:core-testing:$core_testing_version"
+    testImplementation "androidx.paging:paging-common:$paging_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_inline_verion"
+    testImplementation "org.powermock:powermock-module-junit4:$power_mock_version"
+    testImplementation "org.powermock:powermock-api-mockito2:$power_mock_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
+
+    //Android Test Dependencies
+    androidTestImplementation "junit:junit:$junit_version"
+    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
+    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
+    androidTestImplementation "androidx.test:runner:$runner_version"
+    androidTestImplementation "com.android.support.test:rules:$rules_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.test.ext:junit:$junit_ext_version"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:$espresso_androidx_test_version"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_androidx_test_version"
+    androidTestImplementation "io.mockk:mockk-android:$mockk_version"
+    androidTestImplementation "android.arch.core:core-testing:$core_testing_version"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
+    androidTestImplementation "android.arch.core:core-testing:$core_testing_version"
 
 }

@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.3.50'
+    ext.kotlin_version = '1.3.61'
     repositories {
         google()
         maven {
@@ -11,10 +11,10 @@ buildscript {
         
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.2'
+        classpath 'com.android.tools.build:gradle:3.5.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.3'
-        classpath 'io.fabric.tools:gradle:1.31.0'
+        classpath 'io.fabric.tools:gradle:1.31.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -30,25 +30,71 @@ allprojects {
 }
 
 ext {
-    expandableRecyclerViewVersion = "1.4"
-    supportLibraryVersion = "27.0.2"
-    projectLombokVersion = "1.16.18"
-    archLifecycleVersion = "1.0.0"
-    archRoomVersion = "1.0.0"
-    daggerVersion = "2.x"
-    gsonVersion = "2.8.2"
-    glideVersion = "4.9.0"
-    circularImageViewVersion = "2.2.0"
-    signaturePadVersion = "1.2.1"
-    gsonConverterVersion = "2.3.0"
-    timberVersion = "4.5.1"
-    retrofitVersion = "2.3.0"
-    rxAndroidVersion = "2.0.1"
-    rxVersion = "2.1.6"
-    imagePickerVersion = "1.2.0"
-    easyPermissions = "1.1.3"
-    loggingInterceptorVersion = "3.10.0"
-    kotlin_version = '1.3.41'
+    kotlin_coroutines_version = "1.3.0"
+
+
+    androidx_version = "1.1.0"
+    androidx_core_version = "1.1.0"
+    androidx_recycler_view_version = "1.1.0"
+    androidx_constraint_layout_version = "1.1.3"
+    androidx_cardview_version = "1.0.0"
+
+    dagger_version = '2.22.1'
+
+    play_services_map_version = '17.0.0'
+    shimmer_version = "0.4.0"
+    google_material_version = "1.0.0"
+    room_compiler_version = "1.1.1"
+    okhttp_version = "3.12.1"
+    okhttp_url_connection_version = "2.2.0"
+    fcm_version = "20.1.0"
+    firebase_analytics_version = "17.2.1"
+    firebase_iid_version = "20.0.2"
+    timber_version = "4.7.1"
+    room_version = "2.2.2"
+    firebase_core_version = "17.2.1"
+    firebase_auth_version = "19.2.0"
+    lifecycle_version = "2.2.0-rc03"
+    gson_version = "2.8.2"
+    glide_version = "4.9.0"
+    gson_converter_version = "2.3.0"
+    paging_version = "2.1.1"
+    leakCanary_version = '1.6.3'
+    map_utils_version = "0.5"
+    maps_services_version = "0.2.9"
+    places_version = "1.0.0"
+    time_library_version = "1.2.0"
+    leku_version = "5.0.0"
+    ktx_version = "1.1.0"
+    rxjava_android_version = "2.0.2"
+    rxjava_version = "2.2.9"
+    multidex_version = "2.0.1"
+    architecture_components_room_version = '2.2.3'
+    firebase_core_version = "17.2.1"
+    crashlytics_version = "2.9.9"
+    paper_onboarding_version = "1.1.3"
+    firestore_version = "21.3.1"
+    shimmer_version = "0.4.0"
+    espresso_idling_resource_version = "3.2.0"
+
+    //test dependency versions
+    junit_version = "4.12"
+    mockito_kotlin_version = "2.2.0"
+    mockito_version = "3.0.0"
+    runner_version = "1.2.0"
+    rules_version = "1.0.2"
+    espresso_version = "3.2.0"
+    junit_ext_version = "1.1.1"
+    espresso_androidx_test_version = "3.2.0"
+    mockk_version = "1.9"
+    core_testing_version = "1.1.1"
+    testButler_version = '1.3.2'
+    conditionwatcher_version = '0.2'
+    fragment_version = "1.1.0"
+    testButler_version = '1.3.2'
+    daggerMock_version = '0.8.4'
+    power_mock_version = '2.0.2'
+    mockito_inline_verion = '2.21.0'
 }
 
 task clean(type: Delete) {
