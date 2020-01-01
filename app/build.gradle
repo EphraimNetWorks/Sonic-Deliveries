@@ -7,6 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 29
@@ -28,7 +29,6 @@ android {
     buildTypes {
         debug {
             testCoverageEnabled true
-            ext.enableCrashlytics = false
         }
         release {
             minifyEnabled false
@@ -121,9 +121,7 @@ dependencies {
     implementation "com.google.firebase:firebase-analytics:$firebase_analytics_version"
 
     //Crashlytics
-    implementation("com.crashlytics.sdk.android:crashlytics:$crashlytics_version@aar") {
-        transitive = true
-    }
+    implementation "com.crashlytics.sdk.android:crashlytics:$crashlytics_version"
 
     //maps dependencies
     implementation "com.google.android.gms:play-services-maps:$play_services_map_version"
