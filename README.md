@@ -1,4 +1,4 @@
-A sample android android project using Android Clean Architecture
+A sample android project using Android Clean Architecture
 
 * *Android Core*
 * *Dagger 2*
@@ -8,8 +8,9 @@ A sample android android project using Android Clean Architecture
 * *Unit and Instrumentation Tests*
 * *Continuous Integration (Jenkins)*
 
-**Jenkins Status December 2,2019**
-![Screenshot_1565952400](https://user-images.githubusercontent.com/22669874/69953378-07dfc200-14f1-11ea-9486-879de29061af.png)
+**Jenkins Status December 5,2019**
+
+![Screenshot_1565952400](https://user-images.githubusercontent.com/22669874/70225128-589c2880-1746-11ea-8f35-1222185a54f6.png)
 
 **Screenshots**
 
