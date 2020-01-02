@@ -84,10 +84,10 @@ class MainViewModel @Inject constructor(
 
     fun getMostRecentDelivery():Delivery?{
 
-        val mostRecentList: ArrayList<Delivery> = ArrayList()
+        val mostRecentList= arrayListOf<Delivery>()
 
         //take only first objects since room already sorts delivery
-        if(!deliveriesPlaced.value.isNullOrEmpty()) mostRecentList.add(deliveriesPlaced.value!![0]!!)
+        if(deliveriesPlaced.value.isNullOrEmpty()) mostRecentList.add(deliveriesPlaced.value!![0]!!)
         if(!deliveriesInTransit.value.isNullOrEmpty()) mostRecentList.add(deliveriesInTransit.value!![0]!!)
         if(!completedDeliveries.value.isNullOrEmpty()) mostRecentList.add(completedDeliveries.value!![0]!!)
 
