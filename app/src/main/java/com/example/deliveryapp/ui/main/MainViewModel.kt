@@ -20,27 +20,27 @@ class MainViewModel @Inject constructor(
     private val deliveryRepo: DeliveryRepository,
     private val userRepo: UserRepository) :ViewModel() {
 
-    var deliveriesPlaced: LiveData<PagedList<Delivery>>? = null
+    lateinit var deliveriesPlaced: LiveData<PagedList<Delivery>>
 
-    var deliveriesInTransit: LiveData<PagedList<Delivery>>? = null
+    lateinit var deliveriesInTransit: LiveData<PagedList<Delivery>>
 
-    var completedDeliveries: LiveData<PagedList<Delivery>>? = null
+    lateinit var completedDeliveries: LiveData<PagedList<Delivery>>
 
-    var deliveriesPlacedPair: LiveData<Pair<PagedList<Delivery>?, NetworkState?>>? = null
+    lateinit var deliveriesPlacedPair: LiveData<Pair<PagedList<Delivery>?, NetworkState?>>
 
-    var deliveriesInTransitPair: LiveData<Pair<PagedList<Delivery>?, NetworkState?>>? = null
+    lateinit var deliveriesInTransitPair: LiveData<Pair<PagedList<Delivery>?, NetworkState?>>
 
-    var completedDeliveriesPair: LiveData<Pair<PagedList<Delivery>?, NetworkState?>>? = null
+    lateinit var completedDeliveriesPair: LiveData<Pair<PagedList<Delivery>?, NetworkState?>>
 
-    var deliveriesPlacedNo: LiveData<String>? = null
+    lateinit var deliveriesPlacedNo: LiveData<String>
 
-    var deliveriesInTransitNo: LiveData<String>? = null
+    lateinit var deliveriesInTransitNo: LiveData<String>
 
-    var completedDeliveriesNo: LiveData<String>? = null
+    lateinit var completedDeliveriesNo: LiveData<String>
 
     var mostRecentDelivery: LiveData<Delivery> = MutableLiveData()
 
-    var networkState:LiveData<NetworkState>? = null
+    lateinit var networkState:LiveData<NetworkState>
 
     var currentUser : LiveData<User>? = null
     private val viewModelJob  = Job()
@@ -62,24 +62,24 @@ class MainViewModel @Inject constructor(
         val repoNetworkState = deliveryRepo.networkState
         networkState = Transformations.map(repoNetworkState) { it }
 
-        deliveriesPlacedNo = Transformations.map(deliveriesPlaced!!) { it.size.toString()}
-        deliveriesInTransitNo = Transformations.map(deliveriesInTransit!!) { it.size.toString()}
-        completedDeliveriesNo = Transformations.map(completedDeliveries!!) { it.size.toString()}
+        deliveriesPlacedNo = Transformations.map(deliveriesPlaced) { it.size.toString()}
+        deliveriesInTransitNo = Transformations.map(deliveriesInTransit) { it.size.toString()}
+        completedDeliveriesNo = Transformations.map(completedDeliveries) { it.size.toString()}
 
-        deliveriesPlacedPair = Transformations.map(deliveriesPlaced!!) { Pair(it,networkState!!.value)}
-        deliveriesInTransitPair = Transformations.map(deliveriesInTransit!!) { Pair(it,networkState!!.value)}
-        completedDeliveriesPair = Transformations.map(completedDeliveries!!) {
-            Pair(it,networkState!!.value)
+        deliveriesPlacedPair = Transformations.map(deliveriesPlaced) { Pair(it,networkState.value)}
+        deliveriesInTransitPair = Transformations.map(deliveriesInTransit) { Pair(it,networkState.value)}
+        completedDeliveriesPair = Transformations.map(completedDeliveries) {
+            Pair(it,networkState.value)
         }
 
-        deliveriesPlacedPair = Transformations.map(repoNetworkState) { Pair(deliveriesPlaced!!.value,it)}
-        deliveriesInTransitPair = Transformations.map(repoNetworkState) { Pair(deliveriesInTransit!!.value,it)}
+        deliveriesPlacedPair = Transformations.map(repoNetworkState) { Pair(deliveriesPlaced.value,it)}
+        deliveriesInTransitPair = Transformations.map(repoNetworkState) { Pair(deliveriesInTransit.value,it)}
         completedDeliveriesPair = Transformations.map(repoNetworkState) {
-            Pair(completedDeliveries!!.value,it)}
+            Pair(completedDeliveries.value,it)}
 
-        mostRecentDelivery = Transformations.map(deliveriesPlaced!!) { getMostRecentDelivery()}
-        mostRecentDelivery = Transformations.map(deliveriesInTransit!!) { getMostRecentDelivery()}
-        mostRecentDelivery = Transformations.map(completedDeliveries!!) { getMostRecentDelivery()}
+        mostRecentDelivery = Transformations.map(deliveriesPlaced) { getMostRecentDelivery()}
+        mostRecentDelivery = Transformations.map(deliveriesInTransit) { getMostRecentDelivery()}
+        mostRecentDelivery = Transformations.map(completedDeliveries) { getMostRecentDelivery()}
     }
 
     fun getMostRecentDelivery():Delivery?{
@@ -87,9 +87,9 @@ class MainViewModel @Inject constructor(
         val mostRecentList: ArrayList<Delivery> = ArrayList()
 
         //take only first objects since room already sorts delivery
-        if(!deliveriesPlaced!!.value.isNullOrEmpty()) mostRecentList.add(deliveriesPlaced!!.value!![0]!!)
-        if(!deliveriesInTransit!!.value.isNullOrEmpty()) mostRecentList.add(deliveriesInTransit!!.value!![0]!!)
-        if(!completedDeliveries!!.value.isNullOrEmpty()) mostRecentList.add(completedDeliveries!!.value!![0]!!)
+        if(!deliveriesPlaced.value.isNullOrEmpty()) mostRecentList.add(deliveriesPlaced.value!![0]!!)
+        if(!deliveriesInTransit.value.isNullOrEmpty()) mostRecentList.add(deliveriesInTransit.value!![0]!!)
+        if(!completedDeliveries.value.isNullOrEmpty()) mostRecentList.add(completedDeliveries.value!![0]!!)
 
         val sortedList = mostRecentList.sortedWith(compareBy { it.updatedAt })
 
