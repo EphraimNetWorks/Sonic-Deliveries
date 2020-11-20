@@ -7,25 +7,21 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.ActivityTrackDeliveryBinding
-import com.example.deliveryapp.utils.ViewModelFactory
 import dagger.android.AndroidInjection
+import dagger.hilt.android.AndroidEntryPoint
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class TrackDeliveryActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private lateinit var trackDeliveryViewModel: TrackDeliveryViewModel
+    private val viewModel by viewModels<TrackDeliveryViewModel>()
 
     private lateinit var mDelivery: Delivery
     lateinit var binding:ActivityTrackDeliveryBinding
@@ -36,7 +32,7 @@ class TrackDeliveryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AndroidInjection.inject(this)
+
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_track_delivery)
 
@@ -44,8 +40,6 @@ class TrackDeliveryActivity : AppCompatActivity() {
         binding.toolbar.setTitleTextColor(Color.WHITE)
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-        trackDeliveryViewModel = ViewModelProvider(this,viewModelFactory).get(TrackDeliveryViewModel::class.java)
 
         mDelivery = intent.getSerializableExtra(DELIVERY_EXTRA) as Delivery
 
@@ -81,13 +75,13 @@ class TrackDeliveryActivity : AppCompatActivity() {
     }
 
     private fun startObservers(){
-        trackDeliveryViewModel.networkState.observe(this, Observer {
+        viewModel.networkState.observe(this, {
             if(it.status == Status.SUCCESS) finish()
         })
     }
 
     private fun stopObservers(){
-        trackDeliveryViewModel.networkState.removeObservers(this)
+        viewModel.networkState.removeObservers(this)
     }
 
     private fun setUpDeliveryTimeline(){
@@ -117,7 +111,7 @@ class TrackDeliveryActivity : AppCompatActivity() {
                     .setTitle(getString(R.string.cancel_delivery))
                     .setMessage(getString(R.string.confirm_cancel_delivery))
                     .setNegativeButton(getString(R.string.yes)){ dialog, _->
-                        trackDeliveryViewModel.cancelDelivery(mDelivery)
+                        viewModel.cancelDelivery(mDelivery)
                         dialog.dismiss()
                     }.setPositiveButton(getString(R.string.no)){ dialog, _->
                         dialog.dismiss()

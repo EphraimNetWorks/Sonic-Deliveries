@@ -1,5 +1,6 @@
 package com.example.deliveryapp.ui.main
 
+import android.content.Context
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso
@@ -13,7 +14,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.deliveryapp.AndroidTestApplication
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.dao.DeliveryDao
 import com.example.deliveryapp.data.local.dao.UserDao
@@ -21,22 +21,36 @@ import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
-import com.example.deliveryapp.di.TestAppInjector
+import com.example.deliveryapp.di.modules.ApiServiceModule
+import com.example.deliveryapp.di.modules.AppModule
+import com.example.deliveryapp.di.modules.DeliveryModule
+import com.example.deliveryapp.di.modules.UserModule
 import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import com.example.deliveryapp.utils.*
+import dagger.hilt.android.testing.BindValue
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
+@UninstallModules(UserModule::class, DeliveryModule::class, ApiServiceModule::class)
+@HiltAndroidTest
 class MainActivityTest {
 
+
     @get:Rule
-    val activityRule = IntentsTestRule<MainActivity>(MainActivity::class.java, true, false)
+    val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule
+    val activityRule = IntentsTestRule(MainActivity::class.java, true, false)
 
     @Rule
     @JvmField
@@ -46,14 +60,19 @@ class MainActivityTest {
     @JvmField
     val espressoTestingIdlingResourceRule = EspressoTestingIdlingResourceRule()
 
-    @Inject
+    @BindValue
+    @Mock
     lateinit var apiService: ApiService
-    @Inject
+
+    @BindValue
+    @Mock
     lateinit var userDao: UserDao
-    @Inject
+
+    @BindValue
+    @Mock
     lateinit var deliveryDao: DeliveryDao
 
-    private lateinit var app:AndroidTestApplication
+    private lateinit var app: Context
 
     private val placedDeliveries = listOf(
         Delivery().apply {
@@ -118,11 +137,10 @@ class MainActivityTest {
 
         MockitoAnnotations.initMocks(this)
 
-        TestAppInjector.inject{it.inject(this)}
 
         val testUserLD = MutableLiveData(testUser)
 
-        app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as AndroidTestApplication
+        app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
 
         val placedDS= MockRoomDataSource.mockDataSourceFactory(placedDeliveries)
         val inTransitDS= MockRoomDataSource.mockDataSourceFactory(inTransitDeliveries)

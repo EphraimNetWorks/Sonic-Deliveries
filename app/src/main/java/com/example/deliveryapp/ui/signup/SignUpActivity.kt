@@ -5,40 +5,32 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivitySignUpBinding
-import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.ui.main.MainActivity
 import com.example.deliveryapp.utils.EspressoTestingIdlingResource
-import com.example.deliveryapp.utils.ViewModelFactory
 import dagger.android.AndroidInjection
+import dagger.hilt.android.AndroidEntryPoint
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
-class SignUpActivity : AppCompatActivity(),Injectable {
+@AndroidEntryPoint
+class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private lateinit var viewModel:SignUpViewModel
+    private val viewModel by viewModels<SignUpViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AndroidInjection.inject(this)
         binding = DataBindingUtil.setContentView(this,R.layout.activity_sign_up)
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-
-        viewModel = ViewModelProvider(this,viewModelFactory).get(SignUpViewModel::class.java)
 
         binding.signupButton.setOnClickListener {
             val name = binding.signupNameEditext.text.toString()
@@ -61,15 +53,16 @@ class SignUpActivity : AppCompatActivity(),Injectable {
     }
 
     private fun handleNetworkState(networkState: NetworkState) {
-        when {
-            networkState.status == Status.SUCCESS -> {
+        when (networkState.status) {
+            Status.SUCCESS -> {
                 goToNextActivity()
                 EspressoTestingIdlingResource.decrement()
             }
-            networkState.status == Status.FAILED -> {
+            Status.FAILED -> {
                 binding.signupButton.visibility = View.VISIBLE
                 EspressoTestingIdlingResource.decrement()
             }
+            else -> {}
         }
     }
 
@@ -102,7 +95,7 @@ class SignUpActivity : AppCompatActivity(),Injectable {
                     binding.signupPasswordEditext.text.toString())
 
                 EspressoTestingIdlingResource.increment()
-                viewModel.networkState.observe(this, Observer { networkState->
+                viewModel.networkState.observe(this, { networkState->
                     binding.networkState = networkState
                     handleNetworkState(networkState)
                 })

@@ -3,12 +3,9 @@ package com.example.deliveryapp.ui.delivery
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.example.deliveryapp.R
@@ -17,18 +14,20 @@ import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import com.example.deliveryapp.di.TestAppInjector
 import com.example.deliveryapp.utils.*
-import junit.framework.Assert.assertTrue
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 
 
-@RunWith(AndroidJUnit4::class)
-@LargeTest
+@HiltAndroidTest
 class TrackDeliveryActivityTest {
+
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     var activityRule: ActivityTestRule<TrackDeliveryActivity>
@@ -41,6 +40,7 @@ class TrackDeliveryActivityTest {
     @Rule
     @JvmField
     val espressoTestingIdlingResourceRule = EspressoTestingIdlingResourceRule()
+
 
     private lateinit var testContext: Context
 
@@ -73,8 +73,6 @@ class TrackDeliveryActivityTest {
 
     @Before
     fun setUp(){
-
-        TestAppInjector.inject{}
 
         testContext = InstrumentationRegistry.getInstrumentation().targetContext
 

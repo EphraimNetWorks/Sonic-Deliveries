@@ -2,19 +2,20 @@ package com.example.deliveryapp.ui.login
 
 import android.util.Patterns
 import androidx.annotation.StringRes
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.util.regex.Pattern
-import javax.inject.Inject
 import kotlin.collections.HashMap
 
-
-class LoginViewModel @Inject constructor(private val userRepo:UserRepository) :ViewModel(){
+@ActivityScoped
+class LoginViewModel @ViewModelInject constructor(private val userRepo:UserRepository) :ViewModel(){
 
     val networkState:LiveData<NetworkState>
         get() = userRepo.networkState

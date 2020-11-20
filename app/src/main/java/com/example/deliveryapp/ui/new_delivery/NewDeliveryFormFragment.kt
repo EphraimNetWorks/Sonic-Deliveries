@@ -12,15 +12,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.models.Location
 import com.example.deliveryapp.data.local.models.MyDate
 import com.example.deliveryapp.databinding.FragmentNewDeliveryFormBinding
-import com.example.deliveryapp.di.Injectable
-import com.example.deliveryapp.utils.ViewModelFactory
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -33,20 +30,20 @@ import com.schibstedspain.leku.LOCATION_ADDRESS
 import com.schibstedspain.leku.LONGITUDE
 import com.schibstedspain.leku.LocationPickerActivity
 import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 import kotlin.collections.HashMap
 
 
-class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
+@AndroidEntryPoint
+class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback{
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
 
     lateinit var binding: FragmentNewDeliveryFormBinding
 
-    private lateinit var viewModel:DeliveryFormViewModel
+    private val viewModel by viewModels<DeliveryFormViewModel>()
+
     private lateinit var mMap: GoogleMap
 
     private var startPoint: Marker? = null
@@ -55,8 +52,6 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AndroidSupportInjection.inject(this)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(DeliveryFormViewModel::class.java)
 
     }
 
@@ -74,7 +69,7 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
 
     private fun startObservers(){
 
-        viewModel.directionsResult!!.observe(viewLifecycleOwner, Observer { directionResult-> updatePolyline(directionResult) })
+        viewModel.directionsResult!!.observe(viewLifecycleOwner, { directionResult-> updatePolyline(directionResult) })
     }
 
     private fun stopObservers(){
@@ -89,7 +84,7 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
 
     private fun showDatePicker(){
         val calendar = Calendar.getInstance()
-        DatePickerDialog(context!!,
+        DatePickerDialog(requireContext(),
             dateListener,
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -107,7 +102,7 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
 
     private fun setUpMaps() {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        var mapFragment: SupportMapFragment? = activity!!.supportFragmentManager
+        var mapFragment: SupportMapFragment? = requireActivity().supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment?
         if (mapFragment == null) {
             val fragmentTransaction = childFragmentManager.beginTransaction()
@@ -122,9 +117,9 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
     private fun searchPlace(PLACE_AUTOCOMPLETE_REQUEST_CODE: Int) {
 
         val locationPickerIntent = LocationPickerActivity.Builder()
-            .withGeolocApiKey(getString(R.string.google_maps_key))
+            .withGeolocApiKey(getString(R.string.maps_api_key))
             .withGooglePlacesEnabled()
-            .build(context!!.applicationContext)
+            .build(requireContext().applicationContext)
 
         startActivityForResult(locationPickerIntent, PLACE_AUTOCOMPLETE_REQUEST_CODE)
 
@@ -182,12 +177,12 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
         polyline?.remove()
         val decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.encodedPath)
         polyline =
-            mMap.addPolyline(PolylineOptions().addAll(decodedPath).color(ContextCompat.getColor(context!!,R.color.colorAccent)))
+            mMap.addPolyline(PolylineOptions().addAll(decodedPath).color(ContextCompat.getColor(requireContext(),R.color.colorAccent)))
     }
 
     private fun queryDirections(pickUpLocation:Location, destinationLocation:Location) {
 
-        viewModel.getDirections(pickUpLocation, destinationLocation, getString(R.string.google_maps_key))
+        viewModel.getDirections(pickUpLocation, destinationLocation, getString(R.string.maps_api_key))
 
         adjustMapCamera(pickUpLocation,destinationLocation)
 
@@ -217,7 +212,7 @@ class NewDeliveryFormFragment :Fragment(),OnMapReadyCallback,Injectable{
 
             validationMap[DeliveryFormViewModel.VAL_MAP_PICK_UP_DATE]!= DeliveryFormViewModel.VAL_VALID -> {
                 binding.deliveryDateSelectButton.setBackgroundColor(Color.RED)
-                Toast.makeText(context!!, getString(validationMap[DeliveryFormViewModel.VAL_MAP_PICK_UP_DATE]!!)
+                Toast.makeText(requireContext(), getString(validationMap[DeliveryFormViewModel.VAL_MAP_PICK_UP_DATE]!!)
                     , Toast.LENGTH_LONG).show()
             }
         }

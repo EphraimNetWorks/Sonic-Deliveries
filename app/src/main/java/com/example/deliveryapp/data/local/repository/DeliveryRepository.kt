@@ -24,7 +24,7 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 
 
-open class DeliveryRepository @Inject constructor(private val apiService:ApiService, private val deliveryDao: DeliveryDao){
+class DeliveryRepository @Inject constructor(private val apiService:ApiService, private val deliveryDao: DeliveryDao){
 
     private var retryCompletable: Completable? = null
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()

@@ -23,6 +23,7 @@ import com.google.maps.model.TravelMode
 import org.joda.time.DateTime
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 interface ApiService {
 
@@ -57,7 +58,7 @@ interface ApiService {
     }
 }
 
-class ApiServiceImpl :ApiService{
+class ApiServiceImpl @Inject constructor() :ApiService{
 
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()

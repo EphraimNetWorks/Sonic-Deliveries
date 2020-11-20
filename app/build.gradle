@@ -7,21 +7,34 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'io.fabric'
+apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion 30
+    buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.example.deliveryapp"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
         vectorDrawables.generatedDensities = []
         multiDexEnabled true
         testInstrumentationRunner "com.example.deliveryapp.AndroidTestRunner"
+
+        def secureProps = new Properties()
+        if (file("../secure.properties").exists()) {
+            file("../secure.properties")?.withInputStream { secureProps.load(it) }
+        }
+        resValue "string", "maps_api_key", (secureProps.getProperty("MAPS_API_KEY") ?: "")
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["room.incremental"]= "true"
+            }
+        }
     }
     aaptOptions {
         additionalParameters "--no-version-vectors"
@@ -41,8 +54,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
     }
 
-    dataBinding {
-        enabled true
+    kotlinOptions{
+        jvmTarget = "1.8"
+    }
+
+    buildFeatures {
+
+        dataBinding true
+        //viewBinding true
     }
 
     testOptions {
@@ -54,6 +73,8 @@ android {
             returnDefaultValues = true
         }
     }
+
+
 }
 
 dependencies {
@@ -61,9 +82,13 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.appcompat:appcompat:$androidx_version"
     implementation "androidx.core:core-ktx:$androidx_core_version"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation "androidx.recyclerview:recyclerview:$androidx_recycler_view_version"
     implementation "androidx.constraintlayout:constraintlayout:$androidx_constraint_layout_version"
     implementation "androidx.cardview:cardview:$androidx_cardview_version"
+    implementation 'androidx.fragment:fragment-ktx:1.2.5'
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:26.1.0')
 
     //google dependency
     implementation "com.google.android.material:material:$google_material_version"
@@ -71,8 +96,8 @@ dependencies {
     implementation "com.google.android.gms:play-services-maps:$play_services_map_version"
 
     //Firebase
-    implementation "com.google.firebase:firebase-core:$firebase_core_version"
-    implementation "com.google.firebase:firebase-auth:$firebase_auth_version"
+    implementation "com.google.firebase:firebase-core"
+    implementation "com.google.firebase:firebase-auth"
 
     // Gson library
     implementation "com.google.code.gson:gson:$gson_version"
@@ -87,7 +112,6 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.room:room-runtime:$architecture_components_room_version"
     kapt "androidx.room:room-compiler:$architecture_components_room_version"
-    kapt "android.arch.persistence.room:compiler:$room_compiler_version"
 
     // Test helpers
     testImplementation "androidx.room:room-testing:$architecture_components_room_version"
@@ -109,23 +133,16 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$rxjava_android_version"
     implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
 
-    // Gson library
-    implementation "com.google.code.gson:gson:$gson_version"
-    implementation "com.squareup.retrofit2:converter-gson:$gson_converter_version"
-
     // Timber for logging
     implementation "com.jakewharton.timber:timber:$timber_version"
 
 
     // (Recommended) Add Analytics
-    implementation "com.google.firebase:firebase-analytics:$firebase_analytics_version"
-
-    //Crashlytics
-    implementation "com.crashlytics.sdk.android:crashlytics:$crashlytics_version"
+    implementation "com.google.firebase:firebase-analytics"
 
     //maps dependencies
     implementation "com.google.android.gms:play-services-maps:$play_services_map_version"
-    implementation "com.google.android.gms:play-services-location:$play_services_map_version"
+    implementation "com.google.android.gms:play-services-location:17.1.0"
     implementation "com.google.maps.android:android-maps-utils:$map_utils_version"
     implementation "com.google.maps:google-maps-services:$maps_services_version"
     implementation("com.google.android.libraries.places:places-compat:$places_version")
@@ -152,11 +169,21 @@ dependencies {
 
     implementation "com.ramotion.paperonboarding:paper-onboarding:$paper_onboarding_version"
 
-    implementation "com.google.firebase:firebase-firestore:$firestore_version"
+    implementation "com.google.firebase:firebase-firestore"
 
     implementation "com.facebook.shimmer:shimmer:$shimmer_version"
 
     implementation "androidx.test.espresso:espresso-idling-resource:$espresso_idling_resource_version"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+
+
+    // Declare the dependencies for the Crashlytics and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-crashlytics'
 
 
     //Unit Test Dependencies
@@ -185,5 +212,7 @@ dependencies {
     androidTestImplementation "android.arch.core:core-testing:$core_testing_version"
     kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
     androidTestImplementation "android.arch.core:core-testing:$core_testing_version"
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
 
 }

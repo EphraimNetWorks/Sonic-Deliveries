@@ -14,18 +14,27 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.example.deliveryapp.*
-import com.example.deliveryapp.di.TestAppInjector
+import com.example.deliveryapp.di.modules.ApiServiceModule
+import com.example.deliveryapp.di.modules.AppModule
+import com.example.deliveryapp.di.modules.DeliveryModule
+import com.example.deliveryapp.di.modules.UserModule
 import com.example.deliveryapp.ui.onboarding.OnBoardingActivity
 import com.example.deliveryapp.utils.*
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
-@LargeTest
+@HiltAndroidTest
 class OnBoardingActivityTest {
+
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     val intentsTestRule = IntentsTestRule(OnBoardingActivity::class.java,false,false)
@@ -41,8 +50,6 @@ class OnBoardingActivityTest {
 
     @Before
     fun setUp(){
-
-        TestAppInjector.inject{}
 
         val testContext = getInstrumentation().targetContext
 

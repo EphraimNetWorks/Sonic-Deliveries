@@ -2,7 +2,6 @@ package com.example.deliveryapp.ui.user
 
 import android.content.Context
 import android.content.Intent
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -13,34 +12,36 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.example.deliveryapp.R
-import com.example.deliveryapp.data.local.LocalDatabase
 import com.example.deliveryapp.data.local.dao.UserDao
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
-import com.example.deliveryapp.data.remote.request.SignUpRequest
-import com.example.deliveryapp.di.TestAppInjector
+import com.example.deliveryapp.di.modules.ApiServiceModule
+import com.example.deliveryapp.di.modules.UserModule
 import com.example.deliveryapp.ui.signup.SignUpActivity
 import com.example.deliveryapp.utils.*
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.whenever
-import junit.framework.Assert.assertTrue
+import dagger.hilt.android.testing.BindValue
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.*
-import javax.inject.Inject
 
-@RunWith(AndroidJUnit4::class)
-@LargeTest
+
+@UninstallModules( UserModule::class, ApiServiceModule::class)
+@HiltAndroidTest
 class SignUpActivityTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     var activityRule: IntentsTestRule<SignUpActivity>
             = IntentsTestRule(SignUpActivity::class.java,true,false)
@@ -61,20 +62,20 @@ class SignUpActivityTest {
 
     private lateinit var testContext: Context
 
-    @Inject
+    @BindValue
+    @Mock
     lateinit var apiService: ApiService
-    @Inject
+
+    @BindValue
+    @Mock
     lateinit var userDao: UserDao
-    @Inject
-    lateinit var localDatabase: LocalDatabase
 
     @Captor
     lateinit var callbackCaptor: ArgumentCaptor<ApiCallback<User?>>
 
     @Before
     fun setUp(){
-
-        TestAppInjector.inject{it.inject(this)}
+        MockitoAnnotations.initMocks(this)
 
         testContext = getInstrumentation().targetContext
 

@@ -1,13 +1,15 @@
 package com.example.deliveryapp.ui.splash
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.UserRepository
-import javax.inject.Inject
+import dagger.hilt.android.scopes.ActivityScoped
 
-class SplashViewModel @Inject constructor(private val userRepo:UserRepository) : ViewModel(){
+
+@ActivityScoped
+class SplashViewModel @ViewModelInject constructor(private val userRepo:UserRepository) : ViewModel(){
 
 
     val currentUser :LiveData<User>?

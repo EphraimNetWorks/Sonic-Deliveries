@@ -1,20 +1,21 @@
 package com.example.deliveryapp.di.modules
 
 import com.example.deliveryapp.data.local.LocalDatabase
-import com.example.deliveryapp.data.local.dao.DeliveryDao
+import com.example.deliveryapp.data.local.dao.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 
-
 @InstallIn(ActivityComponent::class)
 @Module
-class DeliveryModule {
+class UserModule {
+
 
     @Provides
-    internal fun providesDeliveryDao(localDatabase: LocalDatabase): DeliveryDao {
-        return localDatabase.deliveryDao()
+    internal fun providesUserDao(localDatabase: LocalDatabase): UserDao {
+        return localDatabase.userDao()
     }
+
 
 }

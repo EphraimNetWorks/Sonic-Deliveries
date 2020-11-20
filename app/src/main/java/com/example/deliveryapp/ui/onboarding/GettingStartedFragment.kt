@@ -20,7 +20,7 @@ class GettingStartedFragment :Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            mDelivery = arguments!!.getSerializable(ARG_PARAM1) as Delivery
+            mDelivery = requireArguments().getSerializable(ARG_PARAM1) as Delivery
 
         }
 
@@ -36,11 +36,11 @@ class GettingStartedFragment :Fragment(){
         super.onViewCreated(view, savedInstanceState)
 
         binding.signUpButton.setOnClickListener {
-            startActivity(Intent(context!!,SignUpActivity::class.java))
+            startActivity(Intent(requireContext(),SignUpActivity::class.java))
         }
 
         binding.loginButton.setOnClickListener {
-            startActivity(Intent(context!!,LoginActivity::class.java))
+            startActivity(Intent(requireContext(),LoginActivity::class.java))
         }
 
     }

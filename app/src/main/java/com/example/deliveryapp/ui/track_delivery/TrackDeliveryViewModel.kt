@@ -1,14 +1,17 @@
 package com.example.deliveryapp.ui.track_delivery
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.remote.NetworkState
-import javax.inject.Inject
+import dagger.hilt.android.scopes.ActivityScoped
 
-class TrackDeliveryViewModel @Inject constructor(private val deliveryRepo: DeliveryRepository) : ViewModel(){
+
+
+@ActivityScoped
+class TrackDeliveryViewModel @ViewModelInject constructor(private val deliveryRepo: DeliveryRepository) : ViewModel(){
 
     val networkState: LiveData<NetworkState>
         get() = deliveryRepo.networkState

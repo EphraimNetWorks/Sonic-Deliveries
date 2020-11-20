@@ -2,6 +2,7 @@ package com.example.deliveryapp.ui.new_delivery
 
 
 import androidx.annotation.StringRes
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -11,10 +12,11 @@ import com.google.maps.model.DirectionsResult
 import kotlin.collections.HashMap
 import com.example.deliveryapp.data.local.models.MyDate
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
-import javax.inject.Inject
+import dagger.hilt.android.scopes.ActivityScoped
 
 
-class DeliveryFormViewModel @Inject constructor(private val deliveryRepo:DeliveryRepository) :ViewModel(){
+@ActivityScoped
+class DeliveryFormViewModel @ViewModelInject constructor(private val deliveryRepo:DeliveryRepository) :ViewModel(){
 
 
     lateinit var validationMap: HashMap<String, Int>

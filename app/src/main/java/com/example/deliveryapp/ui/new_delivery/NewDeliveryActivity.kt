@@ -6,29 +6,25 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivityNewDeliveryBinding
-import com.example.deliveryapp.utils.ViewModelFactory
 import dagger.android.AndroidInjection
-import dagger.android.support.DaggerAppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
-import javax.inject.Inject
 
-class NewDeliveryActivity : DaggerAppCompatActivity(),DeliveryFormValidation{
+@AndroidEntryPoint
+class NewDeliveryActivity : AppCompatActivity(),DeliveryFormValidation{
 
     private lateinit var binding : ActivityNewDeliveryBinding
     private lateinit var formFragment: NewDeliveryFormFragment
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private lateinit var viewModel:NewDeliveryViewModel
+    private val viewModel by viewModels<NewDeliveryViewModel>()
 
     private lateinit var mDelivery:Delivery
 
@@ -37,7 +33,7 @@ class NewDeliveryActivity : DaggerAppCompatActivity(),DeliveryFormValidation{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AndroidInjection.inject(this)
+
 
         if (savedInstanceState != null) {
             //Restore the fragment's instance
@@ -48,8 +44,6 @@ class NewDeliveryActivity : DaggerAppCompatActivity(),DeliveryFormValidation{
         binding = DataBindingUtil.setContentView(this,R.layout.activity_new_delivery)
 
         setUpActionBar()
-
-        viewModel = ViewModelProvider(this,viewModelFactory).get(NewDeliveryViewModel::class.java)
 
         binding.lifecycleOwner = this
 
@@ -72,7 +66,7 @@ class NewDeliveryActivity : DaggerAppCompatActivity(),DeliveryFormValidation{
             formFragment.validateNewDelivery()
         }else if(currentFragment == SUMMARY_FRAGMENT_TAG){
             viewModel.submitNewDelivery(mDelivery)
-            viewModel.networkState.observe(this, Observer {
+            viewModel.networkState.observe(this, {
                 binding.networkState = it
                 handleNetworkState(it)})
         }

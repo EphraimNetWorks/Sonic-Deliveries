@@ -23,23 +23,37 @@ import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.remote.ApiCallback
 import com.example.deliveryapp.data.remote.ApiService
+import com.example.deliveryapp.di.modules.ApiServiceModule
+import com.example.deliveryapp.di.modules.AppModule
+import com.example.deliveryapp.di.modules.DeliveryModule
+import com.example.deliveryapp.di.modules.UserModule
 import com.example.deliveryapp.ui.login.LoginActivity
-import com.example.deliveryapp.di.TestAppInjector
 import com.example.deliveryapp.utils.*
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.whenever
+import dagger.hilt.android.testing.BindValue
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 import javax.inject.Inject
 
-@RunWith(AndroidJUnit4::class)
-@LargeTest
+
+@UninstallModules(UserModule::class, DeliveryModule::class, ApiServiceModule::class)
+@HiltAndroidTest
 class LoginActivityTest {
+
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     val intentsTestRule = IntentsTestRule(LoginActivity::class.java,false,false)
@@ -52,11 +66,16 @@ class LoginActivityTest {
     @JvmField
     val espressoTestingIdlingResourceRule = EspressoTestingIdlingResourceRule()
 
-    @Inject
+    @BindValue
+    @Mock
     lateinit var apiService: ApiService
-    @Inject
+
+    @BindValue
+    @Mock
     lateinit var deliveryDao: DeliveryDao
-    @Inject
+
+    @BindValue
+    @Mock
     lateinit var userDao: UserDao
 
     private lateinit var testEmail:String
@@ -66,7 +85,7 @@ class LoginActivityTest {
     @Before
     fun setUp(){
 
-        TestAppInjector.inject{it.inject(this)}
+        MockitoAnnotations.initMocks(this)
 
         testContext = getInstrumentation().targetContext
 

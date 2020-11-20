@@ -5,39 +5,33 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.core.app.ActivityOptionsCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.ActivityMainBinding
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.ui.new_delivery.NewDeliveryActivity
 import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
-import com.example.deliveryapp.utils.ViewModelFactory
 import com.google.gson.Gson
 import dagger.android.AndroidInjection
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.lang.IllegalArgumentException
-import javax.inject.Inject
 import kotlin.collections.ArrayList
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    lateinit var viewModel: MainViewModel
+    private val viewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AndroidInjection.inject(this)
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
 
-        viewModel = ViewModelProvider(this,viewModelFactory).get(MainViewModel::class.java)
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
 
         setUpSalutation()
 
@@ -69,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startObservers(){
-        viewModel.mostRecentDelivery.observe(this, Observer {
+        viewModel.mostRecentDelivery.observe(this, {
             if(it!=null) binding.summaryTextview.text = getSummaryMessage(it)
         })
 
@@ -98,7 +92,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getSummaryMessage(recentDelivery: Delivery):String{
 
-        Timber.d("recent delivery: ${Gson().toJson(recentDelivery)} comp: ${viewModel.completedDeliveries?.value?.size}")
+        Timber.d("recent delivery: ${Gson().toJson(recentDelivery)} comp: ${viewModel.completedDeliveries.value?.size}")
         return when(recentDelivery.deliveryStatus){
             Delivery.STATUS_PLACED -> "${getString(R.string.placed_summary_message_prefix)} ${recentDelivery.title}" +
                     " ${getString(R.string.placed_summary_message_suffix)} ${recentDelivery.pickUpTimeDate!!.getDateFormat1()}"

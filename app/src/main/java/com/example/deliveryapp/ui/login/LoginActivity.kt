@@ -5,40 +5,32 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.deliveryapp.R
 import com.example.deliveryapp.data.remote.NetworkState
 import com.example.deliveryapp.databinding.ActivityLoginBinding
 import com.example.deliveryapp.ui.main.MainActivity
 import com.example.deliveryapp.ui.signup.SignUpActivity
-import com.example.deliveryapp.utils.ViewModelFactory
 import io.acsint.heritageGhana.MtnHeritageGhanaApp.data.remote.Status
 import com.example.deliveryapp.utils.EspressoTestingIdlingResource
-import dagger.android.AndroidInjection
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private lateinit var viewModel:LoginViewModel
+    private val viewModel by viewModels<LoginViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AndroidInjection.inject(this)
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-
-        viewModel = ViewModelProvider(this,viewModelFactory).get(LoginViewModel::class.java)
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login)
         binding.lifecycleOwner = this
@@ -109,7 +101,7 @@ class LoginActivity : AppCompatActivity() {
                 viewModel.loginUser(email,password)
 
                 EspressoTestingIdlingResource.increment()
-                viewModel.networkState.observe(this, Observer { networkState->
+                viewModel.networkState.observe(this, { networkState->
                     binding.networkState = networkState
                     handleNetworkState(networkState)})
             }

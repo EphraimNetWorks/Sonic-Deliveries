@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.FragmentNewDeliverySummaryBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class NewDeliverySummaryFragment :Fragment(){
 
     lateinit var binding: FragmentNewDeliverySummaryBinding

@@ -15,14 +15,10 @@ import org.junit.Before
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.mockito.Mockito.validateMockitoUsage
-import android.R.attr.direction
-import com.google.android.libraries.places.internal.`is`
 import org.junit.After
 
 

@@ -1,11 +1,9 @@
 package com.example.deliveryapp.ui.main
 
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -18,11 +16,11 @@ import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.AdapterCompletedBinding
 import com.example.deliveryapp.databinding.AdapterDeliveryInTransitBinding
 import com.example.deliveryapp.databinding.AdapterDeliveryPlacedBinding
-import com.example.deliveryapp.ui.track_delivery.TrackDeliveryActivity
 import com.example.deliveryapp.utils.BindablePagingAdapter
 import java.lang.IllegalArgumentException
 
-class DeliveryPagingAdapter(private val onItemClick: (delivery:Delivery, textview:TextView)->Unit) : PagedListAdapter<Delivery,DeliveryPagingAdapter.DeliveryViewHolder>(DELIVERY_DIFF_CALLBACK),
+class DeliveryPagingAdapter(private val onItemClick: (delivery:Delivery, textview:TextView)->Unit) :
+    PagedListAdapter<Delivery,DeliveryPagingAdapter.DeliveryViewHolder>(DELIVERY_DIFF_CALLBACK),
     BindablePagingAdapter<Delivery>{
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeliveryViewHolder {

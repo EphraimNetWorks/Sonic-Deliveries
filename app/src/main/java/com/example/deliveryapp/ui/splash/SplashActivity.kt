@@ -6,29 +6,25 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.lifecycle.Observer
 import com.example.deliveryapp.R
-import com.example.deliveryapp.di.Injectable
 import com.example.deliveryapp.ui.login.LoginActivity
 import com.example.deliveryapp.ui.main.MainActivity
 import com.example.deliveryapp.ui.onboarding.OnBoardingActivity
-import com.example.deliveryapp.utils.ViewModelFactory
-import javax.inject.Inject
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider
+import android.os.Looper
+import androidx.activity.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 
 
-class SplashActivity : AppCompatActivity(),Injectable {
+@AndroidEntryPoint
+class SplashActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
 
-    lateinit var viewModel: SplashViewModel
+    private val viewModel by viewModels<SplashViewModel>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-
-        viewModel = ViewModelProvider(this,viewModelFactory).get(SplashViewModel::class.java)
 
         if(isFirstTime()){
             goToNextActivity( true, isLoggedIn = false)
@@ -66,7 +62,7 @@ class SplashActivity : AppCompatActivity(),Injectable {
     }
 
     private fun goToNextActivity(isFirstTime:Boolean, isLoggedIn: Boolean){
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             val intent = when {
                 isFirstTime -> Intent(this,OnBoardingActivity::class.java)
                 isLoggedIn -> MainActivity.newInstance(this,MainActivity.SALUTATION_TYPE_ALREADY_LOGGED_IN)

@@ -11,16 +11,8 @@ import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.ApiService
-import com.example.deliveryapp.utils.DispatcherProvider
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -45,7 +37,7 @@ class MainViewModelTest{
     @Mock
     lateinit var localDatabase: LocalDatabase
 
-    lateinit var userRepository: UserRepository
+    private lateinit var userRepository: UserRepository
 
     @Mock
     lateinit var deliveryRepository: DeliveryRepository
@@ -115,10 +107,6 @@ class MainViewModelTest{
         profilePicUrl = ""
     }
 
-    private val testProvider = DispatcherProvider(
-        IO = Dispatchers.Unconfined,
-        Main = Dispatchers.Unconfined
-    )
 
     @Before
     fun setUp(){
@@ -133,7 +121,7 @@ class MainViewModelTest{
 
     }
 
-    fun <T> mockPagedList(list: List<T>): PagedList<T> {
+    private fun <T> mockPagedList(list: List<T>): PagedList<T> {
         val pagedList = Mockito.mock(PagedList::class.java) as PagedList<T>
         Mockito.`when`(pagedList[ArgumentMatchers.anyInt()]).then { invocation ->
             val index = invocation.arguments.first() as Int
@@ -159,10 +147,10 @@ class MainViewModelTest{
 
         assertNotNull(mainViewModel.deliveriesPlaced)
 
-        assertEquals(placedList.size, mainViewModel.deliveriesPlaced!!.value!!.size)
+        assertEquals(placedList.size, mainViewModel.deliveriesPlaced.value!!.size)
 
-        assertEquals(placedList[0].id, mainViewModel.deliveriesPlaced!!.value?.get(0)!!.id)
-        assertEquals(placedList[1].id, mainViewModel.deliveriesPlaced!!.value?.get(1)!!.id)
+        assertEquals(placedList[0].id, mainViewModel.deliveriesPlaced.value?.get(0)!!.id)
+        assertEquals(placedList[1].id, mainViewModel.deliveriesPlaced.value?.get(1)!!.id)
     }
 
     @Test
@@ -175,10 +163,10 @@ class MainViewModelTest{
 
         assertNotNull(mainViewModel.deliveriesInTransit)
 
-        assertEquals(inTransitList.size, mainViewModel.deliveriesInTransit!!.value!!.size)
+        assertEquals(inTransitList.size, mainViewModel.deliveriesInTransit.value!!.size)
 
-        assertEquals(inTransitList[0].id, mainViewModel.deliveriesInTransit!!.value?.get(0)!!.id)
-        assertEquals(inTransitList[1].id, mainViewModel.deliveriesInTransit!!.value?.get(1)!!.id)
+        assertEquals(inTransitList[0].id, mainViewModel.deliveriesInTransit.value?.get(0)!!.id)
+        assertEquals(inTransitList[1].id, mainViewModel.deliveriesInTransit.value?.get(1)!!.id)
     }
 
     @Test
@@ -191,11 +179,11 @@ class MainViewModelTest{
 
         assertNotNull(mainViewModel.completedDeliveries)
 
-        assertEquals(completedList.size, mainViewModel.completedDeliveries!!.value!!.size)
+        assertEquals(completedList.size, mainViewModel.completedDeliveries.value!!.size)
 
-        assertEquals(completedList[0].id, mainViewModel.completedDeliveries!!.value?.get(0)!!.id)
-        assertEquals(completedList[1].id, mainViewModel.completedDeliveries!!.value?.get(1)!!.id)
-        assertEquals(completedList[2].id, mainViewModel.completedDeliveries!!.value?.get(2)!!.id)
+        assertEquals(completedList[0].id, mainViewModel.completedDeliveries.value?.get(0)!!.id)
+        assertEquals(completedList[1].id, mainViewModel.completedDeliveries.value?.get(1)!!.id)
+        assertEquals(completedList[2].id, mainViewModel.completedDeliveries.value?.get(2)!!.id)
     }
 
     @Test

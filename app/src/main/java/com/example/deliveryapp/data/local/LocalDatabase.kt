@@ -18,9 +18,11 @@ abstract class LocalDatabase : RoomDatabase(){
 
     abstract fun userDao() : UserDao
 
-    val MIGRATION_1_2: Migration = object : Migration(1, 2) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            //database.execSQL("ALTER TABLE users ADD COLUMN last_update INTEGER")
+    companion object {
+        internal val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                //do noting since nothing was changed
+            }
         }
     }
 }

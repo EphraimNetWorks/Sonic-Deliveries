@@ -1,6 +1,7 @@
 package com.example.deliveryapp.ui.main
 
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -12,11 +13,12 @@ import com.example.deliveryapp.data.local.entities.User
 import com.example.deliveryapp.data.local.repository.DeliveryRepository
 import com.example.deliveryapp.data.local.repository.UserRepository
 import com.example.deliveryapp.data.remote.NetworkState
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.*
-import javax.inject.Inject
 import kotlin.random.Random
 
-class MainViewModel @Inject constructor(
+@ActivityScoped
+class MainViewModel @ViewModelInject constructor(
     private val deliveryRepo: DeliveryRepository,
     private val userRepo: UserRepository) :ViewModel() {
 
@@ -87,7 +89,7 @@ class MainViewModel @Inject constructor(
         val mostRecentList= arrayListOf<Delivery>()
 
         //take only first objects since room already sorts delivery
-        if(deliveriesPlaced.value.isNullOrEmpty()) mostRecentList.add(deliveriesPlaced.value!![0]!!)
+        if(!deliveriesPlaced.value.isNullOrEmpty()) mostRecentList.add(deliveriesPlaced.value!![0]!!)
         if(!deliveriesInTransit.value.isNullOrEmpty()) mostRecentList.add(deliveriesInTransit.value!![0]!!)
         if(!completedDeliveries.value.isNullOrEmpty()) mostRecentList.add(completedDeliveries.value!![0]!!)
 
@@ -98,21 +100,21 @@ class MainViewModel @Inject constructor(
 
     private fun initDeliveriesPlaced() {
         val pagedListBuilder: LivePagedListBuilder<Int, Delivery> =
-            LivePagedListBuilder<Int, Delivery>(deliveryRepo.getDeliveriesPlaced(), pageSize)
+            LivePagedListBuilder(deliveryRepo.getDeliveriesPlaced(), pageSize)
         deliveriesPlaced = pagedListBuilder.build()
 
     }
 
     private fun initDeliveriesInTransit() {
         val pagedListBuilder: LivePagedListBuilder<Int, Delivery> =
-            LivePagedListBuilder<Int, Delivery>(deliveryRepo.getDeliveriesInTransit(), pageSize)
+            LivePagedListBuilder(deliveryRepo.getDeliveriesInTransit(), pageSize)
         deliveriesInTransit = pagedListBuilder.build()
 
     }
 
     private fun initCompletedDeliveries() {
         val pagedListBuilder: LivePagedListBuilder<Int, Delivery> =
-            LivePagedListBuilder<Int, Delivery>(deliveryRepo.getCompletedDeliveries(), pageSize)
+            LivePagedListBuilder(deliveryRepo.getCompletedDeliveries(), pageSize)
         completedDeliveries = pagedListBuilder.build()
 
     }

@@ -15,8 +15,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.concurrent.Executors
+import javax.inject.Inject
 
-class UserRepository(private val apiService:ApiService,
+class UserRepository @Inject constructor(private val apiService:ApiService,
                           private val userDao: UserDao,
                           private val localDatabase: LocalDatabase){
 

@@ -1,6 +1,6 @@
 package com.example.deliveryapp.ui.track_delivery
 
-import android.content.Context
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -8,11 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.deliveryapp.data.local.entities.Delivery
 import com.example.deliveryapp.databinding.AdapterDeliveryTimelineBinding
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.example.deliveryapp.R
 import com.example.deliveryapp.utils.TimelineView
 
